@@ -58,6 +58,3 @@ def confirm_transaction(confirmation, id):
 	return "Transaction Cancelled"
 
 
-
-
-

@@ -17,6 +17,3 @@ def rates():
       rate.save_to_db()
       flash('Rate uploaded!!!', 'success')
     return render_template('rate.html', form = form)
-
-
-    

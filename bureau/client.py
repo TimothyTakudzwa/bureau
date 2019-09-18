@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, flash
 from functools import wraps
 from flask import Flask, render_template, request, flash, url_for, redirect
@@ -17,4 +18,3 @@ def client_cegister():
       client.save_to_db()
       flash('Registration Process Complete')
     return render_template('client_register.html', form = form)
-

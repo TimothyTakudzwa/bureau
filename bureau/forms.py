@@ -37,6 +37,7 @@ class BureauForm(Form):
    password_hash = PasswordField('Password')
    submit = SubmitField('submit')
 
+
    def validate_email(self, email):
         """Email validation."""
         bureau = Bureau.query.filter_by(email=email.data).first()
@@ -54,12 +55,6 @@ class RatesForm(Form):
    currency_b =  SelectField('Currency2', choices=[('ZWL', 'ZWL'), ('USD', 'USD')])
    rate =  StringField('Rate')
    submit = SubmitField('Submit')
-  
-   
-
-
-
-
 
 
    

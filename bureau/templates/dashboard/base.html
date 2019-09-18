@@ -26,7 +26,8 @@
   -->
       <div class="logo">
         <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          Creative Tim
+        
+          {{ session.username }} 
         </a>
       </div>
       <div class="sidebar-wrapper">
@@ -34,7 +35,26 @@
           <li class="nav-item active  ">
             <a class="nav-link" href="javascript:void(0)">
               <i class="material-icons">dashboard</i>
-              <p>Dashboard</p>
+              <p>User's Dashboard</p>
+            </a>
+          </li>
+          
+          <li class="nav-item ">
+            <a class="nav-link" href="./tables.html">
+              <i class="material-icons">swap_vertical_circle</i>
+              <p>Exchange Rates</p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="./tables.html">
+              <i class="material-icons">local_atm</i>
+              <p>My Transactions</p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="./user.html">
+              <i class="material-icons">person</i>
+              <p>User Profile</p>
             </a>
           </li>
           <!-- your sidebar here -->
@@ -45,9 +65,6 @@
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
         <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <a class="navbar-brand" href="javascript:void(0)">Dashboard</a>
-          </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
             <span class="navbar-toggler-icon icon-bar"></span>
@@ -75,78 +92,17 @@
       <div class="content">
         <div class="container-fluid">
           <!-- your content here -->
+          {% block body %}{% endblock %}
         </div>
       </div>
-    <h1>Tnsjnsjnsddd~~j</h1>
-              <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header card-header-primary">
-                  <h4 class="card-title ">Rates</h4>
-                  <p class="card-category"> The Latest Rates</p>
-                </div>
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table">
-                      <thead class=" text-primary">
-                        <th>
-                          ID
-                        </th>
-                        <th>
-                          Rates
-                        </th>
-                        <th>
-                          Date
-                        </th>
-                        <th>
-                          Currency A
-                        </th>
-                        <th>
-                          Currency B
-                        </th>
-                      </thead>
-                      <tbody>
-                      {% if rates%}
-                        {% for rate in rates %}
-
-                        <tr>
-                          <td>
-                            {{ rate.id }}
-                          </td>
-                          <td>
-                            {{ rate.rate }}
-                          </td>
-                          <td>
-                            {{ rate.date }}
-                          </td>
-                          <td>
-                            Oud-Turnhout
-                          </td>
-                          <td class="text-primary">
-                            $36,738
-                          </td>
-                        </tr>
-                        
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-            {{rate.rate}}
-        {% endfor %}
-    {% else %}
-    <p>There Are No Rates To Display</p>    
-    {% endif %}
+              
       <footer class="footer">
         <div class="container-fluid">
           <nav class="float-left">
             <ul>
               <li>
-                <a href="https://www.creative-tim.com">
-                  Creative Tim
+                <a href="">
+                  {{ session.username }}
                 </a>
               </li>
             </ul>
@@ -155,32 +111,34 @@
             &copy;
             <script>
               document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons">favorite</i> by
-            <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+            </script>
+            <a href="https://www.creative-tim.com" target="_blank">Bureau De Change</a> 
           </div>
           <!-- your footer here -->
         </div>
       </footer>
     </div>
   </div>
-  <!--   Core JS Files   -->
-  <script src="{{url_for('static',filename='dashboard/assets/js/core/jquery.min.js')}}"></script>
-  <script src="{{url_for('static',filename='dashboard/assets/js/core/popper.min.js')}}"></script>
-  <script src="{{url_for('static',filename='dashboard/assets/js/core/bootstrap-material-design.min.js')}}"></script>
+<!--   Core JS Files   -->
+  <script src="static/dashboard/assets/js/core/jquery.min.js"></script>
+  <script src="static/dashboard/assets/js/core/popper.min.js"></script>
+  <script src="static/dashboard/assets/js/core/bootstrap-material-design.min.js"></script>
   <script src="https://unpkg.com/default-passive-events"></script>
-  <script src="{{url_for('static',filename='dashboard/assets/js/plugins/perfect-scrollbar.jquery.min.js')}}"></script>
+  <script src="static/dashboard/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
   <!-- Place this tag in your head or just before your close body tag. -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!--  Google Maps Plugin    -->
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
   <!-- Chartist JS -->
-  <script src="{{url_for('static', filename='dashboard/assets/js/plugins/chartist.min.js')}}"></script>
+  <script src="/static/dashboard/assets/js/plugins/chartist.min.js"></script>
+
+
   <!--  Notifications Plugin    -->
-  <script src="{{url_for('static', filename='dashboard/assets/js/plugins/bootstrap-notify.js')}}"></script>
+  <script src="/static/dashboard/assets/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="{{url_for('static', filename='dashboard/assets/js/material-dashboard.js?v=2.1.0')}}"></script>
+  <script src="/static/dashboard/assets/js/material-dashboard.js?v=2.1.0"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-  <script src="{{url_for('static', filename='dashboard/assets/demo/demo.js')}}"></script>
+  <script src="/static/dashboard/assets/demo/demo.js"></script>
   <script>
     $(document).ready(function() {
       $().ready(function() {
@@ -341,6 +299,13 @@
 
         });
       });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      md.initDashboardPageCharts();
+
     });
   </script>
 </body>

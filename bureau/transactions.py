@@ -15,7 +15,7 @@ def decrypt(ciphertext):
 	return plaintext
 
 
-def get_currencies(amount, currency_a, currency_b):
+def get_currencies(amount, currency_a, currency_b, client_id):
 	rates = Rates.get_db_currencies(currency_a, currency_b)	
 	highest_rate = 0
 	highest_rate_provider = 0
@@ -23,7 +23,7 @@ def get_currencies(amount, currency_a, currency_b):
 		if rate.rate > highest_rate:
 			print(rate.rate)
 			highest_rate = rate.rate
-			highest_rate_provider = rate.client_id	
+			highest_rate_provider = rate.bureau_id	
 	if highest_rate == 0: 
 		return "No rate for this selection"
 	else: 		

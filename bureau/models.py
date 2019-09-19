@@ -103,7 +103,7 @@ class Rates(db.Model):
     __tablename__ = 'Rates'
     id = db.Column(db.Integer, primary_key=True)
     rate = db.Column(db.Float)
-    bereau_id = db.Column(db.Integer)
+    bureau_id = db.Column(db.Integer)
     date = db.Column(db.DateTime, default = datetime.now())
     currency_a = db.Column(db.String(70))
     currency_b = db.Column(db.String(70))

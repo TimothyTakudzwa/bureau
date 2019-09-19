@@ -1,0 +1,24 @@
+<!doctype html>  
+<html>  
+   <body>  
+      <h2 style = "text-align: center;">Login</h2>  
+          
+      <form action = "/login" method = "GET"> 
+        <fieldset>
+        {{ form.hidden_tag() }}  
+              
+        <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>  
+           {{ form.username.label }}<br>  
+           {{ form.username }}  
+           <br>  
+           {{ form.password.label }}<br>
+            {{ form.password }} 
+            <br> 
+           {{ form.submit }}  
+        </div>  
+              
+         </fieldset>  
+      </form>  
+   </body>  
+</html>  
+           

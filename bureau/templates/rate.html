@@ -1,0 +1,37 @@
+<!doctype html>  
+<html>  
+   <body>  
+      <h2 style = "text-align: center;">Registration Form</h2>  
+         
+   
+        
+      <form action = "#" method = "POST"> 
+        <fieldset>
+        {{ form.hidden_tag() }}  
+              
+
+        <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>
+          <br>  
+          {{ form.csrf_token }}<br>
+          {{ form.opts }}
+           <br> 
+           {{ form.currency_a.label }}<br>  
+           {{ form.currency_a }}  
+           <br>
+           {{form.currency_b.label}}<br>
+           {{form.currency_b}}
+           <br>
+           {{form.rate.label}}<br>
+           {{form.rate}}
+           <br>
+           {{form.name.label}}<br>
+           {{form.name}}
+           <br>
+           {{ form.submit }}  
+        </div>  
+              
+         </fieldset>  
+      </form>  
+   </body>  
+</html>  
+           

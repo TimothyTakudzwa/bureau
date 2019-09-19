@@ -7,20 +7,18 @@ from . import app,db
 @app.route('/registerbureau', methods = ['GET', 'POST'])  
 def registerbureau():
     form = BureauForm()
-    if form.validate():
+    if form.validate_on_submit():
         bureau = Bureau(name = form.name.data,
-                              address = form.address.data,
-                              email = form.email.data,
-                              account_no = form.account_no.data,
-                              destination_bank = form.destination_bank.data,
-                              longitude = form.longitude.data,
-                              latitude = form.latitude.data,
-                              username = form.username.data,
-                              password_hash = generate_password_hash(form.password_hash.data))
-                              
-
+                        address = form.address.data,
+                        email = form.email.data,
+                        account_no = form.account_no.data,
+                        destination_bank = form.destination_bank.data,
+                        longitude = form.longitude.data,
+                        latitude = form.latitude.data,
+                        username = form.username.data,
+                        password_hash = generate_password_hash(form.password_hash.data))
         bureau.save_to_db()
-        flash('Logged in successfully.')
+        flash('you can login now')
         return redirect(url_for('login'))
     return render_template('/buyer.html', form=form)
 
@@ -36,3 +34,7 @@ def login():
             flash('access denied, make sure you are entering correct credentials')
             return redirect(url_for('login'))
     return redirect(url_for('registerbureau'))
+
+@app.route('/landing')
+def landing():
+    return render_template('landing/index.html')

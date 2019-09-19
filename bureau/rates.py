@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, flash, url_for, redirect
 from .forms import RatesForm
 from .models import *
@@ -18,6 +17,3 @@ def rates():
       rate.save_to_db()
       flash('Rate uploaded!!!', 'success')
     return render_template('rate.html', form = form)
-
-
-    

@@ -9,7 +9,7 @@ class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer())
     bureau_id = db.Column(db.Integer())
-    amount = db.Column(db.Float)    
+    usd_amount = db.Column(db.Float)    
     rate = db.Column(db.Float)
     total_amount = db.Column(db.Float)    
     transaction_type = db.Column(db.String(20))
@@ -103,7 +103,7 @@ class Rates(db.Model):
     __tablename__ = 'Rates'
     id = db.Column(db.Integer, primary_key=True)
     rate = db.Column(db.Float)
-    bureau_id = db.Column(db.Integer)
+    client_id = db.Column(db.Integer)
     date = db.Column(db.DateTime, default = datetime.now())
     currency_a = db.Column(db.String(70))
     currency_b = db.Column(db.String(70))

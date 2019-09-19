@@ -9,7 +9,7 @@ class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer())
     bureau_id = db.Column(db.Integer())
-    usd_amount = db.Column(db.Float)    
+    amount = db.Column(db.Float)    
     rate = db.Column(db.Float)
     total_amount = db.Column(db.Float)    
     transaction_type = db.Column(db.String(20))
@@ -17,6 +17,10 @@ class Transaction(db.Model):
     reference_number = db.Column(db.String(30))
     transaction_code = db.Column(db.String(100))    
     completed = db.Column(db.Boolean, default=False)
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
     @classmethod
     def get_total_amount(self):
@@ -67,6 +71,8 @@ class Bureau(db.Model):
     name = db.Column(db.String(100))
     address = db.Column(db.String(100))
     email = db.Column(db.String(100))    
+    # phone = db.Column(db.String(100))    
+    # phone_number = db.Column(db.String(50))
     latitude = db.Column(db.String(100))
     longitude = db.Column(db.String(100))
     account_no = db.Column(db.String(100))
@@ -103,7 +109,7 @@ class Rates(db.Model):
     __tablename__ = 'Rates'
     id = db.Column(db.Integer, primary_key=True)
     rate = db.Column(db.Float)
-    client_id = db.Column(db.Integer)
+    bureau_id = db.Column(db.Integer)
     date = db.Column(db.DateTime, default = datetime.now())
     currency_a = db.Column(db.String(70))
     currency_b = db.Column(db.String(70))

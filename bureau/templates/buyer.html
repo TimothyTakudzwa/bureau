@@ -1,5 +1,8 @@
 <!doctype html>  
-<html>  
+<html>
+      <head>
+            
+        </head>  
    <body>  
       <h2 style = "text-align: center;">Registration Form</h2>  
           
@@ -58,10 +61,31 @@
            {{form.password_hash.label}}<br>
            {{form.password_hash}}
            <br>
+           {{form.confirm.label}}<br>
+           {{form.confirm}}
            
            <br> 
            {{ form.submit }} <br> 
         </div>  
+        <p>
+            <ol>
+                <li>
+                    Usernames must be less than 20 characters
+                </li>
+
+                <li>
+                    Passwords must contain the following:
+                    <ul>
+                        <li> Minimum of 8 characters.</li>
+                        <li> Contain a number.</li>
+                        <li> Contain upper case character.</li>
+                        <li> Contain lower case character.</li>
+                        <li> Contain special character.</li>
+                    </ul>
+                </li>
+
+            </ol>
+            </p>
               
          </fieldset>  
       </form>  

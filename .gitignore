@@ -120,3 +120,6 @@ app.db
 
 # journals
 .db-journal
+
+# command notes
+Rates.query.order_by(desc('rate')).all()

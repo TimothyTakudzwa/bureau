@@ -1,49 +1,47 @@
 {% extends "dashboard/base.html" %}
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
+<div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Today's Rates</h4>
-                    <p class="card-category"> List Of All Prevailing Currency Rates</p>
+                <h4 class="card-title ">Today's Rates</h4>
+                <p class="card-category"> List Of All Prevailing Currency Rates</p>
                 </div>
-                <div class="card-body">
-                    {% if rates_today %}
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class=" text-primary"><th>Rate</th><th>Currency A</th> <th>Currency B</th>
-                                </thead>
-                                <tbody>
-                                    {% for rate in rates_today %}
-                                    <tr><td>{{ rate.rate }}</td><td>{{ rate.currency_a }}</td><td class="text-primary">{{ rate.currency_b }}</td></tr>
-                                    {% endfor  %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p>No Rates to show</p>
-                    {% endif %}
-                </div>
-                <div class="card-body">
+            <div class="card-body">
+                <div class="container-fluid">
                     {% if rates %}
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class=" text-primary"><th>Rate</th><th>Currency A</th> <th>Currency B</th>
-                                </thead>
-                                <tbody>
-                                    {% for rate in rates %}
-                                    <tr><td>{{ rate.rate }}</td><td>{{ rate.currency_a }}</td><td class="text-primary">{{ rate.currency_b }}</td></tr>
-                                    {% endfor  %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p>No Rates to show</p>
+                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                            <th>Rate</th>
+                            <th>Currency A </th>
+                            <th>Currency B </th>
+                            <th> </th>
+        
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rate in rates %}
+                                <tr>
+                                <td>{{ rate.rate }}</td>
+                                <td>{{ rate.currency_a }}</td>
+                                <td>{{ rate.currency_b }}</td>
+                                <td><a href="" class="btn-sm btn-info"> Make Offer</a></td>
+                                </tr>
+                            {% endfor %}    
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        <th>Rate</th>
+                        <th>Currency A</th>
+                        <th>Currency B</th>
+                        </tr>
+                        </tfoot>
+                    </table>
                     {% endif %}
                 </div>
-            </div>        
-        </div>        
-    </div>            
-</div>
+                </div>
+            </div>
+        </div>
+    </div>   
 {% endblock %} 

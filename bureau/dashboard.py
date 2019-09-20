@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, flash, url_for. session
+from flask import Flask, render_template, request, flash, url_for, session
 from functools import wraps
 from flask import Flask, render_template, request, flash, url_for, redirect
 from .forms import ClientForm
 from .models import *
 from . import app,db
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta 
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard_index():
@@ -24,4 +24,7 @@ def exchange_rate():
     return render_template('dashboard/exchange_rate.html',
      rates=rates, rates_today=rates_today)
 
- 
+@app.route('/requests', methods=['GET'])
+def requests():
+    #requests = Request.query.all()
+    return render_template('dashboard/requests.html')

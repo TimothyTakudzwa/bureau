@@ -41,7 +41,7 @@
 	<div id="login">
 		<aside>
 			
-			  <form>
+			  <form action = "/login" method = "GET"> 
 				<div class="access_social">
 					<a href="#0" class="social_bt facebook">Login with Facebook</a>
 					<a href="#0" class="social_bt google">Login with Google</a>
@@ -49,23 +49,17 @@
 				</div>
 				<div class="divider"><span>Or</span></div>
 				<div class="form-group">
-					<span class="input">
-					<input class="input_field" type="email" autocomplete="off" name="email">
-						<label class="input_label">
-						<span class="input__label-content">Your email</span>
-					</label>
-					</span>
-
-					<span class="input">
-					<input class="input_field" type="password" autocomplete="new-password" name="password">
-						<label class="input_label">
-						<span class="input__label-content">Your password</span>
-					</label>
-					</span>
-					<small><a href="#0">Forgot password?</a></small>
+						<div style = "font-size:20px; font-weight:bold; margin-left:130px; color: rgb(8, 8, 8);">
+						{{ form.username.label }}<br>  
+						{{ form.username }}  
+						<br>  
+						{{ form.password.label }}<br>
+						 {{ form.password }} 
+						 </div>
+						 
 				</div>
-				<a href="#0" class="btn_1 rounded full-width add_top_60">Login</a>
-				<div class="text-center add_top_10">New to Digital Coin? <strong><a href="register">Sign up!</a></strong></div>
+				<a href="#0" class="btn_1 rounded full-width add_top_60">{{ form.submit }} </a>
+				<div class="text-center add_top_10">New to Bureau De Change? <strong><a href="registerbureau">Sign up!</a></strong></div>
 			</form>
 			<div class="copy">© 2019 Bureau De Change</div>
 		</aside>

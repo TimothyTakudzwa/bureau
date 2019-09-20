@@ -7,4 +7,4 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 app.config.from_object('config')
 
-from . import views, models, app, db, bureau, client, rates, dashboard
+from . import views, models, app, db, bureau, client, rates, dashboard, mytransactions

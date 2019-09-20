@@ -1,7 +1,7 @@
 import base64
 from .models import *
 from .constants import * 
-import datetime
+from datetime import datetime, timedelta
 
 def encrypt(client_id,bureau_id,total_amount,date,rate):
 	data = f"{client_id,bureau_id,total_amount,date,rate}"
@@ -59,6 +59,16 @@ def confirm_transaction(confirmation, id):
 			return "Transaction Not Found"
 				 
 	return "Transaction Cancelled"
+
+def create_date_list(number_of_days):
+	today = datetime.now()
+	return [today - timedelta(days=number_of_days) for x in range(number_of_days)]
+
+def get_exchange_rate_series(days):
+	days = create_date_list(days)
+	#rates = [Rates.query.filter(date=date) for date in days if date]
+	return [Rates.query.filter_by(date=date).first for date in days if date != None]
+
 
 
 

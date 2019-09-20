@@ -144,3 +144,22 @@ class AuditTrail(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+
+class Requests(db.Model):
+    __tablename___= 'Requests'
+    id = db.Column(db.Integer, primary_key=True)
+    currency_a = db.Column(db.String(70))
+    currency_b = db.Column(db.String(70))
+    amount = db.Column(db.Float)
+    date = db.Column(db.DateTime)
+    action = db.Column(db.String(100))
+    rating = db.Column(db.Integer)
+
+    @classmethod
+    def get_by_id(self,id):
+        return Requests.query.filter_by(id=id).first()
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()

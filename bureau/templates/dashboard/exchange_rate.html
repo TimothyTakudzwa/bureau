@@ -5,41 +5,44 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Exchange Rates</h4>
-                    <p class="card-category"> Here is a subtitle for this table</p>
+                    <h4 class="card-title ">Today's Rates</h4>
+                    <p class="card-category"> List Of All Prevailing Currency Rates</p>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead class=" text-primary">
-                                <th>Rate</th>
-                                <th>Currency A</th>
-                                <th>Currency B</th>
-                            </thead>
-                            <tbody>
-                            {% if rates %}
-                            {% for rate in rates%}
-                            <tr>
-                            <td>
-                            {{rate.rate}}
-                            </td>
-                            <td>
-                            {{rate.currency_a}}
-                            </td>
-                            <td class="text-primary">
-                            {{rate.currency_b}}
-                            </td>
-                            </tr>
-                            {% endfor  %}
-                            
-                            
-                            </tbody>
-                            {% else %}
-                            <p>No Rates to show</p>
-                            {% endif %}
-                    </table>
-                    </div>
-                </div>    
+                    {% if rates_today %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class=" text-primary"><th>Rate</th><th>Currency A</th> <th>Currency B</th>
+                                </thead>
+                                <tbody>
+                                    {% for rate in rates_today %}
+                                    <tr><td>{{ rate.rate }}</td><td>{{ rate.currency_a }}</td><td class="text-primary">{{ rate.currency_b }}</td></tr>
+                                    {% endfor  %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>No Rates to show</p>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if rates %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class=" text-primary"><th>Rate</th><th>Currency A</th> <th>Currency B</th>
+                                </thead>
+                                <tbody>
+                                    {% for rate in rates %}
+                                    <tr><td>{{ rate.rate }}</td><td>{{ rate.currency_a }}</td><td class="text-primary">{{ rate.currency_b }}</td></tr>
+                                    {% endfor  %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>No Rates to show</p>
+                    {% endif %}
+                </div>
+            </div>        
         </div>        
     </div>            
 </div>

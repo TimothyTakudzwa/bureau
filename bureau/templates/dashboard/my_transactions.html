@@ -1,0 +1,46 @@
+{% extends 'dashboard/base.html' %}
+
+{% block body %}
+    <div class="col-md-12">
+      <div class="card card-plain">
+        <div class="card-header card-header-primary">
+          <h4 class="card-title mt-0"> Transactions Table</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="">
+                <tr><th>
+                  DATE
+                </th>
+                <th>
+                 REFERENCE NUMBER
+                </th>
+                <th>
+                  RATE
+                </th>
+                <th>
+                  USD AMOUNT
+                </th>
+                <th>
+                  TOTAL
+                </th>
+              </tr></thead>
+              <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                  <td>{{transaction.date}}</td>
+                  <td>{{transaction.reference_number}}</td>
+                  <td>{{transaction.rate}}</td>
+                  <td>{{transaction.amount}}</td>
+                  <td>{{transaction.total_amount}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

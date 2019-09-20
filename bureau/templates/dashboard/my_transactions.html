@@ -14,7 +14,7 @@
                   DATE
                 </th>
                 <th>
-                  REFERENCE NUMBER
+                 REFERENCE NUMBER
                 </th>
                 <th>
                   RATE
@@ -26,21 +26,17 @@
                   TOTAL
                 </th>
               </tr></thead>
-              {% if tarnsactions %}
               <tbody>
-                {% for transaction in tarnsactions %}
+                {% for transaction in transactions %}
                 <tr>
                   <td>{{transaction.date}}</td>
                   <td>{{transaction.reference_number}}</td>
                   <td>{{transaction.rate}}</td>
-                  <td>{{transaction.usd_amount}}</td>
+                  <td>{{transaction.amount}}</td>
                   <td>{{transaction.total_amount}}</td>
                 </tr>
                 {% endfor %}
               </tbody>
-              {% else %}
-              <p> No transactions to show </p>
-              {% endif %}
             </table>
           </div>
         </div>

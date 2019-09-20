@@ -31,18 +31,26 @@ class BureauForm(Form):
     ])
    longitude = StringField('longitude')
    latitude = StringField('latitude')
-   account_no = IntegerField('Account Number')
+   account_no = IntegerField('Account Number', [validators.Required("please enter a numeric account number")])
    destination_bank = SelectField('Destination Bank',choices=[('cbz','CBZ'), ('zb','ZB'), ('nmb','NMB'), ('fbc','FBC'), ('stnbk','StanBic'), ('abs','ABS')])
    username = StringField('Username')
    password_hash = PasswordField('Password')
-   submit = SubmitField('submit')
 
+   password_hash = PasswordField('Password',[validators.Length(min=2), EqualTo('confirm', message='Passwords must match')])
+   confirm = PasswordField('Repeat password')
+   submit = SubmitField('submit')
 
    def validate_email(self, email):
         """Email validation."""
         bureau = Bureau.query.filter_by(email=email.data).first()
         if bureau is not None:
-            raise ValidationError('Please use a different email address.')
+            raise ValidationError('Email already in use, please use a different email address.')
+
+   def validate_username(self, username):
+        """Username validation."""
+        bureau = Bureau.query.filter_by(username=username.data).first()
+        if bureau is not None:
+            raise ValidationError('Username already in use, please use a different username.')
 
 
 class RatesForm(Form):

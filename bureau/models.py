@@ -161,3 +161,22 @@ class Requests(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+class Offer(db.Model):
+    __tablename__='Offers'
+    id = db.Column(db.Integer, primary_key=True)
+    request_id = db.Column(db.Integer)
+    client_id = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
+    amount = db.Column(db.Float)
+
+    @classmethod
+    def get_by_id(self,id):
+        return Offer.query.filter_by(id=id).first()
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+

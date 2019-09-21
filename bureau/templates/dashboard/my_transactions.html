@@ -26,6 +26,9 @@
                             <th>
                               TOTAL
                             </th>
+                            <th>
+                              STATUS
+                            </th>
                         <tbody>
                             {% for transaction in transactions %}
                             <tr>
@@ -34,6 +37,12 @@
                                 <td>{{transaction.rate}}</td>
                                 <td>{{transaction.amount}}</td>
                                 <td>{{transaction.total_amount}}</td>
+
+                                {% if transaction.completed == True %}
+                                <td>Completed</td>
+                                {% else %}
+                                <td> Cancelled </td>
+                                {% endif %}
                               </tr>
                             {% endfor %}    
                         </tbody>

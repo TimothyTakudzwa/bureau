@@ -40,6 +40,8 @@ def about():
 def services():
     return render_template('/landing/services.html')
 
+
+
 #@app.route('/register')
 #def register():
     #return render_template('/landing/register.html')

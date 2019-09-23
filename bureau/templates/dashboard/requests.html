@@ -20,6 +20,7 @@
                             <th>Date</th>
                             <th>Action</th>
                             <th>Rating</th>
+                            <th></th>
         
                             </tr>
                         </thead>
@@ -47,7 +48,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
-                                          <h2 style = "text-align: center;">Offer Form</h2>  
+                                           
           
                                             {% for message in form.offer_amount.errors %}  
                                                 <div>{{ message }}</div>  
@@ -64,13 +65,13 @@
                                                 <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>  
                                                 <br>  
                                                 {{ form.request_id.label }}<br>
-                                                    {{ form.request_id }} 
+                                                    {{ form.request_id(class_='form-control') }} 
                                                     <br> 
                                                 {{ form.offer_amount.label }}<br>  
-                                                {{ form.offer_amount }}  
+                                                {{ form.offer_amount(class_='form-control') }}  
                                                 <br>
                                                 {{form.rate.label}}<br>
-                                                {{form.rate}}
+                                                {{form.rate(class_='form-control')}}
                                                 <br>
                                                   
                                          
@@ -89,13 +90,7 @@
                                 </div>
                             {% endfor %}    
                         </tbody>
-                        <tfoot>
-                        <tr>
-                        <th>Rate</th>
-                        <th>Currency A</th>
-                        <th>Currency B</th>
-                        </tr>
-                        </tfoot>
+                        
                     </table>
                     {% else %}
                     <p>There Are No Requests</p>

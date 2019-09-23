@@ -43,5 +43,3 @@ def services():
 #@app.route('/register')
 #def register():
     #return render_template('/landing/register.html')
-
-    

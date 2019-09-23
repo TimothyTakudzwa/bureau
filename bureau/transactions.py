@@ -2,6 +2,7 @@
 from .models import *
 from .constants import * 
 from datetime import datetime, timedelta
+from sqlalchemy import desc
 
 def encrypt(client_id,bureau_id,total_amount,date,rate):
 	data = f"{client_id,bureau_id,total_amount,date,rate}"
@@ -62,15 +63,20 @@ def confirm_transaction(confirmation, id):
 
 def create_date_list(number_of_days):
 	today = datetime.now()
-	return [today - timedelta(days=number_of_days) for x in range(number_of_days)]
+	return [today - timedelta(days=x) for x in range(number_of_days)]
+		   
 
-def get_exchange_rate_series(days):
+def get_exchange_rate_series(days,bureau_id):
 	days = create_date_list(days)
-	#rates = [Rates.query.filter(date=date) for date in days if date]
-	return [Rates.query.filter_by(date=date).first for date in days if date != None]
+	days = [date.strftime("%d/%m/%Y") for date in days]
+	# get the highest rates for the given days ending with today
+	return [Rates.query.order_by(desc('rate')).filter_by(date=date).filter_by(bureau_id=bureau_id).first() for date in days if Rates.query.filter_by(date=date)]
 
 
-
-
-
-
+def bureaus_comprare(bureau_a, bureau_b, days):
+	# comparison between two different bureaus over a period
+	# returns dict with values
+	comparison = dict()
+	comparison[burea_a] = get_exchange_rate_series(days, bureau_a.id)
+	comparison[burea_b] = get_exchange_rate_series(days, bureau_b.id)
+	return comparison

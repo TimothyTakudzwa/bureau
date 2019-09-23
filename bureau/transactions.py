@@ -2,6 +2,7 @@
 from .models import *
 from .constants import * 
 from datetime import datetime, timedelta
+from sqlalchemy import desc
 
 def encrypt(client_id,bureau_id,total_amount,date,rate):
 	data = f"{client_id,bureau_id,total_amount,date,rate}"
@@ -66,9 +67,8 @@ def create_date_list(number_of_days):
 
 def get_exchange_rate_series(days):
 	days = create_date_list(days)
-	#rates = [Rates.query.filter(date=date) for date in days if date]
-	return [Rates.query.filter_by(date=date).first for date in days if date != None]
-
+	# get the highest rates for the given days ending with today
+	return [Rates.query.order_by(desc('rate')).filter_by(date=date).filter_by(bureau_id=1).first() for date in days if Rates.query.filter_by(date=date)]
 
 
 

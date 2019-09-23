@@ -1,4 +1,4 @@
-from flask_wtf import Form  
+'''from flask_wtf import Form  
 from wtforms import TextField, IntegerField, IntegerField, TextAreaField, SubmitField, FloatField, RadioField, SelectField, PasswordField, StringField 
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from wtforms import validators
@@ -65,7 +65,7 @@ class RatesForm(Form):
    submit = SubmitField('Submit')
 
 
-class Offer(Form):
+class OfferForm(Form):
    request_id = StringField('Request_id')
    offer_amount = StringField('Offer Amount')
    rate = IntegerField('Rate')
@@ -73,5 +73,5 @@ class Offer(Form):
 
 
 
-
+'''
    

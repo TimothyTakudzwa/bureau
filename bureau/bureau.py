@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, url_for, redirect, make_response
+'''from flask import Flask, render_template, request, flash, url_for, redirect, make_response
 from .forms import BureauForm, BureauLogin
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from .models import * 
@@ -55,4 +55,4 @@ def services():
 def register():
     return render_template('/landing/register.html')
 
-    
+    '''

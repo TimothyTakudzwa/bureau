@@ -16,7 +16,7 @@
                             <th>Rate</th>
                             <th>Currency A </th>
                             <th>Currency B </th>
-                            <th> </th>
+                            <th>Action</th>
         
                             </tr>
                         </thead>
@@ -26,8 +26,12 @@
                                 <td>{{ rate.rate }}</td>
                                 <td>{{ rate.currency_a }}</td>
                                 <td>{{ rate.currency_b }}</td>
-                                <td><a href="" class="btn-sm btn-info"> Make Offer</a></td>
+                                <td>{{ rating.action }}</button></td>
                                 </tr>
+                               
+                                    </div>
+                                </div>
+                                </div>
                             {% endfor %}    
                         </tbody>
                         <tfoot>

@@ -16,29 +16,15 @@ class BureauForm2(Form):
    password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
    confirm = PasswordField('Repeat Password')
  
-class BureauLogin(Form):
+class LoginForm(Form):
    username = TextField('Username')
-   password_hash = PasswordField('password')
+   password = PasswordField('password')
    submit = SubmitField('Submit')
 
-   def __init__(self, *args, **kwargs):
-        super(BureauLogin, self).__init__(*args, **kwargs)
 
-   def validate(self):
-        initial_validation = super(BureauLogin, self).validate()
-        if not initial_validation:
-            return False
-        bureau = Bureau.query.filter_by(username=self.username.data).first()
-        if not bureau:
-            self.username.errors.append('Unknown username')
-            return False
-        if not bureau.verify_password(self.password_hash.data):
-            self.password_hash.errors.append('Invalid password')
-            return False
-        return True
-
-class BureauForm(Form):
-   name = StringField('Company Name')
+class SignupForm(Form):
+   name = StringField('Company Name',
+                       validators=[DataRequired(message=('Enter a fake name or something.'))])
    address = TextAreaField('Address')
    email = StringField('Email', [
         Length(min=4, message=(u'Little short for an email address?')),
@@ -50,17 +36,13 @@ class BureauForm(Form):
    account_no = IntegerField('Account Number', [validators.Required("please enter a numeric account number")])
    destination_bank = SelectField('Destination Bank',choices=[('cbz','CBZ'), ('zb','ZB'), ('nmb','NMB'), ('fbc','FBC'), ('stnbk','StanBic'), ('abs','ABS')])
    username = StringField('Username')
-   password_hash = PasswordField('Password')
 
-   password_hash = PasswordField('Password',[validators.Length(min=2), EqualTo('confirm', message='Passwords must match')])
+   password_hash = PasswordField('Password',
+                             validators=[DataRequired(message='Please enter a password.'),
+                                         Length(min=8, message=('Please select a stronger password.')),
+                                         EqualTo('confirm', message='Passwords must match')])
    confirm = PasswordField('Repeat password')
-   submit = SubmitField('submit')
-
-   def validate_email(self, email):
-        """Email validation."""
-        bureau = Bureau.query.filter_by(email=email.data).first()
-        if bureau is not None:
-            raise ValidationError('Email already in use, please use a different email address.')
+   submit = SubmitField('Submit')
 
    def validate_username(self, username):
         """Username validation."""

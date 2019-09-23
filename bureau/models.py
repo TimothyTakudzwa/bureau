@@ -1,6 +1,7 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
+from flask_login import UserMixin
 #from . import login_manager
 #from flask.ext.login import UserMixin
 
@@ -67,7 +68,7 @@ class Client(db.Model):
         db.session.add(self)
         db.session.commit()
 
-class Bureau(db.Model):
+class Bureau(UserMixin,db.Model):
     __tablename__ = 'Bureaus'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))

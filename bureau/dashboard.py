@@ -1,4 +1,4 @@
-'''from flask import Flask, render_template, request, flash, url_for, session
+from flask import Flask, render_template, request, flash, url_for, session
 from functools import wraps
 from flask import Flask, render_template, request, flash, url_for, redirect
 from .forms import ClientForm, OfferForm
@@ -24,6 +24,8 @@ def exchange_rate():
 
 @app.route('/requests', methods=['GET'])
 def requests():
-    requests = Request.query.all()
-    return render_template('dashboard/requests.html', requests=requests)
-'''
+    requests = Requests.query.all()
+    form = OfferForm(request.form)
+    return render_template('dashboard/requests.html', requests=requests
+    , form=form)
+    

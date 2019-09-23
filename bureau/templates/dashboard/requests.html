@@ -57,7 +57,7 @@
                                                 <div>{{ message }}</div>  
                                             {% endfor %}  
                                                 
-                                            <form action = "/client_register" method = "POST"> 
+                                            <form action = "/offer_create" method = "POST"> 
                                                 <fieldset>
                                                 {{ form.hidden_tag() }}  
                                                     
@@ -72,14 +72,12 @@
                                                 {{form.rate.label}}<br>
                                                 {{form.rate}}
                                                 <br>
-                                                <button>
-                                                {{ form.submit }}
-                                                </button>  
-                                                </div>  
+                                                  
+                                         
                                                     
                                                 </fieldset>  
                                             </form> 
-                                        </div>    
+                                        </div>        
                                         ...
                                     </div>
                                     <div class="modal-footer">

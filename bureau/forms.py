@@ -18,8 +18,24 @@ class BureauForm2(Form):
  
 class BureauLogin(Form):
    username = TextField('Username')
-   password = PasswordField('password')
+   password_hash = PasswordField('password')
    submit = SubmitField('Submit')
+
+   def __init__(self, *args, **kwargs):
+        super(BureauLogin, self).__init__(*args, **kwargs)
+
+   def validate(self):
+        initial_validation = super(BureauLogin, self).validate()
+        if not initial_validation:
+            return False
+        bureau = Bureau.query.filter_by(username=self.username.data).first()
+        if not bureau:
+            self.username.errors.append('Unknown username')
+            return False
+        if not bureau.verify_password(self.password_hash.data):
+            self.password_hash.errors.append('Invalid password')
+            return False
+        return True
 
 class BureauForm(Form):
    name = StringField('Company Name')

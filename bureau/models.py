@@ -82,6 +82,7 @@ class Bureau(db.Model):
     username = db.Column(db.String(100))
     password_hash = db.Column(db.String(100))
     is_blocked = db.Column(db.Boolean, default=False)
+    rating = db.Column(db.Integer())
 
     @classmethod
     def get_by_id(cls, id):
@@ -115,6 +116,7 @@ class Rates(db.Model):
     date = db.Column(db.DateTime, default = datetime.now())
     currency_a = db.Column(db.String(70))
     currency_b = db.Column(db.String(70))
+    action = db.Column(db.String(70))
 
     def __str__(self):
         return 'Client',self.id
@@ -125,7 +127,7 @@ class Rates(db.Model):
 
     @staticmethod
     def get_buy_rate(rate):
-    	return Rates.query.filter_by(rate=rate).first()   
+    	return Rates.query.filter_by(rate=rate).first() 
     
     @staticmethod
     def get_db_currencies(currency_a, currency_b):
@@ -182,3 +184,4 @@ class Offer(db.Model):
 
 
 
+ 

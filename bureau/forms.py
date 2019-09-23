@@ -81,7 +81,7 @@ class RatesForm(Form):
    submit = SubmitField('Submit')
 
 
-class Offer(Form):
+class OfferForm(Form):
    request_id = StringField('Request_id')
    offer_amount = StringField('Offer Amount')
    rate = IntegerField('Rate')
@@ -89,5 +89,3 @@ class Offer(Form):
 
 
 
-
-   

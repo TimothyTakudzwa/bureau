@@ -80,3 +80,5 @@ def bureaus_comprare(bureau_a, bureau_b, days):
 	comparison[burea_a] = get_exchange_rate_series(days, bureau_a.id)
 	comparison[burea_b] = get_exchange_rate_series(days, bureau_b.id)
 	return comparison
+
+	

@@ -28,4 +28,11 @@ def requests():
     form = OfferForm(request.form)
     return render_template('dashboard/requests.html', requests=requests
     , form=form)
-    
+'''
+@app.route('compare/<bureau_a>', methods=['GET'])
+def compare(bureau_a):
+    page = request.args.get('page', default = 1, type = int)
+    return bureau_a
+
+'''
+

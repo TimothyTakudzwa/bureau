@@ -23,5 +23,5 @@ def ratesview():
                         )
       rate.save_to_db()
       flash('Rate uploaded!!!', 'success')
-
+      return redirect(url_for('ratesview'))
     return render_template('dashboard/ratesview.html', rates_today=rates_today, bureau_rates=bureau_rates, form=form)

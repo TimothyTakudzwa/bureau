@@ -1,0 +1,47 @@
+<div class="modal fade" id="modal" role="dialog">
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header" style= "background:#402d57e0">
+              <h4 class="modal-title" >Transaction Details</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style= "background:#402d57e0">
+                    <form action = "#" method = "POST"> 
+                            <fieldset>
+                            {{ form.hidden_tag() }}  
+                                  
+                    
+                            <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>
+                              <br>  
+                              {{ form.csrf_token }}<br>
+                              {{ form.opts }}
+                               <br> 
+                               {{ form.currency_a.label }}<br>  
+                               {{ form.currency_a }}  
+                               <br>
+                               {{form.currency_b.label}}<br>
+                               {{form.currency_b}}
+                               <br>
+                               {{form.rate.label}}<br>
+                               {{form.rate}}
+                               <br>
+                               {{form.name.label}}<br>
+                               {{form.name}}
+                               <br>
+                               {{ form.submit }}  
+                            </div>  
+                                  
+                             </fieldset>  
+                          </form>
+            </div>
+            <div class="modal-footer" style= "background:#402d57e0">
+              <button type="submit" class="btn btn-info">Upload</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>

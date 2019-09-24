@@ -80,3 +80,11 @@ def bureaus_comprare(bureau_a, bureau_b, days):
 	comparison[bureau_a] = get_exchange_rate_series(days, bureau_a.id)
 	comparison[bureau_b] = get_exchange_rate_series(days, bureau_b.id)
 	return comparison
+
+def bureau_comparator(bureau_id, currency_a, currency_b):
+	rates = Rates.query.filter_by(bureau_id=bureau_id)
+	#rates = session.query(Class.title.distinct().label("title"))
+	rates = rates.filter_by(currency_a=currency_a)
+	rates = rates.filter_by(currency_b=currency_b)
+	rates = rates.order_by(desc('rate')).all()
+	return rates

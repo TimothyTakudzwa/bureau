@@ -1,3 +1,4 @@
+
 """Routes for user authentication."""
 from flask import redirect, render_template, flash, Blueprint, request, url_for
 from flask_login import login_required, logout_user, current_user, login_user
@@ -22,7 +23,7 @@ def login_page():
         return redirect(url_for('main.dashboard'))
     login_form = LoginForm(request.form)
     if request.method == 'POST':
-        if login_form.validate():
+        if login_form.validate_on_submit():
             username = request.form.get('username')
             password = request.form.get('password')
             user = Bureau.query.filter_by(username=username).first()
@@ -61,7 +62,6 @@ def signup_page():
                            form=SignupForm(),
                            template='signup-page',
                            body="Sign up for a user account.")
-
 @auth.route("/logout")
 @login_required
 def logout_page():

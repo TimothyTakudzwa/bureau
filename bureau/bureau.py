@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, flash, url_for, redirect, make_response
 from .forms import SignupForm, LoginForm
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
@@ -39,6 +40,8 @@ def about():
 @app.route('/services')
 def services():
     return render_template('/landing/services.html')
+
+
 
 #@app.route('/register')
 #def register():

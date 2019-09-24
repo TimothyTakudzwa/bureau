@@ -77,6 +77,6 @@ def bureaus_comprare(bureau_a, bureau_b, days):
 	# comparison between two different bureaus over a period
 	# returns dict with values
 	comparison = dict()
-	comparison[burea_a] = get_exchange_rate_series(days, bureau_a.id)
-	comparison[burea_b] = get_exchange_rate_series(days, bureau_b.id)
+	comparison[bureau_a] = get_exchange_rate_series(days, bureau_a.id)
+	comparison[bureau_b] = get_exchange_rate_series(days, bureau_b.id)
 	return comparison

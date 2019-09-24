@@ -1,6 +1,6 @@
 
 from flask_wtf import Form  
-from wtforms import TextField, IntegerField, IntegerField, TextAreaField, SubmitField, FloatField, RadioField, SelectField, PasswordField, StringField 
+from wtforms import TextField, IntegerField, IntegerField, TextAreaField, SubmitField, FloatField, RadioField, SelectField, PasswordField, StringField, DateField, HiddenField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from wtforms import validators
 from .models import *
@@ -66,8 +66,10 @@ class RatesForm(Form):
 
 class OfferForm(Form):
    request_id = StringField('Request_id')
+   client_id = StringField('Client_id')
    offer_amount = StringField('Offer Amount')
-   rate = IntegerField('Rate')
+   date = DateField('Date')
+   rate = IntegerField()
    submit = SubmitField('Submit') 
 
 

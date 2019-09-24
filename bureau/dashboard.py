@@ -53,12 +53,14 @@ def requests():
     return render_template('dashboard/requests.html', requests=my_requests
     , form=form)
 
-'''
-@app.route('compare/<bureau_a>', methods=['GET'])
-def compare(bureau_a):
-    page = request.args.get('page', default = 1, type = int)
-    return bureau_a
 
-'''
+@app.route('/my-route')
+def my_route():
+  page = request.args.get('page', default = 1, type = int)
+  page = Bureau.query.filter(id == page).first()
+  filter = request.args.get('filter', default = '*', type = str)
+  print(page)
+  print(filter)
+  return f"{page}Success"
 
 

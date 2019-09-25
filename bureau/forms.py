@@ -1,6 +1,6 @@
 
 from flask_wtf import Form  
-from wtforms import TextField, IntegerField, IntegerField, TextAreaField, SubmitField, FloatField, RadioField, SelectField, PasswordField, StringField 
+from wtforms import TextField, IntegerField, IntegerField, TextAreaField, SubmitField, FloatField, RadioField, SelectField, PasswordField, StringField, DateField, HiddenField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from wtforms import validators
 from .models import *
@@ -16,7 +16,7 @@ class BureauForm2(Form):
    username = TextField("Client Username", [validators.Required("please enter your username")])
    password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
    confirm = PasswordField('Repeat Password')
- 
+
 class LoginForm(Form):
    username = TextField('Username')
    password = PasswordField('password')
@@ -66,14 +66,16 @@ class RatesForm(Form):
    name= SelectField('Bureau Name', choices=mylist)
    currency_a= SelectField('Currency1', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
    currency_b =  SelectField('Currency2', choices=[('ZWL', 'ZWL'), ('USD', 'USD')])
+   action =  SelectField('Action', choices=[('BUY', 'BUY'), ('SELL', 'SELL')])
    rate =  StringField('Rate')
+   bureau_id =  IntegerField('Bureau_id')
    submit = SubmitField('Submit')
 
-
 class OfferForm(Form):
-   request_id = StringField('Request_id')
+   request_id = HiddenField()
    offer_amount = StringField('Offer Amount')
-   rate = IntegerField('Rate')
+   date = DateField('Date')
+   rate = IntegerField()
    submit = SubmitField('Submit') 
 
 

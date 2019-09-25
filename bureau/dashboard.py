@@ -23,11 +23,40 @@ def exchange_rate():
     return render_template('dashboard/exchange_rate.html',
      rates=rates, rates_today=rates_today, form=form)
 
-@app.route('/requests', methods=['GET'])
+
+def offer_exists(request_id,offer_id):
+    offer = Offer.query.filter_by(id=offer_id)
+    offer = offer.filter_by(request_id=request_id).first()
+    return offer    
+
+@app.route('/requests', methods=['GET', 'POST'])
 def requests():
-    requests = Requests.query.all()
-    form = OfferForm(request.form)
-    return render_template('dashboard/requests.html', requests=requests
+    my_requests = Requests.query.all()
+
+    for my_request in my_requests:
+        offer = Offer.query.filter(Offer.request_id == my_request.id).filter(Offer.client_id == 1).first()
+        if offer is not None: 
+            my_request.my_offer = f"{offer.amount}@{offer.rate}"
+        else:
+            my_request.my_offer = 0
+
+    
+    form = OfferForm()
+    if request.method == 'POST' and form.validate():
+        offer = Offer( request_id = form.request_id.data,
+                       client_id = 1,
+                       amount = form.offer_amount.data,
+                       date = datetime.now(),
+                       rate = form.rate.data, )
+        try:
+            offer.save_to_db()
+            flash('Offer Posted Successfully')
+            return redirect(url_for('requests'))  
+        except:
+            flash(f"Failed To Save")
+            return redirect(url_for('requests'))            
+                     
+    return render_template('dashboard/requests.html', requests=my_requests
     , form=form)
 
 @app.route('/profile', methods=['GET','POST'])
@@ -58,5 +87,16 @@ def compare(bureau_a):
     page = request.args.get('page', default = 1, type = int)
     return bureau_a
 
-'''
+@app.route('/edit_')
+def method_name():
+   pass
 
+
+@app.route('/my-route')
+def my_route():
+  page = request.args.get('page', default = 1, type = int)
+  page = Bureau.query.filter(id == page).first()
+  filter = request.args.get('filter', default = '*', type = str)
+  print(page)
+  print(filter)
+  return f"{page}Success"

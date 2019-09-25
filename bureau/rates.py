@@ -17,4 +17,4 @@ def rates():
                         )
       rate.save_to_db()
       flash('Rate uploaded!!!', 'success')
-    return render_template('rate.html', form = form)
+    return render_template('dashboard/add_rate.html', form = form)

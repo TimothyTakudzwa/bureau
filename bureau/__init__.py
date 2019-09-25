@@ -23,5 +23,5 @@ with app.app_context():
         app.register_blueprint(bureau.main)
         app.register_blueprint(auth.auth)
 
-from . import views, models, app, db, bureau, client, rates, dashboard
+from . import views, models, app, db, bureau, client, rates, dashboard, ratesview
 from . import views, models, app, db, bureau, client, rates, dashboard, mytransactions

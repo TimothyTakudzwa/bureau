@@ -14,6 +14,20 @@
 <link href="/static/dashboard/assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
 <link href="/static/dashboard/assets/css/datatables.css" rel="stylesheet" />
 <link href="/static/dashboard/assets/css/datatables.min.css" rel="stylesheet" />
+<link href="/static/dashboard/assets/css/default.css" rel="stylesheet" />
+<link href="/static/dashboard/assets/css/default.date.css" rel="stylesheet" />
+<link href="/static/dashboard/assets/css/default.time.css" rel="stylesheet" />
+<link href="/static/dashboard/assets/css/rtl.css" rel="stylesheet" />
+<link href="/static/dashboard/assets/css/classic.css" rel="stylesheet" />
+<link href="/static/dashboard/assets/css/classic.date.css" rel="stylesheet" />
+<link href="/static/dashboard/assets/css/classic.time.css" rel="stylesheet" />
+
+
+
+
+
+
+
 
   
 </head>
@@ -99,6 +113,7 @@
       <div class="content">
         <div class="container-fluid">
           <!-- your content here -->
+          {% include 'includes/_messages.html' %}
           {% block body %}{% endblock %}
         </div>
       </div>
@@ -128,6 +143,9 @@
   </div>
 <!--   Core JS Files   -->
   <script src="static/dashboard/assets/js/core/jquery.min.js"></script>
+  <script>
+    $('.datepicker').pickadate()
+  </script>
   <script src="static/dashboard/assets/js/core/popper.min.js"></script>
   <script src="static/dashboard/assets/js/core/bootstrap-material-design.min.js"></script>
   <script src="https://unpkg.com/default-passive-events"></script>
@@ -140,12 +158,20 @@
   <script src="/static/dashboard/assets/js/plugins/chartist.min.js"></script>
   <script src="/static/dashboard/assets/js/datatables.js"></script>
   <script src="/static/dashboard/assets/js/datatables.min.js"></script>
+  <script src="/static/dashboard/assets/js/pick.date.js"></script>
+  <script src="/static/dashboard/assets/js/picker.js"></script>
+  <script src="/static/dashboard/assets/js/pick.time.date.js"></script>
+
+
   <!--  Notifications Plugin    -->
   <script src="/static/dashboard/assets/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="/static/dashboard/assets/js/material-dashboard.js?v=2.1.0"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="/static/dashboard/assets/demo/demo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+Usage
   <script>
     $(document).ready(function() {
       $('#example').DataTable();

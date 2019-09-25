@@ -1,6 +1,7 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from . import app,db
 #from . import login_manager
@@ -175,6 +176,7 @@ class Requests(db.Model):
     date = db.Column(db.DateTime)
     action = db.Column(db.String(100))
     rating = db.Column(db.Integer)
+    
 
     @classmethod
     def get_by_id(self,id):
@@ -191,6 +193,8 @@ class Offer(db.Model):
     client_id = db.Column(db.Integer)
     date = db.Column(db.DateTime)
     amount = db.Column(db.Float)
+    rate = db.Column(db.Float)
+
 
     @classmethod
     def get_by_id(self,id):

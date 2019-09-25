@@ -25,3 +25,10 @@ def ratesview():
       flash('Rate uploaded!!!', 'success')
       return redirect(url_for('ratesview'))
     return render_template('dashboard/ratesview.html', rates_today=rates_today, bureau_rates=bureau_rates, form=form)
+
+
+@app.route('/rates_today', methods=['GET', 'POST'])
+def rates_today():
+    today = datetime.now()
+    rates_today = Rates.query.filter_by(date=today)
+    return render_template('dashboard/rates_today.html', rates_today=rates_today)

@@ -11899,7 +11899,7 @@ form {
 }
 
 .has-white .form-control::-moz-placeholder {
-  color: #fff;
+  color: black;
 }
 
 .has-white .form-control:-ms-input-placeholder {
@@ -12096,7 +12096,7 @@ fieldset[disabled][disabled] .form-control,
   margin-top: .1rem;
   font-size: .875rem;
   line-height: 1;
-  color: #fff;
+  color: black;
   background-color: rgba(153, 153, 153, 0.8);
   border-radius: .2rem;
 }
@@ -12265,7 +12265,7 @@ fieldset[disabled][disabled] .has-success .form-control,
   margin-top: .1rem;
   font-size: .875rem;
   line-height: 1;
-  color: #fff;
+  color: black;
   background-color: rgba(76, 175, 80, 0.8);
   border-radius: .2rem;
 }
@@ -12434,7 +12434,7 @@ fieldset[disabled][disabled] .has-info .form-control,
   margin-top: .1rem;
   font-size: .875rem;
   line-height: 1;
-  color: #fff;
+  color: black;
   background-color: rgba(0, 188, 212, 0.8);
   border-radius: .2rem;
 }

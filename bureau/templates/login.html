@@ -7,17 +7,15 @@
 {% block content %}
   <div class="formwrapper">
     <form action = "/signup" method = "GET">
-      <div class="logo">
-        <img src="{{ url_for('static', filename='dist/img/logo.jpg') }}">
-      </div>
+      
       {% for message in get_flashed_messages() %}
         <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
       {% endfor %}
-      <h1>Log In</h1>
-      <div class="username">
+      <h1><strong style="color: black">Log In</strong></h1>
+      <div class="username" style="color: rgb(10, 10, 10)">
          {{ form.username.label }}
          {{ form.username(placeholder='Kallou') }}
          {% if form.username.errors %}
@@ -26,7 +24,7 @@
            </ul>
          {% endif %}
       </div>
-      <div class="password">
+      <div class="password" style="color: rgb(10, 10, 10)">
         {{ form.password.label }}
         {{ form.password }}
         {% if form.password.errors %}

@@ -97,13 +97,14 @@
           
               
                          {{ form.submit }} <br> 
+                         <div class="loginsignup">
+                            <span>Already have an account? <a href="{{ url_for('auth.login_page') }}">Log in.</a><span>
+                          </div>
         </div>  
               
          </fieldset>  
       </form> 
-    <div class="loginsignup">
-      <span>Already have an account? <a href="{{ url_for('auth.login_page') }}">Log in.</a><span>
-    </div>
+    
   </div>
 {% endblock %}
 

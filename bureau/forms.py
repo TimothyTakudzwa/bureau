@@ -19,7 +19,7 @@ class BureauForm2(Form):
 
 class LoginForm(Form):
    username = TextField('Username')
-   password = PasswordField('password')
+   password = PasswordField('Password')
    submit = SubmitField('Submit')
 
 class EmailForm(Form):

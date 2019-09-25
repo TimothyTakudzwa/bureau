@@ -21,22 +21,21 @@ def login_page():
     """User login page."""
     if current_user.is_authenticated:
         return redirect(url_for('main.dashboard'))
-    login_form = LoginForm(request.form)
-    if request.method == 'POST':
-        if login_form.validate_on_submit():
-            username = request.form.get('username')
-            password = request.form.get('password')
-            user = Bureau.query.filter_by(username=username).first()
-            if user:
-                if user.check_password(password_hash=password):
-                    login_user(user)
-                    next = request.args.get('next')
-                    return redirect(next or url_for('main.profile'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        user = Bureau.query.filter_by(username=username).first()
+        if user:
+            if user.check_password(password_hash=password):
+                login_user(user)
+                return redirect(url_for('main.profile'))
         flash('Invalid username/password combination')
         return redirect(url_for('auth.login_page'))
     
+           
     return render_template('login.html',
-                           form=LoginForm(),
+                           form=form,
                            template='login-page',
                            body="Log in with your User account.")
 

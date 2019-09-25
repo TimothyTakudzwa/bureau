@@ -73,9 +73,8 @@ class RatesForm(Form):
 
 class OfferForm(Form):
    request_id = HiddenField()
-   offer_amount = StringField('Offer Amount')
-   date = DateField('Date')
-   rate = IntegerField()
+   offer_amount = StringField('Offer Amount')   
+   rate = FloatField()
    submit = SubmitField('Submit') 
 
 

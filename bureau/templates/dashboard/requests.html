@@ -77,9 +77,8 @@
     
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header"
-                style="background:#402d57e0; text-align:center; display: block;">
-                <h4 class="modal-title" id="exampleModalLabel" style="display: block;">
+            <div class="modal-header col-sm-12"      style="background:#402d57e0; text-align:center;">
+                <h4 class="modal-title text-center col-sm-11" id="exampleModalLabel" style="color:white">
                     Create New Offer</h4>
                 <button type="button" class="close" data-dismiss="modal">
                     &times;
@@ -87,7 +86,7 @@
             </div>
             <div class="modal-body" style="background-color :#402d57e0;"
                 id="{{ request.id }}" }>
-                <div class="col-sm-12 row">
+                <div class="col-sm-12">
 
                     {% for message in form.offer_amount.errors %}
                     <div>{{ message }}</div>
@@ -100,27 +99,20 @@
 
                             <div style="font-size:20px;" font-weight:bold;
                                 margin-left:130px;>
-
-                                <br>
-
-                                <br>
-
-                                <div class="col">
+                                <div class="form-group">
                                     {{ form.request_id(value=request.id) }}
                                 </div>
 
                                 <div class="form-group">
-                                    {{ render_field(form.offer_amount, class_="form-control") }}
+                                    {{ render_field(form.offer_amount, class_="form-control test") }}
                                 </div>
 
                                 <div class="form-group">
                                     {{ render_field(form.rate, class="form-control")}}
                                 </div>
 
-                                <br>
-                                <div class="col">
-                                    <input class="btn btn-primary" type="submit"
-                                        value="Submit">
+                                <div class="form-group">
+                                    <input class="btn btn-primary btn-block" type="submit" value="Submit">
                                 </div>
                             </div>
                         </fieldset>
@@ -166,11 +158,11 @@
                                     </div>
 
                                     <div class="form-group">
-                                        {{ render_field(form.offer_amount, class_="form-control") }}
+                                        {{ render_field(form.offer_amount, class_="form-control", value=request.amount) }}
                                     </div>
 
                                     <div class="form-group">
-                                        {{ render_field(form.rate, class="form-control")}}
+                                        {{ render_field(form.rate, class="form-control", value=request.rate)}}
                                     </div>
 
                                     <br>

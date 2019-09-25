@@ -22,6 +22,12 @@ class LoginForm(Form):
    password = PasswordField('password')
    submit = SubmitField('Submit')
 
+class EmailForm(Form):
+    email = TextField('Email', validators=[DataRequired(), Email()])
+
+class PasswordForm(Form):
+    password = PasswordField('Email', validators=[DataRequired()])   
+
 
 class SignupForm(Form):
    name = StringField('Company Name',

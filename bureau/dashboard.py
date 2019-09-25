@@ -29,7 +29,30 @@ def requests():
     form = OfferForm(request.form)
     return render_template('dashboard/requests.html', requests=requests
     , form=form)
+
+@app.route('/profile', methods=['GET','POST'])
+def user_profile():
+
+    user = Bureau.query.filter_by(id=1).first()
+    if request.method == 'POST':
+        user.name = request.form.get('name')
+        user.address = request.form.get('address')
+        user.email = request.form.get('email')
+        user.account_no = request.form.get('account_no')
+        user.destination_bank = request.form.get('destination_bank')
+        user.username = request.form.get('username')
+       
+        user.save_to_db()
+        flash('your  changes were saved.')
+        return redirect(url_for('user_profile'))
+    return render_template('dashboard/edit.html', user=user)
+
 '''
+@app.route('/prof', methods=['GET'])
+def prof():
+    user = Bureau.query.filter_by(id=4).all()
+    return render_template('dashboard/user.html', user=user)
+
 @app.route('compare/<bureau_a>', methods=['GET'])
 def compare(bureau_a):
     page = request.args.get('page', default = 1, type = int)

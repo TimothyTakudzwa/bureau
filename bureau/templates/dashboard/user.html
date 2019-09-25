@@ -1,0 +1,65 @@
+
+{% extends "dashboard/base.html" %}
+{% block body %}
+<div class="row">
+        <div class="col-md-12">
+            <div class="card" style="background-color:white">
+                <div class="card-header card-header-primary">
+                <h4 class="card-title ">Profile</h4>
+                </div>
+            <div class="card-body">
+                <div class="container-fluid">
+                    {% if user %}
+                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                        <thead style="color:white; background:lightslategray">
+                            <th style="color:white;">
+                            Company Name
+                            </th>
+                            <th style="color:white;">
+                             Address
+                            </th>
+                            <th style="color:white;">
+                              Email Address
+                            </th>
+                            <th style="color:white;">
+                              Account Number 
+                            </th>
+                            <th style="color:white;">
+                              Desstination Bank 
+                            </th>
+                            <th style="color:white;">
+                              Username 
+                            </th>
+                           
+                            
+                            
+                        <tbody>
+                            
+                            <tr>
+                                <td>{{user.name}}</td>
+                                <td>{{user.address}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.account_no}}</td>
+                                <td>{{user.destination_bank}}</td>
+                                <td>{{user.username}}</td>
+                                
+
+                               
+                              </tr>
+                              
+                            </div>
+
+                              
+                        </tbody>
+                        
+                    </table>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+
+{% endblock %}
+
+

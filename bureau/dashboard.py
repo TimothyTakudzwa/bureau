@@ -44,14 +44,24 @@ def requests():
     form = OfferForm()
     if request.method == 'POST' and form.validate():
         offer = Offer( request_id = form.request_id.data,
-                       client_id = form.client_id.data,
+                       client_id = 1,
                        amount = form.offer_amount.data,
-                       date = form.date.data,
+                       date = datetime.now(),
                        rate = form.rate.data, )
-        offer.save_to_db()
-        flash('Offer Posted Successfully')               
+        try:
+            offer.save_to_db()
+            flash('Offer Posted Successfully')
+            return redirect(url_for('requests'))  
+        except:
+            flash(f"Failed To Save")
+            return redirect(url_for('requests'))            
+                     
     return render_template('dashboard/requests.html', requests=my_requests
     , form=form)
+
+@app.route('/edit_')
+def method_name():
+   pass
 
 
 @app.route('/my-route')
@@ -62,5 +72,3 @@ def my_route():
   print(page)
   print(filter)
   return f"{page}Success"
-
-

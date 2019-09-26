@@ -132,7 +132,7 @@ class Rates(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rate = db.Column(db.Float)
     bureau_id = db.Column(db.Integer)
-    date = db.Column(db.DateTime, default = datetime.now())
+    date = db.Column(db.DateTime, default = datetime.now().date())
     currency_a = db.Column(db.String(70))
     currency_b = db.Column(db.String(70))
     action = db.Column(db.String(70))

@@ -33,7 +33,7 @@
                         <tbody>
                             {% for bureau_rate in rates_today %}
                             <tr>
-                                <td>{{bureau_rate.date}}</td>
+                                <td>{{bureau_rate.date.strftime('%d-%m-%Y')}}</td>
                                 <td>{{bureau_rate.bureau_id}}</td>
                                 <td>{{bureau_rate.currency_a}}</td>
                                 <td>{{bureau_rate.currency_b}}</td>

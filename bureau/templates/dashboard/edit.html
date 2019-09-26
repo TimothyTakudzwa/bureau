@@ -9,7 +9,7 @@
           <div class="card" style="height:100%;background-color:rgba(255, 255, 255, 0.753)">
             <div class="card-header card-header-primary">
               <h4 class="card-title">Profile</h4>
-              <p class="card-category"></p>
+              <p class="card-category">you can edit the fields and update profile</p>
             </div>
             <div class="card-body">
               <form action = "/profile" method = "POST">
@@ -66,7 +66,7 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="bmd-label-floating"style="color:black">Phone Number</label>
-                      <input name="phone_number" type="text" value="+263785 890 999" class="form-control"style="color:blue">
+                      <input name="phone" type="text" value="{{user.phone}}" class="form-control"style="color:blue">
                     </div>
                   </div>
                   
@@ -84,7 +84,7 @@
              
             </div>
             <div class="card-body" style="height:100%;background-color:rgba(255, 255, 255, 0.753)">
-              <h6 class="card-category fa fa-user" style="color:black">  Bureau</h6>
+              <h6 class="card-category fa fa-user" style="color:black">  {{user.username}}</h6>
               
               <p class="card-description">
                
@@ -98,7 +98,7 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                      <p><em>Want to disable your account? </em><a href="block"><button class="btn btn-primary pull-right"> Disable Account!!</button></a></p>
+                      <p><em>Want to disable your account? </em><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#account_modal">Disable Account</button></p>
 
                   </div>
                 </div>
@@ -109,6 +109,24 @@
       </div>
       {% endif %}
     </div>
+  </div>
+  <div class="modal fade" id="account_modal" role="dialog">
+      <div class="modal-dialog">
+          
+            <!-- Modal content-->
+            <div class="modal-content" >
+              <div class="modal-header" style= "background:#603f91ef">
+                <h4 class="modal-title" style= "color:rgb(241, 235, 235)" > Hello {{current_user.username}}!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body" style= "background:#f3f2f5ee">
+                  <p style="color: red"><strong> Are you sure want to block your account ???</strong></p>
+              </div>
+              <div class="modal-footer" style= "background:#ecebeeef">
+                  <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button> <a href="block"><button class="btn btn-primary pull-right"style= "background:red"> Disable Account</button></a>
+                </div>
+            </div>
+          </div>
   </div>
 {% endblock %}      
 

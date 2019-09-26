@@ -26,7 +26,13 @@ class EmailForm(Form):
     email = TextField('Email', validators=[DataRequired(), Email()])
 
 class PasswordForm(Form):
-    password = PasswordField('Email', validators=[DataRequired()])   
+   password = PasswordField('New Password',
+                             validators=[DataRequired(message='Please enter a password.'),
+                                         Length(min=8, message=('Please select a stronger password.')),
+                                         EqualTo('confirm', message='Passwords must match')])  
+   confirm = PasswordField('Repeat Password')
+   submit = SubmitField('Submit')
+
 
 
 class SignupForm(Form):

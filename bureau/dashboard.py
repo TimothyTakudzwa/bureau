@@ -79,6 +79,7 @@ def user_profile():
         user.account_no = request.form.get('account_no')
         user.destination_bank = request.form.get('destination_bank')
         user.username = request.form.get('username')
+        user.phone = request.form.get('phone')
        
         user.save_to_db()
         flash('your  changes were saved.')

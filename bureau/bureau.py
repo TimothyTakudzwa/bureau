@@ -35,23 +35,29 @@ def block():
     return render_template('/dashboard/edit.html', user=user)
 
 
+
+
 @main.route('/reset', methods=["GET", "POST"])
 def reset():
-    form = EmailForm()
-    if form.validate_on_submit():
-        user = Bureau.query.filter_by(email=form.email.data).first()         
-        if user:
-            token = generate_confirmation_token(user.email)
-            confirm_url = url_for('main.confirm_email', token=token, _external=True)
-            html = render_template('activate.html', confirm_url=confirm_url)
-            subject = "Please confirm your email"
-            send_email(user.email, subject, html)
-           
-        else:
-            flash('Your email address must be confirmed before attempting a password reset.', 'error')
-            return redirect(url_for('auth.login_page'))
+    user = Bureau.query.filter_by(email=current_user.email).first()
+    if user:
+        token = generate_confirmation_token(user.email)
+        confirm_url = url_for('main.confirm_email', token=token, _external=True)
+        html = render_template('activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(user.email, subject, html)
+        flash('we just sent you a confirmation link to the email address you used to register, please check your email and follow the link to reset your password before attempting to login.')
+        return redirect(url_for('auth.login_page'))
+
+    else:
+        flash('Your email address must be confirmed before attempting a password reset. got to your email account and confirm using the link', 'error')
+        return redirect(url_for('auth.login_page'))
+            
  
-    return render_template('password_reset_email.html', form=form)
+    return render_template('password_reset_email.html')         
+       
+
+        
 
 @main.route('/confirm/<token>', methods = ['GET', 'POST'])
 #@login_required
@@ -71,7 +77,7 @@ def confirm_email(token):
                 flash('Invalid email address!', 'error')
                 return redirect(url_for('auth.login_page'))
 
-            user.password_hash = form.password.data
+            user.password_hash = generate_password_hash(form.password.data)
             user.save_to_db()
             flash('Your password has been updated!', 'success')
             return redirect(url_for('auth.login_page'))

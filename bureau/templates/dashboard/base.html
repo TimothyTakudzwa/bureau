@@ -47,15 +47,15 @@
   -->
       <div class="logo">
         <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-        Bureau de Change
-          {{ session.username }} 
+          BUREAU DE CHANGE <br>
+          {{current_user.username }} 
         </a>
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
           <li class="nav-item {% if request.path == '/dashboard' %} active {% endif %} ">
   
-            <a class="nav-link" href="javascript:void(0)">
+            <a class="nav-link" href="/dashboard">
               <i class="material-icons">dashboard</i>
               <p>User's Dashboard</p>
             </a>
@@ -98,11 +98,10 @@
           </button>
           <div class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav">
-              <li class="nav-item" title="log in">
-                <a class="nav-link" href="javascript:void(0)">
-                  <i class="material-icons">account_box</i>
-                  <p class="d-lg-none d-md-block">
-                    Login
+              <li class="nav-item" title="log out">
+               
+                  <p class="d-lg-none d-md-block"></p>
+                      <li class="hidden_tablet"><a href="login" class="btn_1 rounded">Logout</a></li>
                   </p>
                   
 
@@ -128,7 +127,7 @@
             <ul>
               <li>
                 <a href="">
-                  {{ session.username }}
+                  {{current_user.username }}
                 </a>
               </li>
             </ul>

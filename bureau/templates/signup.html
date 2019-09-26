@@ -6,11 +6,15 @@
 
 {% block content %}
   <div class="formwrapper">
-      <div class="logo">
-          
-      </div>
-    <h2 class="text-center">Sign-Up</h2>
+      
       <form action = "/signup" method = "POST"> 
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+           <strong style="color: red"> {{ message }} </strong>
+        </div>
+      {% endfor %}
+      <h2 class="text-center">Sign-Up</h2>
         <fieldset>
         {{ form.hidden_tag() }}  
               
@@ -21,7 +25,7 @@
               {{ form.name(placeholder='IAS') }}
               {% if form.name.errors %}
                 <ul class="errors">
-                  {% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}
+                  {% for error in form.name.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                 </ul>
               {% endif %}
             </div>
@@ -31,7 +35,7 @@
               {{ form.address(class_="form-control") }}
               {% if form.address.errors %}
                 <ul class="errors">
-                  {% for error in form.address.errors %}<li>{{ error }}</li>{% endfor %}
+                  {% for error in form.address.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                 </ul>
               {% endif %}
             </div>
@@ -40,7 +44,7 @@
                 {{ form.email(placeholder='myemail@example.com') }}
                 {% if form.email.errors %}
                   <ul class="errors">
-                    {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                    {% for error in form.email.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                   </ul>
                 {% endif %}
               </div>
@@ -50,7 +54,7 @@
                   {{ form.account_no }}
                   {% if form.account_no.errors %}
                     <ul class="errors">
-                      {% for error in form.account_no.errors %}<li>{{ error }}</li>{% endfor %}
+                      {% for error in form.account_no.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                     </ul>
                   {% endif %}
                 </div>  
@@ -60,7 +64,7 @@
                     {{ form.destination_bank(class_="form-control") }}
                     {% if form.destination_bank.errors %}
                       <ul class="errors">
-                        {% for error in form.destination_bank.errors %}<li>{{ error }}</li>{% endfor %}
+                        {% for error in form.destination_bank.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                       </ul>
                     {% endif %}
                   </div>  
@@ -70,7 +74,7 @@
                       {{ form.username }}
                       {% if form.username.errors %}
                         <ul class="errors">
-                          {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
+                          {% for error in form.username.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                         </ul>
                       {% endif %}
                     </div>  
@@ -80,7 +84,7 @@
                         {{ form.password_hash }}
                         {% if form.password_hash.errors %}
                           <ul class="errors">
-                            {% for error in form.password_hash.errors %}<li>{{ error }}</li>{% endfor %}
+                            {% for error in form.password_hash.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                           </ul>
                         {% endif %}
                       </div>  
@@ -90,7 +94,7 @@
                           {{ form.confirm }}
                           {% if form.confirm.errors %}
                             <ul class="errors">
-                              {% for error in form.confirm.errors %}<li>{{ error }}</li>{% endfor %}
+                              {% for error in form.confirm.errors %}<li><strong style="color: red">{{ error }}</strong></li>{% endfor %}
                             </ul>
                           {% endif %}
                         </div>  

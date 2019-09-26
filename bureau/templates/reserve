@@ -1,0 +1,17 @@
+
+{% from "/includes/_formhelpers.html" import render_field %}
+ 
+
+ 
+<div class="add-recipe">
+  <div class="page-header">
+    <h2>Resetting Password:</h2>
+  </div>
+  <form action="{{ url_for('main.confirm_email', token=token) }}" method="POST">
+    {{ form.csrf_token }}
+    <dl>
+      {{ render_field(form.password, placeholder="Enter New Password") }}
+    </dl>
+    <button class="btn btn-sm btn-success" type="submit">Update</button>
+  </form>
+</div>

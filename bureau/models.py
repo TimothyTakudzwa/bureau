@@ -76,7 +76,7 @@ class Bureau(UserMixin,db.Model):
     name = db.Column(db.String(100))
     address = db.Column(db.String(100))
     email = db.Column(db.String(100))    
-    # phone = db.Column(db.String(100))    
+    phone = db.Column(db.String(100))    
     # phone_number = db.Column(db.String(50))
     latitude = db.Column(db.String(100))
     longitude = db.Column(db.String(100))
@@ -108,21 +108,6 @@ class Bureau(UserMixin,db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password) 
 
-    def get_token(self, expiration=1800):
-        s = Serializer(app.config['SECRET_KEY'], expiration)
-        return s.dumps({'user': self.id}).decode('utf-8')
-
-    @staticmethod
-    def verify_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return None
-        id = data.get('user')
-        if id:
-            return Bureau.query.get(id)
-        return None
 
 '''
 Model for Exchange Rates

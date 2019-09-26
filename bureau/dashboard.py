@@ -44,14 +44,52 @@ def requests():
     form = OfferForm()
     if request.method == 'POST' and form.validate():
         offer = Offer( request_id = form.request_id.data,
-                       client_id = form.client_id.data,
+                       client_id = 1,
                        amount = form.offer_amount.data,
-                       date = form.date.data,
+                       date = datetime.now(),
                        rate = form.rate.data, )
-        offer.save_to_db()
-        flash('Offer Posted Successfully')               
+        try:
+            offer.save_to_db()
+            flash('Offer Posted Successfully')
+            return redirect(url_for('requests'))  
+        except:
+            flash(f"Failed To Save")
+            return redirect(url_for('requests'))            
+                     
     return render_template('dashboard/requests.html', requests=my_requests
     , form=form)
+
+@app.route('/profile', methods=['GET','POST'])
+def user_profile():
+
+    user = Bureau.query.filter_by(id=1).first()
+    if request.method == 'POST':
+        user.name = request.form.get('name')
+        user.address = request.form.get('address')
+        user.email = request.form.get('email')
+        user.account_no = request.form.get('account_no')
+        user.destination_bank = request.form.get('destination_bank')
+        user.username = request.form.get('username')
+       
+        user.save_to_db()
+        flash('your  changes were saved.')
+        return redirect(url_for('user_profile'))
+    return render_template('dashboard/edit.html', user=user)
+
+'''
+@app.route('/prof', methods=['GET'])
+def prof():
+    user = Bureau.query.filter_by(id=4).all()
+    return render_template('dashboard/user.html', user=user)
+
+@app.route('compare/<bureau_a>', methods=['GET'])
+def compare(bureau_a):
+    page = request.args.get('page', default = 1, type = int)
+    return bureau_a
+
+@app.route('/edit_')
+def method_name():
+   pass
 
 
 @app.route('/my-route')
@@ -62,5 +100,4 @@ def my_route():
   print(page)
   print(filter)
   return f"{page}Success"
-
-
+'''

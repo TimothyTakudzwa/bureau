@@ -16,11 +16,17 @@ class BureauForm2(Form):
    username = TextField("Client Username", [validators.Required("please enter your username")])
    password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
    confirm = PasswordField('Repeat Password')
- 
+
 class LoginForm(Form):
    username = TextField('Username')
-   password = PasswordField('password')
+   password = PasswordField('Password')
    submit = SubmitField('Submit')
+
+class EmailForm(Form):
+    email = TextField('Email', validators=[DataRequired(), Email()])
+
+class PasswordForm(Form):
+    password = PasswordField('Email', validators=[DataRequired()])   
 
 
 class SignupForm(Form):
@@ -66,11 +72,9 @@ class RatesForm(Form):
    submit = SubmitField('Submit')
 
 class OfferForm(Form):
-   request_id = StringField('Request_id')
-   client_id = StringField('Client_id')
-   offer_amount = StringField('Offer Amount')
-   date = DateField('Date')
-   rate = IntegerField()
+   request_id = HiddenField()
+   offer_amount = StringField('Offer Amount')   
+   rate = FloatField()
    submit = SubmitField('Submit') 
 
 

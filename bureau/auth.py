@@ -15,21 +15,25 @@ auth = Blueprint('auth', __name__,
                     static_folder='static')
 
 
-
 @auth.route('/login', methods=['GET', 'POST'])
 def login_page():
     """User login page."""
-    if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+    #if current_user.is_authenticated:
+        #return redirect(url_for('main.dashboard'))
     form = LoginForm()
-    if form.validate_on_submit():
+    print(form.validate())
+    if request.method == 'POST':
+       
         username = form.username.data
         password = form.password.data
         user = Bureau.query.filter_by(username=username).first()
         if user:
-            if user.check_password(password_hash=password):
-                login_user(user)
-                return redirect(url_for('main.profile'))
+            if user.check_password(password):
+                if user.is_blocked==False:
+                    login_user(user)
+                    return redirect(url_for('dashboard_index'))
+                flash('your account is blocked')
+                return redirect(url_for('auth.login_page'))
         flash('Invalid username/password combination')
         return redirect(url_for('auth.login_page'))
     

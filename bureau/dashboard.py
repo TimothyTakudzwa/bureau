@@ -5,13 +5,22 @@ from flask import Flask, render_template, request, flash, url_for, redirect
 from .forms import ClientForm, OfferForm
 from .models import *
 from . import app,db
+from flask_login import login_required, logout_user, current_user, login_user
+from .import login_manager
 
 from datetime import datetime, timedelta 
 
 @app.route('/dashboard', methods=['GET'])
+@login_required
 def dashboard_index():
     rates = Rates.query.all()
     return render_template('dashboard/index.html', rates=rates)
+
+@app.route('/', methods=['GET'])
+@login_required
+def landing_index():
+    return render_template('landing/index.html')
+
 
 @app.route('/exchange_rates', methods=['GET'])
 def exchange_rate():
@@ -60,9 +69,9 @@ def requests():
     , form=form)
 
 @app.route('/profile', methods=['GET','POST'])
+@login_required
 def user_profile():
-
-    user = Bureau.query.filter_by(id=1).first()
+    user = Bureau.query.filter_by(id = current_user.id).first()
     if request.method == 'POST':
         user.name = request.form.get('name')
         user.address = request.form.get('address')

@@ -6,7 +6,7 @@
 
 {% block content %}
   <div class="formwrapper">
-    <form action = "/login" method = "GET">
+    <form action = "/login" method = "POST">
       
       {% for message in get_flashed_messages() %}
         <div class="alert alert-warning">
@@ -17,7 +17,7 @@
       <h1><strong style="color: black">Log In</strong></h1>
       <div class="username" style="color: rgb(10, 10, 10)">
          {{ form.username.label }}
-         {{ form.username(placeholder='Kallou') }}
+         {{ form.username }}
          {% if form.username.errors %}
            <ul class="errors">
              {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
@@ -33,11 +33,11 @@
           </ul>
         {% endif %}
       </div>
-      <div class="submitbutton">
-        <input id="submit" type="submit" value="Submit">
-      </div>
+      {{ form.submit }}
       <div class="loginsignup">
         <span>Don't have an account? <a href="{{ url_for('auth.signup_page') }}">Sign up.</a><span>
+          <br>
+          <p><em>Forgot your password? </em><a href="/reset">Click Here!</a></p>
         </div>
     </form>
   </div>

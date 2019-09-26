@@ -121,7 +121,7 @@ class Bureau(UserMixin,db.Model):
             return None
         id = data.get('user')
         if id:
-            return User.query.get(id)
+            return Bureau.query.get(id)
         return None
 
 '''

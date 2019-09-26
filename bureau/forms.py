@@ -74,4 +74,7 @@ class OfferForm(Form):
    submit = SubmitField('Submit') 
 
 
-
+class RatesToday(Form):
+   currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
+   currency_b= SelectField('To', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
+   submit = SubmitField('Submit')

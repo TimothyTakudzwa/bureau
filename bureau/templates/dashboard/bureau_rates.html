@@ -33,7 +33,7 @@
                         <tbody>
                             {% for bureau_rate in bureau_rates %}
                             <tr>
-                                <td>{{bureau_rate.date}}</td>
+                                <td>{{bureau_rate.date.strftime('%d-%m-%Y')}}</td>
                                 <td>{{bureau_rate.bureau_id}}</td>
                                 <td>{{bureau_rate.currency_a}}</td>
                                 <td>{{bureau_rate.currency_b}}</td>
@@ -48,14 +48,14 @@
                 </div>
             </div>
             <div id = "container" align = "center">
-                <a href = "rates_today"><button name= "allrates" type="button" class="btn btn-primary">Other Bureaus</button></a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#rates_today">Other Bureaus</button>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#rate_modal">Add Rate</button>
             </div>
         </div>
     </div>
     
     <div class="modal fade" id="rate_modal" role="dialog">
-            <div class="modal-dialog">
+        <div class="modal-dialog">
             
               <!-- Modal content-->
               <div class="modal-content">
@@ -85,5 +85,35 @@
                   
                 </div>
               </div>
+            </div>
+    </div>
+
+    <div class="modal fade" id="rates_today" role="dialog">
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header" style= "background:#402d57e0">
+              <h4 class="modal-title" style= "color:whitesmoke" >Upload Rate</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style= "background:#402d57e0">
+                <form method="POST" action="rates_today">
+                    <div class="form-group">
+                      {{ render_field(form.currency_a, class_="form-control") }}
+                    </div>
+                    <div class="form-group">
+                      {{ render_field(form.currency_b, class_="form-control") }}
+                    </div>
+                  {{render_field(form.submit, class_="form-control")}} 
+                  </form>
+            </div>
+            <div class="modal-footer" style= "background:#402d57e0">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              
+            </div>
+        </div>
+      </div>
+    </div>
 
 {% endblock %}

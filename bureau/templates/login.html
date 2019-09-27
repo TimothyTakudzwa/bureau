@@ -16,8 +16,8 @@
       {% endfor %}
       <h1><strong style="color: black">Log In</strong></h1>
       <div class="username" style="color: rgb(10, 10, 10)">
-         {{ form.username.label }}
-         {{ form.username(placeholder='Kallou') }}
+         <h4>{{ form.username.label }}</h4>
+         {{ form.username(placeholder='Enter Your Username') }}
          {% if form.username.errors %}
            <ul class="errors">
              {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
@@ -25,7 +25,7 @@
          {% endif %}
       </div>
       <div class="password" style="color: rgb(10, 10, 10)">
-        {{ form.password.label }}
+        <h4 style="color:white">{{ form.password.label }}</h4>
         {{ form.password }}
         {% if form.password.errors %}
           <ul class="errors">

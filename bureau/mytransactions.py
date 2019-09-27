@@ -1,6 +1,99 @@
 from flask import Flask, render_template, request, flash, url_for, redirect
 from .models import *
 from . import app,db
+import ast
+import json
+from collections import defaultdict
+import datetime
+from datetime import timedelta
+import calendar
+
+@app.route('/statistics', methods=['GET'])
+def simple_query():
+    end_date = datetime.datetime.now().strftime("%d %m %Y")
+    end = datetime.datetime.now().strftime("%Y-%m-%d")
+    start_date = datetime.datetime.today() - timedelta(days=6)
+    i = 0 
+    date = start_date
+    print(start_date)
+    rates =  Rates.query.filter(Rates.date.between((start_date- timedelta(days=1)), end)).filter(Rates.currency_a=='USD').filter(Rates.currency_b=='ZWL').filter(Rates.action=='BUY').all()
+    rates_distinct =  Rates.query.filter(Rates.date.between(start_date, end)).filter(Rates.currency_a=='USD').filter(Rates.currency_b=='ZWL').distinct(Rates.bureau_id).filter(Rates.action=='BUY').all()
+    data = defaultdict(list)
+    print(rates)
+    days = []     
+    for rate_dis in rates_distinct:
+        current_bureau_list = []
+        highest = 0      
+        current_bureau_rates = []
+        print(rates)
+        for x in rates:
+            if x.bureau_id == rate_dis.bureau_id:
+                current_bureau_rates.append(x)
+        print(current_bureau_rates, rate_dis.bureau_id)
+        while i < 7:             
+            current_day_rates = [] 
+            highest = 0 
+            for rate in current_bureau_rates:                
+                if rate.date.strftime("%Y-%m-%d") == date.strftime("%Y-%m-%d"):
+                    current_day_rates.append(rate)
+                else:
+                    pass
+            print(current_day_rates)
+            for day in current_day_rates:
+                if day.rate > highest:
+                    highest = day.rate
+                else:
+                    highest = 0
+            current_bureau_list.append(highest)
+            date = date + timedelta(days=1)
+            i += 1  
+      
+        date = start_date
+        bureau = Bureau.query.filter_by(id=rate_dis.bureau_id).first()
+        highest = 0 
+        i = 0
+        print(type(current_bureau_list))
+        data[bureau.name] = current_bureau_list  
+    while i < 7:
+        new_date = findDay(str(date.strftime("%d %m %Y"))) 
+        days.append(new_date)
+        data["days"] = days
+        date = date + timedelta(days=1)
+        i = i+1
+    print(dict(data))
+    return render_template('statistics.html', data=json.dumps(dict(data)))
+
+def findDay(date): 
+    born = datetime.datetime.strptime(date, '%d %m %Y').weekday() 
+    return (calendar.day_name[born]) 
+
+
+
+def bureau_query(bureau_id, currency_a, currency_b):
+    bureau = Bureau.get_by_id(bureau_id)
+    rates = Rates.query.filter_by(bureau_id=bureau_id).filter_by(currency_a=currency_a).filter_by(currency_b=currency_b)
+    end_date = datetime.datetime.now().strftime("%d %m %Y")
+    end = datetime.datetime.now().strftime("%Y-%m-%d")
+    start_date = datetime.datetime.today() - timedelta(days=6)
+    i = 0
+    date = start_date
+    data = {}
+
+    while i < 7:
+        new_date = findDay(str(date.strftime("%d %m %Y"))) 
+                
+        data[new_date] = {}
+        highest = 0
+        for rate in rates:
+            if rate.rate > highest and rate.date.strftime("%Y-%m-%d") == date.strftime("%Y-%m-%d"):
+                highest = rate.rate
+        data[new_date][bureau.name] = highest
+        highest = 0
+        date = date + timedelta(days=1)
+        i += 1
+    print(data)
+
+    return ''
 
 
 @app.route('/transactions', methods=['GET'])

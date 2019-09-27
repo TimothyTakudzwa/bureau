@@ -64,8 +64,8 @@ class RatesForm(Form):
    for item in bureaus: 
       mylist.append((item.id, item.name))         
    name= SelectField('Bureau Name', choices=mylist)
-   currency_a= SelectField('Currency1', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
-   currency_b =  SelectField('Currency2', choices=[('ZWL', 'ZWL'), ('USD', 'USD')])
+   currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
+   currency_b =  SelectField('To', choices=[('ZWL', 'ZWL'), ('USD', 'USD')])
    action =  SelectField('Action', choices=[('BUY', 'BUY'), ('SELL', 'SELL')])
    rate =  StringField('Rate')
    bureau_id =  IntegerField('Bureau_id')
@@ -78,4 +78,7 @@ class OfferForm(Form):
    submit = SubmitField('Submit') 
 
 
-
+class RatesToday(Form):
+   currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
+   currency_b= SelectField('To', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
+   submit = SubmitField('')

@@ -9,6 +9,12 @@ from flask import Blueprint
 from flask_login import current_user
 from flask import current_app as app
 from flask_login import login_required
+from .token import generate_confirmation_token, confirm_token
+from itsdangerous import URLSafeTimedSerializer
+from flask_login import login_required, logout_user, current_user, login_user
+from .import login_manager
+import datetime
+from bureau.email import send_email
 
 
 
@@ -18,51 +24,61 @@ main = Blueprint('main', __name__,
                     static_folder='static')
 
 
-
-@main.route('/', methods=['GET'])
+@main.route('/block', methods=['GET', 'POST'])
 @login_required
-def dashboard():
-   return render_template('profile.html',
-                           template='dashboard-template',
-                           current_user=current_user,
-                           body="You are now logged in!")
-
-@main.route('/delete', methods=['GET', 'POST'])
-def delete():
-    user = Bureau.query.filter_by(id=8).first()
+def block():
+    user = Bureau.query.filter_by(id=current_user.id).first()
     if user is not None:
         user.is_blocked = True
         user.save_to_db()
-        return redirect(url_for('auth.signup_page'))
+        return redirect(url_for('auth.login_page'))
     return render_template('/dashboard/edit.html', user=user)
 
-@main.route('/reset-password', methods=('GET', 'POST',))
-def forgot_password():
-    token = request.args.get('token',None)
-    form = EmailForm(request.form) 
+
+@main.route('/reset', methods=["GET", "POST"])
+def reset():
+    form = EmailForm()
     if form.validate_on_submit():
-        email = form.email.data
-        user = Bureau.query.filter_by(email=email).first()
+        user = Bureau.query.filter_by(email=form.email.data).first()         
         if user:
-            token = user.get_token()
-            print(token)
+            token = generate_confirmation_token(user.email)
+            confirm_url = url_for('main.confirm_email', token=token, _external=True)
+            html = render_template('activate.html', confirm_url=confirm_url)
+            subject = "Please confirm your email"
+            send_email(user.email, subject, html)
+           
+        else:
+            flash('Your email address must be confirmed before attempting a password reset.', 'error')
+            return redirect(url_for('auth.login_page'))
+ 
     return render_template('password_reset_email.html', form=form)
 
-@main.route('/reset/<token>', methods=["GET", "POST"])
-def reset_with_token(token,user):
-    if token:
-        form = PasswordForm(request.form)
+@main.route('/confirm/<token>', methods = ['GET', 'POST'])
+#@login_required
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    user = Bureau.query.filter_by(email=email).first_or_404()
+    if user:
+        form = PasswordForm()
+ 
         if form.validate_on_submit():
-            user.password_hash = generate_password_hash(form.password.data)
-            
+            try:
+                user = Bureau.query.filter_by(email=email).first_or_404()
+            except:
+                flash('Invalid email address!', 'error')
+                return redirect(url_for('auth.login_page'))
+
+            user.password_hash = form.password.data
             user.save_to_db()
-            flash("password updated successfully")
+            flash('Your password has been updated!', 'success')
             return redirect(url_for('auth.login_page'))
-        return render_template('reset_password_with_token.html')
-    return render_template('dashboard/edit.html')
-    
 
-
+        return render_template('reset_password_with_token.html', form=form, token=token)
+ 
+            
 @app.route('/landing')
 def landing():
     return render_template('landing/index.html')

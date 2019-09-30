@@ -10,13 +10,40 @@
 
 <body>
 
-    <select id="channel_select">
-        <option value="" selected>Pick A Bureau</option>
-        <option value="http://www.google.com">Google</option>
-        <option value="http://www.youtube.com">YouTube</option>
-        <option value="https://www.gurustop.net">GuruStop.NET</option>
-      </select>
-      
+    <div class="card" style= "background:#402d57e0">
+      <div class="card-body">
+        <div class="card-title">
+          Filter By Bureau
+        </div>
+                <div class="form-group">
+                    <form action = "#" method = "POST"> 
+                            <fieldset>
+                            {{ form.hidden_tag() }}  
+                                  
+                    
+                            <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>
+                              <br>  
+                              {{ form.csrf_token }}<br>
+                              {{ form.opts }}
+                              <br> 
+                               {{ form.bureau_name.label }}<br>  
+                               {{ form.bureau_name }} 
+                               <br> 
+                               {{ form.currency_a.label }}<br>  
+                               {{ form.currency_a }}  
+                               <br>
+                               {{form.currency_b.label}}<br>
+                               {{form.currency_b}}
+                               <br>
+                               {{ form.submit }}  
+                            </div>  
+                                  
+                             </fieldset>  
+                          </form>
+                  </div>        
+                </div>
+              </div>            
+            </div>
 
 
 <canvas id="myChart"></canvas>

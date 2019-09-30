@@ -5,7 +5,7 @@
          
    
         
-      <form action = "#" method = "GET|POST"> 
+      <form action = "#" method = "POST"> 
         <fieldset>
         {{ form.hidden_tag() }}  
               
@@ -17,8 +17,11 @@
            {{ form.request }}
            {{ form.submit }}
            <br>
-           {{form.response.label}}<br>
-           {{form.response}}  
+           <br>
+           <br>
+           <br>
+           <br>
+           {{response}}
         </div>  
               
          </fieldset>  

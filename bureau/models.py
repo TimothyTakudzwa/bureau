@@ -48,6 +48,8 @@ class Client(db.Model):
     is_blocked = db.Column(db.Boolean)
     destination_bank = db.Column(db.String(50))
     account_no = db.Column(db.String(50))
+    stage = db.Column(db.String(50))
+    position = db.Column(db.Integer)
 
     # def block_unblock_toggle(self):
     #     if self.is_blocked:

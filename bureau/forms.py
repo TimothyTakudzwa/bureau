@@ -75,10 +75,16 @@ class OfferForm(Form):
    request_id = HiddenField()
    offer_amount = StringField('Offer Amount')   
    rate = FloatField()
-   submit = SubmitField('Submit') 
+   submit = SubmitField('Submit')
 
 
 class RatesToday(Form):
    currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
    currency_b= SelectField('To', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
    submit = SubmitField('')
+
+class ResponseForm(Form):
+   request = StringField('Request')
+   response = TextAreaField('Response')
+   submit = SubmitField('Submit')
+   

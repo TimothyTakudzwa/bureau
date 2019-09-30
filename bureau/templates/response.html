@@ -1,0 +1,28 @@
+ <!doctype html>  
+<html>  
+   <body>  
+      <h2 style = "text-align: center;">Response Page</h2>  
+         
+   
+        
+      <form action = "#" method = "GET|POST"> 
+        <fieldset>
+        {{ form.hidden_tag() }}  
+              
+
+        <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>
+          <br>  
+          {{ form.csrf_token }}<br> 
+           {{ form.request.label }}<br>  
+           {{ form.request }}
+           {{ form.submit }}
+           <br>
+           {{form.response.label}}<br>
+           {{form.response}}  
+        </div>  
+              
+         </fieldset>  
+      </form>  
+   </body>  
+</html>  
+           

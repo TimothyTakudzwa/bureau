@@ -1,9 +1,51 @@
+{% extends "dashboard/base.html" %}
+
 <html>
+{% block body %}
+
 <head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<title>Statistics</title>
 </head>
 
 <body>
+
+    <div class="card" style= "background:#402d57e0">
+      <div class="card-body">
+        <div class="card-title">
+          Filter By Bureau
+        </div>
+                <div class="form-group">
+                    <form action = "#" method = "POST"> 
+                            <fieldset>
+                            {{ form.hidden_tag() }}  
+                                  
+                    
+                            <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>
+                              <br>  
+                              {{ form.csrf_token }}<br>
+                              {{ form.opts }}
+                              <br> 
+                               {{ form.bureau_name.label }}<br>  
+                               {{ form.bureau_name }} 
+                               <br> 
+                               {{ form.currency_a.label }}<br>  
+                               {{ form.currency_a }}  
+                               <br>
+                               {{form.currency_b.label}}<br>
+                               {{form.currency_b}}
+                               <br>
+                               {{ form.submit }}  
+                            </div>  
+                                  
+                             </fieldset>  
+                          </form>
+                  </div>        
+                </div>
+              </div>            
+            </div>
+
+
 <canvas id="myChart"></canvas>
 
 <input type="hidden" id="data" value="{{data}}"/>
@@ -41,15 +83,15 @@ var data2 = document.getElementById('data').value
     title: {
       display: true,
       position: "top",
-      text: "Line Graph",
+      text: "Bureau Rates",
       fontSize: 18,
-      fontColor: "#111"
+      fontColor: "#FFFFFF"
     },
     legend: {
       display: true,
       position: "right",
       labels: {
-        fontColor: "#333",
+        fontColor: "#FFFFFF",
         fontSize: 16
       }
     }
@@ -63,5 +105,19 @@ var data2 = document.getElementById('data').value
   });
 </script>
 
+<script>
+    $(function(){
+      // bind change event to select
+      $('#channel_select').on('change', function () {
+          var url = $(this).val(); // get selected value
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+    });
+</script>
+
+{% endblock %}   
 
 </html>

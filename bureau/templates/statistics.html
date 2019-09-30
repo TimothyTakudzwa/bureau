@@ -1,9 +1,24 @@
+{% extends "dashboard/base.html" %}
+
 <html>
+{% block body %}
+
 <head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<title>Statistics</title>
 </head>
 
 <body>
+
+    <select id="channel_select">
+        <option value="" selected>Pick A Bureau</option>
+        <option value="http://www.google.com">Google</option>
+        <option value="http://www.youtube.com">YouTube</option>
+        <option value="https://www.gurustop.net">GuruStop.NET</option>
+      </select>
+      
+
+
 <canvas id="myChart"></canvas>
 
 <input type="hidden" id="data" value="{{data}}"/>
@@ -41,15 +56,15 @@ var data2 = document.getElementById('data').value
     title: {
       display: true,
       position: "top",
-      text: "Line Graph",
+      text: "Bureau Rates",
       fontSize: 18,
-      fontColor: "#111"
+      fontColor: "#FFFFFF"
     },
     legend: {
       display: true,
       position: "right",
       labels: {
-        fontColor: "#333",
+        fontColor: "#FFFFFF",
         fontSize: 16
       }
     }
@@ -63,5 +78,19 @@ var data2 = document.getElementById('data').value
   });
 </script>
 
+<script>
+    $(function(){
+      // bind change event to select
+      $('#channel_select').on('change', function () {
+          var url = $(this).val(); // get selected value
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+    });
+</script>
+
+{% endblock %}   
 
 </html>

@@ -40,10 +40,12 @@ def initial_handler(message, client):
         response_message = 'Whats your physical address'
     elif client.position == 2:
         client.address = message
+        client.position = 3
         client.save_to_db()
         response_message = 'May I know the bank you wish to transfer the funds'
     elif client.position == 3:
         client.destionation_bank = message
+        client.position = 4
         client.save_to_db()
         response_message = 'Please provide the account number'
     elif client.position == 4:

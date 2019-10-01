@@ -3,7 +3,7 @@ from .forms import ResponseForm
 from .models import *
 from . import app,db
 
-@app.route('/response/<client_id>', methods=['GET', 'POST'])
+@app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
     phone_number = '2637774234490'
@@ -30,9 +30,9 @@ def bot_action(message,client):
     return response_message
 
 def initial_handler(message, client):
-<<<<<<< HEAD
+
     return 'Test'
-=======
+
     if client.position == 1:
         client.name = message
         client.position = 2
@@ -53,9 +53,9 @@ def initial_handler(message, client):
         client.save_to_db()
         response_message = 'Thank you for registering with us. You can now proceed to transact!'
     else:
-        pass
+        menu_options(client, all)
     return response_message
->>>>>>> 2b90f9e27ad18384479aa6105661bf747cc1257a
+
     # if client.position == 1 :
     #     ask the user for the address 
     #     update the user position to position 2 
@@ -75,5 +75,16 @@ def initial_handler(message, client):
     # else:
     #     pass
 
-def menu_options(client, message):
-    select_items = {1: }
+def menu_options(client, option):
+    menu_items = {1: "Buy", 2: "Sell" }
+    while open:
+        bot_action("This is the main menu Please enter Either (1) To Buy Or (2) To Sell", client)
+        if option == "1":
+            bot_action("You Have Selected The Option To {0}".format(int(option)), client)
+            open = False
+        if option == "2":
+            bot_action("You Have Selected Option To {0}".format(int(option))
+            open = False
+        else:
+            return response_message        
+

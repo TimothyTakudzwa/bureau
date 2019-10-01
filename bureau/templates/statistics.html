@@ -1,49 +1,43 @@
 {% extends "dashboard/base.html" %}
-
+{% from "includes/_formhelpers.html" import render_field %}
 <html>
+{% block title%}
+<title>Statistics</title>
+{% endblock %}  
 {% block body %}
 
 <head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<title>Statistics</title>
+
 </head>
 
 <body>
 
-    <div class="card" style= "background:#402d57e0">
-      <div class="card-body">
-        <div class="card-title">
-          Filter By Bureau
+  <form action = "#" method = "POST">
+    <div class="row">  
+      {{ form.hidden_tag() }}  
+  
+        {{ form.csrf_token }}
+        {{ form.opts }}
+        <div class="col-md-3">
+          {{ render_field(form.bureau_name , class_="form-control") }} 
         </div>
-                <div class="form-group">
-                    <form action = "#" method = "POST"> 
-                            <fieldset>
-                            {{ form.hidden_tag() }}  
-                                  
-                    
-                            <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>
-                              <br>  
-                              {{ form.csrf_token }}<br>
-                              {{ form.opts }}
-                              <br> 
-                               {{ form.bureau_name.label }}<br>  
-                               {{ form.bureau_name }} 
-                               <br> 
-                               {{ form.currency_a.label }}<br>  
-                               {{ form.currency_a }}  
-                               <br>
-                               {{form.currency_b.label}}<br>
-                               {{form.currency_b}}
-                               <br>
-                               {{ form.submit }}  
-                            </div>  
-                                  
-                             </fieldset>  
-                          </form>
-                  </div>        
-                </div>
-              </div>            
-            </div>
+        <div class="col-md-3">
+          {{ render_field(form.currency_a, class_="form-control") }} 
+        </div>
+        <div class="col-md-3">
+          {{ render_field(form.currency_b, class_="form-control") }} 
+        </div>  
+        <div class="col-md-3" style="padding: 12px;/*! height: 39px; */">
+          <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+        </div>
+ 
+
+    </fieldset>
+  </div>  
+  </form>
+  
+
 
 
 <canvas id="myChart"></canvas>
@@ -117,6 +111,10 @@ var data2 = document.getElementById('data').value
       });
     });
 </script>
+
+<div class="padding-top: 20px; padding-bottom: 100px;">
+Rates Analaysis
+</div>
 
 {% endblock %}   
 

@@ -15,7 +15,7 @@ def response():
             client = Client(stage='initial', position=1, phone_number=phone_number)
             client.save_to_db()
             response_message = 'Hie this is our first time talking. Before we proceed might i know your name'
-        else:             
+        else: 
             response_message = bot_action(message,client)
     return render_template('response.html', form = form, response=response_message)
 

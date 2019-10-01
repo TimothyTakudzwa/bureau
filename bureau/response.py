@@ -6,7 +6,7 @@ from . import app,db
 @app.route('/response/<client_id>', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '2637774231343'
+    phone_number = '2637774234490'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -21,13 +21,41 @@ def response():
 
 
 def bot_action(message,client):
+    print(client)
     if client.stage == 'initial':
+        print("Got in here")
         response_message = initial_handler(message, client)
     else:
-        pass
+        response_message = "Test response"
+    return response_message
 
 def initial_handler(message, client):
+<<<<<<< HEAD
     return 'Test'
+=======
+    if client.position == 1:
+        client.name = message
+        client.position = 2
+        client.save_to_db()
+        response_message = 'Whats your physical address'
+    elif client.position == 2:
+        client.address = message
+        client.save_to_db()
+        response_message = 'May I know the bank you wish to transfer the funds'
+    elif client.position == 3:
+        client.destionation_bank = message
+        client.save_to_db()
+        response_message = 'Please provide the account number'
+    elif client.position == 4:
+        client.account_no = message
+        client.stage = 'menu'
+        client.position = 0
+        client.save_to_db()
+        response_message = 'Thank you for registering with us. You can now proceed to transact!'
+    else:
+        pass
+    return response_message
+>>>>>>> 2b90f9e27ad18384479aa6105661bf747cc1257a
     # if client.position == 1 :
     #     ask the user for the address 
     #     update the user position to position 2 

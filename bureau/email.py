@@ -1,6 +1,5 @@
 from flask_mail import Mail, Message
 
-
 from . import app, mail
 
 

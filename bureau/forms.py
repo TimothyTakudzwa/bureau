@@ -17,6 +17,16 @@ class BureauForm2(Form):
    password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
    confirm = PasswordField('Repeat Password')
 
+class BureauSelectForm(Form):
+   mylist = []
+   bureaus = Bureau.query.all()
+   for item in bureaus: 
+      mylist.append((item.id, item.name))
+   bureau_name = SelectField("Bureau Name", choices=mylist)
+   currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
+   currency_b =  SelectField('To', choices=[('ZWL', 'ZWL'), ('USD', 'USD')])
+   submit = SubmitField('Submit')
+
 class LoginForm(Form):
    username = TextField('Username')
    password = PasswordField('Password')
@@ -81,10 +91,16 @@ class OfferForm(Form):
    request_id = HiddenField()
    offer_amount = StringField('Offer Amount')   
    rate = FloatField()
-   submit = SubmitField('Submit') 
+   submit = SubmitField('Submit')
 
 
 class RatesToday(Form):
    currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
    currency_b= SelectField('To', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
    submit = SubmitField('')
+
+class ResponseForm(Form):
+   request = StringField('Request')
+   response = TextAreaField('Response')
+   submit = SubmitField('Submit')
+   

@@ -4,3 +4,8 @@
   
   </dd>
 {% endmacro %}
+{% macro render_button(field) %}
+  <dt class=text-center>{{ field.label}}
+  <dd style="background-color:#1a2035; border-radius:3px; color:darkslategray;width:100% ;">{{ field(**kwargs)|safe }}
+
+{% endmacro %}

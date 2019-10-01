@@ -1,0 +1,121 @@
+{% extends "dashboard/base.html" %}
+{% from "includes/_formhelpers.html" import render_field %}
+<html>
+{% block title%}
+<title>Statistics</title>
+{% endblock %}  
+{% block body %}
+
+<head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+</head>
+
+<body>
+
+  <form action = "#" method = "POST">
+    <div class="row">  
+      {{ form.hidden_tag() }}  
+  
+        {{ form.csrf_token }}
+        {{ form.opts }}
+        <div class="col-md-3">
+          {{ render_field(form.bureau_name , class_="form-control") }} 
+        </div>
+        <div class="col-md-3">
+          {{ render_field(form.currency_a, class_="form-control") }} 
+        </div>
+        <div class="col-md-3">
+          {{ render_field(form.currency_b, class_="form-control") }} 
+        </div>  
+        <div class="col-md-3" style="padding: 12px;/*! height: 39px; */">
+          <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+        </div>
+ 
+
+    </fieldset>
+  </div>  
+  </form>
+  
+
+
+
+<canvas id="myChart"></canvas>
+
+<input type="hidden" id="data" value="{{data}}"/>
+</body>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var data2 = document.getElementById('data').value
+ 
+ console.log(typeof(data2))
+ data2 = JSON.parse(data2)
+ var my_labels = data2["days"]
+ delete data2.days
+ dataset = []
+ for (query in data2){
+ var color = "#"+((1<<24)*Math.random()|0).toString(16);
+	data = {
+        label: query,
+        data: data2[query],
+        backgroundColor: color,
+        borderColor: color,
+        fill: false,
+        lineTension: 0,
+        radius: 5
+      }
+	 dataset.push(data)
+ }
+ var data = {
+    labels: my_labels,
+    datasets: dataset
+  };
+
+  //options
+  var options = {
+    responsive: true,
+    title: {
+      display: true,
+      position: "top",
+      text: "Bureau Rates",
+      fontSize: 18,
+      fontColor: "#FFFFFF"
+    },
+    legend: {
+      display: true,
+      position: "right",
+      labels: {
+        fontColor: "#FFFFFF",
+        fontSize: 16
+      }
+    }
+  };
+
+  //create Chart class object
+  var chart = new Chart(ctx, {
+    type: "line",
+    data: data,
+    options: options
+  });
+</script>
+
+<script>
+    $(function(){
+      // bind change event to select
+      $('#channel_select').on('change', function () {
+          var url = $(this).val(); // get selected value
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+    });
+</script>
+
+<div class="padding-top: 20px; padding-bottom: 100px;">
+Rates Analaysis
+</div>
+
+{% endblock %}   
+
+</html>

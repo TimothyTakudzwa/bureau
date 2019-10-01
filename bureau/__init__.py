@@ -35,4 +35,4 @@ with app.app_context():
         app.register_blueprint(auth.auth)
 
 from . import views, models, app, db, bureau, client, rates, dashboard, bureau_rates
-from . import views, models, app, db, bureau, client, rates, dashboard, mytransactions
+from . import views, models, app, db, bureau, client, rates, dashboard, mytransactions, response

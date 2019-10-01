@@ -17,7 +17,6 @@ def dashboard_index():
     return render_template('dashboard/index.html', rates=rates)
 
 @app.route('/', methods=['GET'])
-@login_required
 def landing_index():
     return render_template('landing/index.html')
 

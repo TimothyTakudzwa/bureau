@@ -78,13 +78,14 @@ def initial_handler(message, client):
 def menu_options(client, option):
     menu_items = {1: "Buy", 2: "Sell" }
     while open:
-        bot_action("This is the main menu Please enter Either (1) To Buy Or (2) To Sell", client)
+        if option == "all":
+            bot_action("This is the main menu Please enter Either (1) To Buy Or (2) To Sell", client)
         if option == "1":
             bot_action("You Have Selected The Option To {0}".format(int(option)), client)
-            open = False
+            option = False
         if option == "2":
             bot_action("You Have Selected Option To {0}".format(int(option))
-            open = False
+            option = False
         else:
-            return response_message        
+            bot_action(menu_options(client, all)       
 

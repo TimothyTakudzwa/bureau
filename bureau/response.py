@@ -23,25 +23,30 @@ def response():
 def bot_action(message,client):
     print(client)
     if client.stage == 'initial':
+        print("Got in here")
         response_message = initial_handler(message, client)
     else:
-        pass
+        response_message = "Test response"
+    return response_message
 
 def initial_handler(message, client):
     if client.position == 1:
-            client = Client(name=message, position=2)
+            client.name = message
+            client.position = 2
             client.save_to_db()
             response_message = 'Whats your physical address'
     elif client.position == 2:
-            client = Client(address=message, position=3)
+            client.address = message
             client.save_to_db()
             response_message = 'May I know the bank you wish to transfer the funds'
     elif client.position == 3:
-            client = Client(destination_bank=message, position=4)
+            client.destionation_bank = message
             client.save_to_db()
             response_message = 'Please provide the account number'
     elif client.position == 4:
-            client = Client(stage='menu', account_no=message, position=0)
+            client.account_no = message
+            client.stage = 'menu'
+            client.position = 0
             client.save_to_db()
             response_message = 'Thank you for registering with us. You can now proceed to transact!'
     else:

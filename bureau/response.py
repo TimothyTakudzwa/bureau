@@ -3,7 +3,7 @@ from .forms import ResponseForm
 from .models import *
 from . import app,db
 
-@app.route('/response', methods=['GET', 'POST'])
+@app.route('/response/<client_id>', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
     phone_number = '2637774231343'
@@ -27,7 +27,7 @@ def bot_action(message,client):
         pass
 
 def initial_handler(message, client):
-    return ''
+    return 'Test'
     # if client.position == 1 :
     #     ask the user for the address 
     #     update the user position to position 2 
@@ -46,3 +46,6 @@ def initial_handler(message, client):
     #     congratulate the user for succesful registration 
     # else:
     #     pass
+
+def menu_options(client, message):
+    select_items = {1: }

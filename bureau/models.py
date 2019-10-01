@@ -50,6 +50,7 @@ class Client(db.Model):
     account_no = db.Column(db.String(50))
     stage = db.Column(db.String(50))
     position = db.Column(db.Integer)
+    is_required = db.Column(db.Boolean)
 
     # def block_unblock_toggle(self):
     #     if self.is_blocked:

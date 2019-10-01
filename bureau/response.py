@@ -31,24 +31,24 @@ def bot_action(message,client):
 
 def initial_handler(message, client):
     if client.position == 1:
-            client.name = message
-            client.position = 2
-            client.save_to_db()
-            response_message = 'Whats your physical address'
+        client.name = message
+        client.position = 2
+        client.save_to_db()
+        response_message = 'Whats your physical address'
     elif client.position == 2:
-            client.address = message
-            client.save_to_db()
-            response_message = 'May I know the bank you wish to transfer the funds'
+        client.address = message
+        client.save_to_db()
+        response_message = 'May I know the bank you wish to transfer the funds'
     elif client.position == 3:
-            client.destionation_bank = message
-            client.save_to_db()
-            response_message = 'Please provide the account number'
+        client.destionation_bank = message
+        client.save_to_db()
+        response_message = 'Please provide the account number'
     elif client.position == 4:
-            client.account_no = message
-            client.stage = 'menu'
-            client.position = 0
-            client.save_to_db()
-            response_message = 'Thank you for registering with us. You can now proceed to transact!'
+        client.account_no = message
+        client.stage = 'menu'
+        client.position = 0
+        client.save_to_db()
+        response_message = 'Thank you for registering with us. You can now proceed to transact!'
     else:
         pass
     return response_message

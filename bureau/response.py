@@ -30,9 +30,6 @@ def bot_action(message,client):
     return response_message
 
 def initial_handler(message, client):
-<<<<<<< HEAD
-    return 'Test'
-=======
     if client.position == 1:
         client.name = message
         client.position = 2
@@ -57,7 +54,6 @@ def initial_handler(message, client):
     else:
         pass
     return response_message
->>>>>>> 2b90f9e27ad18384479aa6105661bf747cc1257a
     # if client.position == 1 :
     #     ask the user for the address 
     #     update the user position to position 2 
@@ -77,5 +73,5 @@ def initial_handler(message, client):
     # else:
     #     pass
 
-def menu_options(client, message):
-    select_items = {1: }
+#def menu_options(client, message):
+#    select_items = {1: }

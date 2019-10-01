@@ -207,6 +207,14 @@ class Offer(db.Model):
         db.session.add(self)
         db.session.commit()
 
+class Currencies(db.Model):
+    __tablename__='Currencies'
+    id = db.Column(db.Integer, primary_key=True)
+    currency_code = db.Column(db.String(3))
+    currency_name = db.Column(db.String(100))
 
+    @classmethod
+    def get_by_id(self,id):
+        return Currencies.query.filter_by(id=id).first()
 
  

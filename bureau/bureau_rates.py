@@ -3,12 +3,12 @@ from functools import wraps
 from .models import *
 from . import app,db
 from .forms import RatesForm, RatesToday
-from datetime import date
+from datetime import datetime, date
 from sqlalchemy import cast, DATE, and_
 
 @app.route('/bureau_rates', methods=['GET', 'POST'])
 def bureau_rates():
-    today = date.now()
+    today = datetime.now()
     session_id = 2
     bureau_rates = Rates.query.filter_by(bureau_id=session_id)
     rates_today = Rates.query.filter_by(date=today)
@@ -32,7 +32,7 @@ def bureau_rates():
 @app.route('/rates_today', methods=['GET', 'POST'])
 def rates_today():
     form = RatesToday()
-    date = date.now().date()
+    date = datetime.now().date()
     currency_a = form.currency_a.data
     currency_b = form.currency_b.data
     print(currency_a, currency_b)

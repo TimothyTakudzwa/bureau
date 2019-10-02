@@ -51,8 +51,18 @@ def initial_handler(message, client):
         client.position = 0
         client.save_to_db()
         response_message = 'Thank you for registering with us. You can now proceed to transact!'
-    else:
-        menu_options(client, all)
+    elif client.position == 0:
+        if not message:
+            response_message = "Welcome To The Options Menu. Please Press (1) To Select Buy and (2) To Sell"
+        elif message == 1:
+            response_message = "You Have Selected Buy Option"
+        elif message == 2:
+            response_message = "You Have Selected Sell Option"
+        else:
+            response_message = "Please Enter Either (1) To Select Sale or (2) To Select Buy "
+
+
+
     return response_message
     # if client.position == 1 :
     #     ask the user for the address 

@@ -24,15 +24,15 @@ class BureauSelectForm(Form):
    for item in bureaus: 
       bureau_list.append((item.id, item.name))
 
-   currencies = Currencies.query.order_by(Currencies.currency_name.asc()).all() 
+   currencies = Currencies.query.order_by(Currencies.currency_code.asc()).all() 
    currency_list1 = []
    for item in currencies:
-      currency_list1.append((item.id, item.currency_name))
+      currency_list1.append((item.id, item.currency_code))
 
-   currencies = Currencies.query.order_by(Currencies.currency_name.desc()).all() 
+   currencies = Currencies.query.order_by(Currencies.currency_code.desc()).all() 
    currency_list = []
    for item in currencies:
-      currency_list.append((item.id, item.currency_name))
+      currency_list.append((item.id, item.currency_code))
 
    bureau_name= SelectField('Bureau Name', choices=bureau_list)
    currency_a= SelectField('From', choices=currency_list)
@@ -86,15 +86,15 @@ class RatesForm(Form):
    for item in bureaus: 
       bureau_list.append((item.id, item.name))
 
-   currencies = Currencies.query.order_by(Currencies.currency_name.asc()).all() 
+   currencies = Currencies.query.order_by(Currencies.currency_code.asc()).all() 
    currency_list1 = []
    for item in currencies:
-      currency_list1.append((item.id, item.currency_name))
+      currency_list1.append((item.id, item.currency_code))
 
-   currencies = Currencies.query.order_by(Currencies.currency_name.desc()).all() 
+   currencies = Currencies.query.order_by(Currencies.currency_code.desc()).all() 
    currency_list = []
    for item in currencies:
-      currency_list.append((item.id, item.currency_name))
+      currency_list.append((item.id, item.currency_code))
 
    name= SelectField('Bureau Name', choices=bureau_list)
    currency_a= SelectField('From', choices=currency_list)
@@ -112,15 +112,15 @@ class OfferForm(Form):
 
 
 class RatesToday(Form):
-   currencies = Currencies.query.order_by(Currencies.currency_name.asc()).all() 
+   currencies = Currencies.query.order_by(Currencies.currency_code.asc()).all() 
    currency_list1 = []
    for item in currencies:
-      currency_list1.append((item.id, item.currency_name))
+      currency_list1.append((item.id, item.currency_code))
 
-   currencies = Currencies.query.order_by(Currencies.currency_name.desc()).all() 
+   currencies = Currencies.query.order_by(Currencies.currency_code.desc()).all() 
    currency_list = []
    for item in currencies:
-      currency_list.append((item.id, item.currency_name))
+      currency_list.append((item.id, item.currency_code))
 
    currency_a= SelectField('From', choices=currency_list)
    currency_b =  SelectField('To', choices=currency_list1)

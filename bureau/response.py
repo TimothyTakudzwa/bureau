@@ -26,7 +26,8 @@ def bot_action(message,client):
         print("Got in here")
         response_message = initial_handler(message, client)
     else:
-        response_message = "Test response"
+        #response_message = "Test response"
+        response_message = initial_handler(message, client)
     return response_message
 
 def initial_handler(message, client):
@@ -50,18 +51,18 @@ def initial_handler(message, client):
         client.stage = 'menu'
         client.position = 0
         client.save_to_db()
-        response_message = 'Thank you for registering with us. You can now proceed to transact!'
+        response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
     elif client.position == 0:
-        if not message:
+        if message == "menu":
             response_message = "Welcome To The Options Menu. Please Press (1) To Select Buy and (2) To Sell"
-        elif message == 1:
+        elif message == "1":
             response_message = "You Have Selected Buy Option"
-        elif message == 2:
+            menu_options_handler(client, message)
+        elif message == "2":
             response_message = "You Have Selected Sell Option"
+            menu_options_handler(client, message)
         else:
             response_message = "Please Enter Either (1) To Select Sale or (2) To Select Buy "
-
-
 
     return response_message
     # if client.position == 1 :
@@ -83,17 +84,10 @@ def initial_handler(message, client):
     # else:
     #     pass
 
-def menu_options(client, option):
-    menu_items = {1: "Buy", 2: "Sell" }
-    while open:
-        if option == "all":
-            bot_action("This is the main menu Please enter Either (1) To Buy Or (2) To Sell", client)
-        if option == "1":
-            bot_action("You Have Selected The Option To {0}".format(int(option)), client)
-            option = False
-        if option == "2":
-            bot_action("You Have Selected Option To {0}".format(int(option))
-            option = False
-        else:
-            bot_action(menu_options(client, all)       
+def menu_options_handler(client, message):
+    if message == "1":
+        return "\nInitiating Your Option To Buy"
+    if message == "2":
+        "\nYou Have Selected The Option To Buy"
+    
 

@@ -86,8 +86,9 @@ def initial_handler(message, client):
 
 def menu_options_handler(client, message):
     if message == "1":
-        return "\nInitiating Your Option To Buy"
+        return "\nInitiating Your Option To Buy\n Your Acocount {0} to {1}".format(client.account_no, client.destination_bank)
+        # initiate purchase here
     if message == "2":
-        "\nYou Have Selected The Option To Buy"
-    
+        "\nYou Have Selected The Option To Buy\n Your Account {0} to {1}".format(client.account_no, client.destination_bank)
+        # initiate sale here
 

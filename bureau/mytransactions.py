@@ -108,7 +108,7 @@ def bureau_query(bureau_id, currency_a, currency_b):
         bureau_name = form.bureau_name.data
         currency_a = form.currency_a.data
         currency_b = form.currency_b.data
-         return redirect(url_for('bureau', bureau_name=bureau_name, currency_a=currency_b, currency_b=currency_b))
+        return redirect(url_for('bureau', bureau_name=bureau_name, currency_a=currency_b, currency_b=currency_b))
         
 
 @app.route('/transactions', methods=['GET'])

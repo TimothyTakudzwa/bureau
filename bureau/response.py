@@ -56,11 +56,33 @@ def initial_handler(message, client):
         if message == "menu":
             response_message = "Welcome To The Options Menu. Please Press (1) To Select Buy and (2) To Sell"
         elif message == "1":
-            response_message = "You Have Selected Buy Option"
+            rqs = ''
+            reqs = Requests.query.filter_by(action='BUY').all()
+            for req in reqs:
+                rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "
+            response_message = "You Have Selected Buy Option. Please Select By Typing Buy Followed By The Number" + " \n" + rqs
             menu_options_handler(client, message)
+        elif message.startswith("buy"):
+            reqs = Requests.query.filter_by(action='BUY').all()
+            req = Requests.query.filter_by(id=message.split()[-1]).filter_by(action="BUY").first()
+            if req == None:
+                return "The Entry You Tried To Buy Does not Exist, Try Again Using A Different Number"
+            req = str(req.currency_a) + " : " + str(req.currency_b) + " " +"Amount :{}".format(req.amount) + " " + "Successful!"
+            return f"Buying {req}"    
         elif message == "2":
-            response_message = "You Have Selected Sell Option"
+            rqs = ''
+            reqs = Requests.query.filter_by(action='SELL').all()
+            for req in reqs:
+                rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "
+            response_message = "You Have Selected Sell Option. Please Select By Typing Buy Followed By The Number" + " \n" + rqs
             menu_options_handler(client, message)
+        elif message.startswith("sell"):
+            reqs = Requests.query.filter_by(action='SELL').all()
+            req = Requests.query.filter_by(id=message.split()[-1]).filter_by(action="SELL").first()
+            if req == None:
+                return "The Entry You Tried To Sell Does not Exist, Try Again Using A Different Number"
+            req = str(req.currency_a) + " : " + str(req.currency_b) + " " +"Amount :{}".format(req.amount) + " " + "Successful!"
+            return f"Selling {req}"      
         else:
             response_message = "Please Enter Either (1) To Select Sale or (2) To Select Buy "
 

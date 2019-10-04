@@ -60,7 +60,7 @@ def initial_handler(message, client):
             reqs = Requests.query.filter_by(action='BUY').all()
             for req in reqs:
                 rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "
-            response_message = "You Have Selected Buy Option. Please Select By Typing Buy Followed By The Number" + " \n" + rqs
+            response_message = "You Have Selected Buy Option. Please Select By Typing 'buy' Followed By The Number" + " \n" + rqs
             menu_options_handler(client, message)
         elif message.startswith("buy"):
             reqs = Requests.query.filter_by(action='BUY').all()
@@ -74,7 +74,7 @@ def initial_handler(message, client):
             reqs = Requests.query.filter_by(action='SELL').all()
             for req in reqs:
                 rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "
-            response_message = "You Have Selected Sell Option. Please Select By Typing Buy Followed By The Number" + " \n" + rqs
+            response_message = "You Have Selected Sell Option. Please Select By Typing sell Followed By The Number" + " \n" + rqs
             menu_options_handler(client, message)
         elif message.startswith("sell"):
             reqs = Requests.query.filter_by(action='SELL').all()

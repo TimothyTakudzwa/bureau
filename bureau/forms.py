@@ -4,6 +4,7 @@ from wtforms import TextField, IntegerField, IntegerField, TextAreaField, Submit
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from wtforms import validators
 from .models import *
+from sqlalchemy import desc, asc
 
 class ClientForm(Form):
    name = TextField("client Name ",[validators.Required("Please enter your name.")]) 
@@ -18,13 +19,24 @@ class BureauForm2(Form):
    confirm = PasswordField('Repeat Password')
 
 class BureauSelectForm(Form):
-   mylist = []
+   bureau_list = []
    bureaus = Bureau.query.all()
    for item in bureaus: 
-      mylist.append((item.id, item.name))
-   bureau_name = SelectField("Bureau Name", choices=mylist)
-   currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
-   currency_b =  SelectField('To', choices=[('ZWL', 'ZWL'), ('USD', 'USD')])
+      bureau_list.append((item.id, item.name))
+
+   currencies = Currencies.query.order_by(Currencies.currency_code.asc()).all() 
+   currency_list1 = []
+   for item in currencies:
+      currency_list1.append((item.id, item.currency_code))
+
+   currencies = Currencies.query.order_by(Currencies.currency_code.desc()).all() 
+   currency_list = []
+   for item in currencies:
+      currency_list.append((item.id, item.currency_code))
+
+   bureau_name= SelectField('Bureau Name', choices=bureau_list)
+   currency_a= SelectField('From', choices=currency_list)
+   currency_b =  SelectField('To', choices=currency_list1)
    submit = SubmitField('Submit')
 
 class LoginForm(Form):
@@ -76,12 +88,23 @@ class SignupForm(Form):
 
 class RatesForm(Form):
    bureaus = Bureau.query.all()
-   mylist = []   
+   bureau_list = []   
    for item in bureaus: 
-      mylist.append((item.id, item.name))         
-   name= SelectField('Bureau Name', choices=mylist)
-   currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
-   currency_b =  SelectField('To', choices=[('ZWL', 'ZWL'), ('USD', 'USD')])
+      bureau_list.append((item.id, item.name))
+
+   currencies = Currencies.query.order_by(Currencies.currency_code.asc()).all() 
+   currency_list1 = []
+   for item in currencies:
+      currency_list1.append((item.id, item.currency_code))
+
+   currencies = Currencies.query.order_by(Currencies.currency_code.desc()).all() 
+   currency_list = []
+   for item in currencies:
+      currency_list.append((item.id, item.currency_code))
+
+   name= SelectField('Bureau Name', choices=bureau_list)
+   currency_a= SelectField('From', choices=currency_list)
+   currency_b =  SelectField('To', choices=currency_list1)
    action =  SelectField('Action', choices=[('BUY', 'BUY'), ('SELL', 'SELL')])
    rate =  StringField('Rate')
    bureau_id =  IntegerField('Bureau_id')
@@ -95,8 +118,18 @@ class OfferForm(Form):
 
 
 class RatesToday(Form):
-   currency_a= SelectField('From', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
-   currency_b= SelectField('To', choices=[('USD', 'USD'), ('ZWL', 'ZWL')])
+   currencies = Currencies.query.order_by(Currencies.currency_code.asc()).all() 
+   currency_list1 = []
+   for item in currencies:
+      currency_list1.append((item.id, item.currency_code))
+
+   currencies = Currencies.query.order_by(Currencies.currency_code.desc()).all() 
+   currency_list = []
+   for item in currencies:
+      currency_list.append((item.id, item.currency_code))
+
+   currency_a= SelectField('From', choices=currency_list)
+   currency_b =  SelectField('To', choices=currency_list1)
    submit = SubmitField('')
 
 class ResponseForm(Form):

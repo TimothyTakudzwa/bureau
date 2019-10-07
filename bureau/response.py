@@ -85,6 +85,8 @@ def initial_handler(message, client):
             response_message = "You Have Selected Sell Option. Initiate Transaction by typing 'sell', Followed The Two Currencies You Wish To Trade and amount. Eg `sell USD ZWL 1000`" 
             menu_options_handler(client, message)
         elif message.startswith("sell"):
+            if len(message.split()) < 4:
+                return "Your Command Is Incomplete! Follow this example `Eg buy USD ZWL 1000` "
             currency_a = message.split()[1]
             currency_b = message.split()[2]
             amount = message.split()[3]
@@ -102,7 +104,7 @@ def initial_handler(message, client):
                 raise e
                 return f"Error Creating Request{req}"        
         else:
-            response_message = "Please Enter Either (1) To Select Sale or (2) To Select Buy "
+            response_message = "Please Enter Either (1) To Select Buy or (2) To Select Sell "
 
     return response_message
     # if client.position == 1 :

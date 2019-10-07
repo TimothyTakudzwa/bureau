@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, url_for, redirect
 from .forms import ResponseForm
 from .models import *
 from . import app,db
+from sqlalchemy import desc
 
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
@@ -56,33 +57,50 @@ def initial_handler(message, client):
         if message == "menu":
             response_message = "Welcome To The Options Menu. Please Press (1) To Select Buy and (2) To Sell"
         elif message == "1":
-            rqs = ''
+            '''rqs = ''
             reqs = Requests.query.filter_by(action='BUY').all()
             for req in reqs:
-                rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "
-            response_message = "You Have Selected Buy Option. Please Select By Typing 'buy' Followed By The Number" + " \n" + rqs
+                rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "'''
+            response_message = "You Have Selected Buy Option. Please  Transact by typing `buy` Followed The Two Currencies You Wish To Trade and amount. Eg `buy USD ZWL 1000`"
             menu_options_handler(client, message)
         elif message.startswith("buy"):
-            reqs = Requests.query.filter_by(action='BUY').all()
-            req = Requests.query.filter_by(id=message.split()[-1]).filter_by(action="BUY").first()
-            if req == None:
-                return "The Entry You Tried To Buy Does not Exist, Try Again Using A Different Number"
-            req = str(req.currency_a) + " : " + str(req.currency_b) + " " +"Amount :{}".format(req.amount) + " " + "Successful!"
-            return f"Buying {req}"    
+            if len(message.split()) < 4:
+                return "Your Command Is Incomplete! Follow this example `Eg buy USD ZWL 1000` "
+            currency_a = message.split()[1]
+            currency_b = message.split()[2]
+            amount = message.split()[3]
+            rates = Rates.query.filter_by(currency_a=currency_a).filter_by(currency_b=currency_b).filter_by(action='BUY').order_by('rate').all()
+            if not rates :
+                return "Sorry No Entries Exist for this query"
+            rate = rates[0]    
+            req = str(rate.currency_a) + " : " + str(rate.currency_b) + " " +"Rate :{}".format(rate.rate) + " " + "Successful!"
+            try:
+                request_obj = Requests(currency_a=rate.currency_a, currency_b=rate.currency_b, amount=amount, date=datetime.today(), action='BUY', rating=2)
+                request_obj.save_to_db()
+                return f"Buying {req}"
+            except Exception as e:
+                raise e    
+                return f"Error Creating Request{req}"   
         elif message == "2":
-            rqs = ''
-            reqs = Requests.query.filter_by(action='SELL').all()
-            for req in reqs:
-                rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "
-            response_message = "You Have Selected Sell Option. Please Select By Typing sell Followed By The Number" + " \n" + rqs
+            response_message = "You Have Selected Sell Option. Initiate Transaction by typing 'sell', Followed The Two Currencies You Wish To Trade and amount. Eg `sell USD ZWL 1000`" 
             menu_options_handler(client, message)
         elif message.startswith("sell"):
-            reqs = Requests.query.filter_by(action='SELL').all()
-            req = Requests.query.filter_by(id=message.split()[-1]).filter_by(action="SELL").first()
-            if req == None:
-                return "The Entry You Tried To Sell Does not Exist, Try Again Using A Different Number"
-            req = str(req.currency_a) + " : " + str(req.currency_b) + " " +"Amount :{}".format(req.amount) + " " + "Successful!"
-            return f"Selling {req}"      
+            currency_a = message.split()[1]
+            currency_b = message.split()[2]
+            amount = message.split()[3]
+            rates = Rates.query.filter_by(currency_a=currency_a).filter_by(currency_b=currency_b).filter_by(action='SELL').order_by(desc('rate')).all()
+            if not rates:
+                return "Sorry No Entries Exist for this query"
+            rate = rates[0]      
+            req = str(rate.currency_a) + " : " + str(rate.currency_b) + " " +"Rate :{}".format(rate.rate) + " " + "Successful!"
+
+            try:
+                request_obj = Requests(currency_a=rate.currency_a, currency_b=rate.currency_b, amount=amount, date=datetime.today(), action='SELL', rating=2)
+                request_obj.save_to_db()
+                return f"Selling {req}" 
+            except Exception as e:
+                raise e
+                return f"Error Creating Request{req}"        
         else:
             response_message = "Please Enter Either (1) To Select Sale or (2) To Select Buy "
 

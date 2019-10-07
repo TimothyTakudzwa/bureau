@@ -47,8 +47,7 @@
   -->
       <div class="logo">
         <a href="/dashboard" class="simple-text logo-normal">
-        Bureau de Change<br>
-          {{ current_user.username }} 
+        Bureau de Change<br> 
         </a>
       </div>
       <div class="sidebar-wrapper">
@@ -65,6 +64,13 @@
             <a class="nav-link" href="./bureau_rates">
               <i class="material-icons">swap_vertical_circle</i>
               <p>Exchange Rates</p>
+            </a>
+          </li>
+
+          <li class="nav-item {% if request.path == '/trading' %} active {% endif %}">
+            <a class="nav-link" href="./trading">
+              <i class="material-icons">local_atm</i>
+              <p>Start Trading</p>
             </a>
           </li>
           

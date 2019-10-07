@@ -85,6 +85,10 @@ def user_profile():
         return redirect(url_for('user_profile'))
     return render_template('dashboard/edit.html', user=user)
 
+@app.route('/trading', methods=['GET', 'POST'])
+def trading():
+    return render_template('trading.html')
+
 '''
 @app.route('/prof', methods=['GET'])
 def prof():

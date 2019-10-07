@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, flash, url_for, session
 from functools import wraps
 from flask import Flask, render_template, request, flash, url_for, redirect
@@ -94,7 +95,7 @@ def prof():
     user = Bureau.query.filter_by(id=4).all()
     return render_template('dashboard/user.html', user=user)
 
-@app.route('compare/<bureau_a>', methods=['GET'])
+@app.route('/compare/<bureau_a>', methods=['GET'])
 def compare(bureau_a):
     page = request.args.get('page', default = 1, type = int)
     return bureau_a

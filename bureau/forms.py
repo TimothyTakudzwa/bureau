@@ -136,4 +136,3 @@ class ResponseForm(Form):
    request = StringField('Request')
    response = TextAreaField('Response')
    submit = SubmitField('Submit')
-   

@@ -88,3 +88,4 @@ def bureau_comparator(bureau_id, currency_a, currency_b):
 	rates = rates.filter_by(currency_b=currency_b)
 	rates = rates.order_by(desc('rate')).all()
 	return rates
+	

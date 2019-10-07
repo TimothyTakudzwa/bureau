@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, flash, url_for, session
 from functools import wraps
 from flask import Flask, render_template, request, flash, url_for, redirect
@@ -89,7 +88,7 @@ def user_profile():
 def trading():
     return render_template('trading.html')
 
-'''
+
 @app.route('/prof', methods=['GET'])
 def prof():
     user = Bureau.query.filter_by(id=4).all()
@@ -113,4 +112,4 @@ def my_route():
   print(page)
   print(filter)
   return f"{page}Success"
-'''
+

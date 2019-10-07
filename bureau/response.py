@@ -65,3 +65,4 @@ def initial_handler(message, client):
     #     congratulate the user for succesful registration 
     # else:
     #     pass
+    

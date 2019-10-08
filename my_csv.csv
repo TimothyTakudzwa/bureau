@@ -1,15 +1,12 @@
-I want to buy,b
-I want to sell us,c
-I want to buy us,d
-I have us,e
-I have rtgs,e
-I need us,f
-selling us,g
-wanna sell my us,h
-I have us I need rtgs,i
-want to buy rtgs,j
-want to convert my us to rtgs,k
-selling rtgs,l
+ buying,b
+I want to sell,c
+I have us,d
+I have rtgs,b
+I need us,b
+converting us,d
+wanna sell,c
+I have us I need rtgs,d
+want to convert my us to rtgs,d
 bond,zwl
 ecocash,zwl
 zwl,zwl
@@ -21,3 +18,6 @@ us$,us
 american dollar,us
 usd,us
 us dollar,us
+
+
+

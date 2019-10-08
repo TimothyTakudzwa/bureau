@@ -13,7 +13,7 @@ from . import app,db
 from flask_login import login_required, logout_user, current_user, login_user
 from .import login_manager
 from twilio.twiml.messaging_response import MessagingResponse
-
+from .forms import ResponseForm
 from datetime import datetime, timedelta 
 
 @app.route('/dashboard', methods=['GET'])
@@ -91,33 +91,7 @@ def user_profile():
         return redirect(url_for('user_profile'))
     return render_template('dashboard/edit.html', user=user)
 
-@app.route('/trading', methods=['GET', 'POST'])
-def trading():
-    df = pd.read_csv("my_csv.csv")
-    df.columns = ["Sentence","Category"]
-    df.dropna(inplace=True)
-    # Train the vectorizer
-    vectorizer = TfidfVectorizer()
-    vectorizer.fit(np.concatenate((df.Sentence, df.Category)))
-    # Vectorize sentences
-    Sentence_vectors = vectorizer.transform(df.Sentence)
     
-    # user input
-    input_sentence = request.form.get('input_sentence')
-    # Locate the closest sentence
-    input_sentence_vector = vectorizer.transform([input_sentence])
-
-    # Compute similarities
-    similarities = cosine_similarity(input_sentence_vector, Sentence_vectors)
-
-    # Find the closest question
-    closest = np.argmax(similarities, axis=1)
-    category = df.Category.iloc[closest].values[0]
-    
-        
-    return render_template('trading.html', category = category, input_sentence = input_sentence)
-
-
 @app.route('/prof', methods=['GET'])
 def prof():
     user = Bureau.query.filter_by(id=4).all()
@@ -142,3 +116,38 @@ def my_route():
   print(filter)
   return f"{page}Success"
 
+
+@app.route('/traders', methods=['GET', 'POST'])
+def traders():
+    form = ResponseForm()
+    response_message = "Hello"
+    print(request.method)
+    if request.method == 'POST':
+        df = pd.read_csv("my_csv.csv")
+        df.columns = ["Sentence","Category"]
+        df.dropna(inplace=True)
+        # Train the vectorizer
+        vectorizer = TfidfVectorizer()
+        vectorizer.fit(np.concatenate((df.Sentence, df.Category)))
+        # Vectorize sentences
+        Sentence_vectors = vectorizer.transform(df.Sentence)
+        # user input
+        user_input = form.request.data
+        print("This is user input")
+        if user_input is not None:
+            input_sentence_vector = vectorizer.transform([user_input])
+            # Compute similarities
+            similarities = cosine_similarity(input_sentence_vector, Sentence_vectors)
+
+            # Find the closest sentence
+            closest = np.argmax(similarities, axis=1)
+            category = df.Category.iloc[closest].values[0]
+            if category == "c":
+                response_message = 'you want to convert from which currency?'
+                # Find the closest sentence
+                if user_input == 'us':
+                    response_message = 'there is progress'        
+            
+            return render_template('trading.html', form = form, response = response_message)
+                
+    return render_template('trading.html', form = form, response = response_message)

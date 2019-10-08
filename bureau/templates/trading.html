@@ -1,44 +1,31 @@
-{% extends "dashboard/base.html" %}
-{% block body %}
-<div class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-8">
-          <div class="card" style="height:100%;background-color:rgba(95, 84, 84, 0.521)">
-            <div class="card-header card-header-primary">
-              <h4 class="card-title">What do you want to do today?</h4>
-              <p class="card-category"></p>
-            </div>
-            <div class="card-body">
-            
-                <form action="/trading" method="POST">
+<!doctype html>  
+<html>  
+   <body>  
+      <h2 style = "text-align: center;">chatbot</h2>  
+         
+   
+        
+      <form action = "#" method = "POST"> 
+        <fieldset>
+        {{ form.hidden_tag() }}  
               
-                  <h3><b> {{input_sentence}}</b></h3>
-                  
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="input_sentence" ></label>
-                        <input type="text" name="input_sentence" id="input_sentence" value="{{category}}" class="form-control">
-                       </div>
-                      </div>
-                      <input type="submit" value="get category" class="form control btn btn-success" >
-                      
-                  </form>
-            </div>
+
+        <div style = "font-size:20px;" font-weight:bold; margin-left:130px;>
+            {{response}}
+          <br>  
+          {{ form.csrf_token }}<br> 
+           {{ form.request.label }}<br>
+           <div class="input text" onfocus="this.value=''">  
+           {{ form.request }}
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endblock %}   
-
-
-
-
-
-
-
-
-
-
- 
+           {{ form.submit }}
+           <br>
+          
+           
+        </div>  
+              
+         </fieldset>  
+      </form>  
+   </body>  
+</html>  
+           

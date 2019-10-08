@@ -1,0 +1,50 @@
+{% extends "dashboard/base.html" %}
+{% block body %}
+<div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card" style="height:100%;background-color:rgba(95, 84, 84, 0.521)">
+            <div class="card-header card-header-primary">
+              <h4 class="card-title">How much US do you have?</h4>
+              <p class="card-category"></p>
+            </div>
+            <div class="card-body">
+            
+                <form action="/tred" method="POST">
+              
+                  <h3><b> </b></h3>
+                  
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="amount" >Amount </label>
+                        <input type="text" name="amount" id="amount" value=" " class="form-control">
+                       </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                         <label for="rate" >Rate </label>
+                         <input type="text" name="rate" id="rate" value=" " class="form-control">
+                        </div>
+                        </div>
+                      <input type="submit" value="proceed" class="form control btn btn-success" >
+                      
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}   
+
+
+
+
+
+
+
+
+
+
+ 

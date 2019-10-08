@@ -120,6 +120,8 @@ def my_route():
 @app.route('/traders', methods=['GET', 'POST'])
 def traders():
     form = ResponseForm()
+    phone_number = '263774231343'
+    Client = Client()
     response_message = "Hello"
     print(request.method)
     if request.method == 'POST':
@@ -138,16 +140,18 @@ def traders():
             input_sentence_vector = vectorizer.transform([user_input])
             # Compute similarities
             similarities = cosine_similarity(input_sentence_vector, Sentence_vectors)
-
+            print("--------------------------------------------------------------")
             # Find the closest sentence
             closest = np.argmax(similarities, axis=1)
             category = df.Category.iloc[closest].values[0]
+            print(category)
+
             if category == "c":
                 response_message = 'you want to convert from which currency?'
-                # Find the closest sentence
-                if user_input == 'us':
+                
+                if user_input == "us":
                     response_message = 'there is progress'        
             
-            return render_template('trading.html', form = form, response = response_message)
+                return render_template('trading.html', form = form, response = response_message)
                 
     return render_template('trading.html', form = form, response = response_message)

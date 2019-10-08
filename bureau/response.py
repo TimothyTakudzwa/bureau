@@ -28,9 +28,26 @@ def bot_action(message,client):
         response_message = initial_handler(message, client)
     elif client.stage == 'menu':
         response_message = menu_handler(message, client)
+    elif stage == 'proc_hanler':
+        response_message == proc_handler()
     else:
         pass
     return response_message
+
+def proc_handler(client, message):
+    if client.nlp_stage == 'all_data_available':
+        if client.position == 1 :
+            do action 
+    elif client.nlp_stage == "missing_currencies":
+        if position == 1: 
+            ask client for currency a 
+        elif position == 2:
+            ask client for currency b 
+        elif position == 3: 
+            complete Transaction
+    elif client.nlp_stage == "no_amount":
+        if position == 1 :
+            ask client for amount 
 
 def initial_handler(message, client):
     if client.position == 1:
@@ -68,10 +85,14 @@ def menu_handler(message, client):
             request.action = 'BUY'
             response_message = 'What currency would you like to buy?'
             request.save_to_db()
-        else : 
+        elif 'sll' or 2  : 
             request.action = 'SELL'
             response_message = 'What currency would you like to sell?'
             request.save_to_db()
+        else: 
+            analyze information 
+            after analysis 
+            analysis(message)
         client.position = 2 
         client.last_request_id = request.id
         client.save_to_db()
@@ -100,6 +121,12 @@ def menu_handler(message, client):
         client.position = 0
         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
 
+def analysis(message):
+    get the message 
+    get the classification \
+    assign nlp class and position based on response 
+    set stage == proc handler 
+    if the model could no classify set stage to menu and position 0 and return asking the user to enter correct information
 
 '''
 

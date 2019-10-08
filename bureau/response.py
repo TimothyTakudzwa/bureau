@@ -7,7 +7,7 @@ from sqlalchemy import desc
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '2637774234490'
+    phone_number = '2637774234390'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -26,9 +26,10 @@ def bot_action(message,client):
     if client.stage == 'initial':
         print("Got in here")
         response_message = initial_handler(message, client)
+    elif client.stage == 'menu':
+        response_message = menu_handler(message, client)
     else:
-        #response_message = "Test response"
-        response_message = initial_handler(message, client)
+        pass
     return response_message
 
 def initial_handler(message, client):
@@ -53,84 +54,77 @@ def initial_handler(message, client):
         client.position = 0
         client.save_to_db()
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
-    elif client.position == 0:
-        if message == "menu":
-            response_message = "Welcome To The Options Menu. Please Press (1) To Select Buy and (2) To Sell"
-        elif message == "1":
-            '''rqs = ''
-            reqs = Requests.query.filter_by(action='BUY').all()
-            for req in reqs:
-                rqs += str(req.id)+ ") " + str(req.currency_a) + " : " + str(req.currency_b) + " ," + str(req.amount) + " **** "'''
-            response_message = "You Have Selected Buy Option. Please  Transact by typing `buy` Followed The Two Currencies You Wish To Trade and amount. Eg `buy USD ZWL 1000`"
-            menu_options_handler(client, message)
-        elif message.startswith("buy"):
-            if len(message.split()) < 4:
-                return "Your Command Is Incomplete! Follow this example `Eg buy USD ZWL 1000` "
-            currency_a = message.split()[1]
-            currency_b = message.split()[2]
-            amount = message.split()[3]
-            rates = Rates.query.filter_by(currency_a=currency_a).filter_by(currency_b=currency_b).filter_by(action='BUY').order_by('rate').all()
-            if not rates :
-                return "Sorry No Entries Exist for this query"
-            rate = rates[0]    
-            req = str(rate.currency_a) + " : " + str(rate.currency_b) + " " +"Rate :{}".format(rate.rate) + " " + "Successful!"
-            try:
-                request_obj = Requests(currency_a=rate.currency_a, currency_b=rate.currency_b, amount=amount, date=datetime.today(), action='BUY', rating=2)
-                request_obj.save_to_db()
-                return f"Buying {req}"
-            except Exception as e:
-                raise e    
-                return f"Error Creating Request{req}"   
-        elif message == "2":
-            response_message = "You Have Selected Sell Option. Initiate Transaction by typing 'sell', Followed The Two Currencies You Wish To Trade and amount. Eg `sell USD ZWL 1000`" 
-            menu_options_handler(client, message)
-        elif message.startswith("sell"):
-            if len(message.split()) < 4:
-                return "Your Command Is Incomplete! Follow this example `Eg buy USD ZWL 1000` "
-            currency_a = message.split()[1]
-            currency_b = message.split()[2]
-            amount = message.split()[3]
-            rates = Rates.query.filter_by(currency_a=currency_a).filter_by(currency_b=currency_b).filter_by(action='SELL').order_by(desc('rate')).all()
-            if not rates:
-                return "Sorry No Entries Exist for this query"
-            rate = rates[0]      
-            req = str(rate.currency_a) + " : " + str(rate.currency_b) + " " +"Rate :{}".format(rate.rate) + " " + "Successful!"
-
-            try:
-                request_obj = Requests(currency_a=rate.currency_a, currency_b=rate.currency_b, amount=amount, date=datetime.today(), action='SELL', rating=2)
-                request_obj.save_to_db()
-                return f"Selling {req}" 
-            except Exception as e:
-                raise e
-                return f"Error Creating Request{req}"        
-        else:
-            response_message = "Please Enter Either (1) To Select Buy or (2) To Select Sell "
-
     return response_message
-    # if client.position == 1 :
-    #     ask the user for the address 
-    #     update the user position to position 2 
-    #     response_message = ''
-    # elif position == 2 :
-    #     save the address which is coming with the message 
-    #     update the position of the user to position 3 
-    #     ask the user for their destination bank 
-    # elif positon 3 
-    #     save the destination bank 
-    #     update positon = 4 
-    #     request for the account nmber 
-    # elif positon 4 
-    #     update stage = menu 
-    #     set position = 0 
-    #     congratulate the user for succesful registration 
-    # else:
-    #     pass
+   
+def menu_handler(message, client):
+    if client.position == 0  or message == 'menu':
+        client.position = 1 
+        client.save_to_db() 
+        response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
+    elif client.position == 1: 
+        request = Requests()
+        request.save_to_db() 
+        if message == 'buy' or message == '1' :
+            request.action = 'BUY'
+            response_message = 'What currency would you like to buy?'
+            request.save_to_db()
+        else : 
+            request.action = 'SELL'
+            response_message = 'What currency would you like to sell?'
+            request.save_to_db()
+        client.position = 2 
+        client.last_request_id = request.id
+        client.save_to_db()
 
-def menu_options_handler(client, message):
-    if message == "1":
-        return "\nInitiating Your Option To Buy\n Your Acocount {0} to {1}".format(client.account_no, client.destination_bank)
-        # initiate purchase here
-    if message == "2":
-        "\nYou Have Selected The Option To Buy\n Your Account {0} to {1}".format(client.account_no, client.destination_bank)
-        # initiate sale here
+
+    elif client.position == 2: 
+        req = Requests.get_by_id(client.last_request_id)
+        req.currency_a = message
+        response_message = 'what currency would you want?'
+        client.position = 3
+        req.save_to_db()
+        client.save_to_db()
+    
+    elif client.position == 3:
+        req = Requests.get_by_id(client.last_request_id)
+        req.currency_b = message
+        response_message = 'Amount?'
+        client.position = 4
+        req.save_to_db()
+        client.save_to_db()
+    
+    elif client.position == 4:
+        req = Requests.get_by_id(client.last_request_id)
+        req.amount = message
+        req.save_to_db()
+        client.position = 0
+        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+
+
+'''
+
+    if  == 'menu':
+        req = Requests(position=1)
+        req.save_to_db()
+        response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
+    elif req.position == 1:
+        if message == '1':
+            req.action = 'BUY'
+            req.position = 2
+            req.save_to_db()
+            response_message = 'Which currency do you want to buy?'
+        elif message == '2':
+            req.action = 'SELL'
+            req.position = 2
+            req.save_to_db()
+            response_message = 'Which currency do you want to sell?'
+        else:
+            response_message = 'Please select a valid option\n 1) Buy\n 2) Sell'
+    elif req.position == 2:
+        req.currency_a = message
+        req.position = 3
+        req.save_to_db()
+        response_message = 'Which currency do you require?'
+
+        '''
 

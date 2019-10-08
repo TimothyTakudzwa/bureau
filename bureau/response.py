@@ -24,12 +24,9 @@ def response():
 def bot_action(message,client):
     print(client)
     if client.stage == 'initial':
-        print("Got in here")
         response_message = initial_handler(message, client)
-    elif client.stage == 'menu':
-        response_message = menu_handler(message, client)
     else:
-        pass
+        response_message = menu_handler(message, client)
     return response_message
 
 def initial_handler(message, client):
@@ -54,6 +51,49 @@ def initial_handler(message, client):
         client.position = 0
         client.save_to_db()
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
+
+    elif client.position == 0  or message == 'menu':
+        client.position = 1 
+        client.save_to_db() 
+        response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
+    elif client.position == 1: 
+        request = Requests()
+        request.save_to_db() 
+        if message == 'buy' or message == '1' :
+            request.action = 'BUY'
+            response_message = 'What currency would you like to buy?'
+            request.save_to_db()
+        else : 
+            request.action = 'SELL'
+            response_message = 'What currency would you like to sell?'
+            request.save_to_db()
+        client.position = 2 
+        client.last_request_id = request.id
+        client.save_to_db()
+
+
+    elif client.position == 2: 
+        req = Requests.get_by_id(client.last_request_id)
+        req.currency_a = message
+        response_message = 'what currency would you want?'
+        client.position = 3
+        req.save_to_db()
+        client.save_to_db()
+    
+    elif client.position == 3:
+        req = Requests.get_by_id(client.last_request_id)
+        req.currency_b = message
+        response_message = 'Amount?'
+        client.position = 4
+        req.save_to_db()
+        client.save_to_db()
+    
+    elif client.position == 4:
+        req = Requests.get_by_id(client.last_request_id)
+        req.amount = message
+        req.save_to_db()
+        client.position = 0
+        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
     return response_message
    
 def menu_handler(message, client):
@@ -99,6 +139,8 @@ def menu_handler(message, client):
         req.save_to_db()
         client.position = 0
         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+    
+    return response_message
 
 
 '''

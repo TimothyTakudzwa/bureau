@@ -51,6 +51,7 @@ class Client(db.Model):
     stage = db.Column(db.String(50))
     position = db.Column(db.Integer)
     is_required = db.Column(db.Boolean)
+    last_request_id = db.Column(db.Integer)
 
     # def block_unblock_toggle(self):
     #     if self.is_blocked:
@@ -79,7 +80,7 @@ class Bureau(UserMixin,db.Model):
     name = db.Column(db.String(100))
     address = db.Column(db.String(100))
     email = db.Column(db.String(100))    
-    phone = db.Column(db.String(100))    
+    #phone = db.Column(db.String(100))    
     # phone_number = db.Column(db.String(50))
     latitude = db.Column(db.String(100))
     longitude = db.Column(db.String(100))
@@ -164,6 +165,7 @@ class Requests(db.Model):
     date = db.Column(db.DateTime)
     action = db.Column(db.String(100))
     rating = db.Column(db.Integer)
+
     
 
     @classmethod

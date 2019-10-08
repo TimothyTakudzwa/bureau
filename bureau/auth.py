@@ -9,7 +9,12 @@ from .models import db, Bureau
 from .import login_manager
 
 
-# Blueprint Configuration
+# Blueprint Configuration 
+
+"""
+Please put initialization of blueprrints in init files 
+
+"""
 auth = Blueprint('auth', __name__,
                     template_folder='templates',
                     static_folder='static')

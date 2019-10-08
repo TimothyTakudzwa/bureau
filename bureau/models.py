@@ -167,7 +167,6 @@ class Requests(db.Model):
     rating = db.Column(db.Integer)
 
     
-
     @classmethod
     def get_by_id(self,id):
         return Requests.query.filter_by(id=id).first()

@@ -25,6 +25,7 @@ def bot_action(message,client):
     print(client)
     if client.stage == 'initial':
         response_message = initial_handler(message, client)
+    # Please specify stage for menu on your if statement
     else:
         response_message = menu_handler(message, client)
     return response_message
@@ -52,6 +53,10 @@ def initial_handler(message, client):
         client.save_to_db()
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
 
+
+    # Please create a separate function to handle the menu and do not mix it with the initial handler, if you are not using this please remove it to avoid having unneccessary code 
+    # Identify actions that you are consistent in all your functions and modularize, avoid repeating yourself.
+    # Please handle case sensitivity on messae for buy and sell 
     elif client.position == 0  or message == 'menu':
         client.position = 1 
         client.save_to_db() 
@@ -102,6 +107,7 @@ def menu_handler(message, client):
         client.save_to_db() 
         response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
     elif client.position == 1: 
+        # Please add the client_id on the request made and link to the client who is making the request
         request = Requests()
         request.save_to_db() 
         if message == 'buy' or message == '1' :

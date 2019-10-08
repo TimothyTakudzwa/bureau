@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request, flash, url_for, redirect, make_response
 from .models import * 
-from . import app,db
+from . import app, db
 from flask_login import login_required, logout_user, current_user, login_user
 from .import login_manager
 from twilio.twiml.messaging_response import MessagingResponse
@@ -16,7 +16,7 @@ def trade():
 	return render_template('trading.html')
 
 
-@app.route('/trading', methods=['GET','POST'])
+@app.route('/trading', methods=['GET', 'POST'])
 def trading_chatbot():
     df = pd.read_csv("my_csv.csv")
     df.columns = ["Sentence","Category"]

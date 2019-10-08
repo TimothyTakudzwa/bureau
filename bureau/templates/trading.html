@@ -12,13 +12,13 @@
             <div class="card-body">
             
                 <form action="/trading" method="POST">
-                  
-                  <h3><b>user request: {{input_sentence}}</b></h3>
+              
+                  <h3><b> {{input_sentence}}</b></h3>
                   
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="input_sentence" ></label>
-                        <input type="text" name="input_sentence" id="input_sentence" value="{{input_sentence}}" class="form-control">
+                        <input type="text" name="input_sentence" id="input_sentence" value="{{category}}" class="form-control">
                        </div>
                       </div>
                       <input type="submit" value="get category" class="form control btn btn-success" >

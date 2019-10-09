@@ -40,4 +40,4 @@ def rates_today():
     rates_today = Rates.query.filter_by(date=date).filter_by(currency_a=currency_a).filter_by(currency_b=currency_b).all()
     print(rates_today)
     return render_template('dashboard/rates_today.html', rates_today=rates_today, form=form)
-    
+   

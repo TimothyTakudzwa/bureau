@@ -116,3 +116,4 @@ def bureau_query(bureau_id, currency_a, currency_b):
 def transactions():
     transactions = Transaction.query.all()
     return render_template('dashboard/my_transactions.html', transactions=transactions)
+

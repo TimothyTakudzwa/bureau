@@ -160,6 +160,7 @@ class AuditTrail(db.Model):
 class Requests(db.Model):
     __tablename___= 'Requests'
     id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer)
     currency_a = db.Column(db.String(70))
     currency_b = db.Column(db.String(70))
     amount = db.Column(db.Float)

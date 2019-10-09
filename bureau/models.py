@@ -52,6 +52,7 @@ class Client(db.Model):
     position = db.Column(db.Integer)
     is_required = db.Column(db.Boolean)
     last_request_id = db.Column(db.Integer)
+    nlp_stage = db.Column(db.String(100))
 
     # def block_unblock_toggle(self):
     #     if self.is_blocked:

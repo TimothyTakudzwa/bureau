@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, url_for, redirect
 from .forms import ResponseForm
 from .models import *
+
 from . import app,db
 # Load data preprocessing libraries
 import pandas as pd
@@ -128,3 +129,4 @@ def tred():
 @app.route('/trader', methods=['GET', 'POST'])
 def trader():
     return render_template('completed.html')
+

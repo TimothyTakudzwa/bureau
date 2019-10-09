@@ -13,7 +13,7 @@ from sqlalchemy import desc
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '2637774234390'
+    phone_number = '2637777657490'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -111,7 +111,6 @@ def proc_handler(client, message):
         
         return response_message
            
-
 def initial_handler(message, client):
     if client.position == 1:
         client.name = message
@@ -135,10 +134,6 @@ def initial_handler(message, client):
         client.save_to_db()
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
 
-
-    # Please create a separate function to handle the menu and do not mix it with the initial handler, if you are not using this please remove it to avoid having unneccessary code 
-    # Identify actions that you are consistent in all your functions and modularize, avoid repeating yourself.
-    # Please handle case sensitivity on message for buy and sell 
     elif client.position == 0  or message == 'menu':
         client.position = 1 
         client.save_to_db() 

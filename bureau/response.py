@@ -77,7 +77,7 @@ def menu_handler(message, client):
             request.action = 'BUY'
             response_message = 'What currency would you like to buy?'
             request.save_to_db()
-        else : 
+        elif message.lower() == 'sell' or message == '2' : 
             request.action = 'SELL'
             response_message = 'What currency would you like to sell?'
             request.save_to_db()
@@ -100,7 +100,7 @@ def menu_handler(message, client):
             req.currency_b = message
             req.save_to_db()
         else:
-            response_message = "No Request Object N"     
+            response_message = "No Request Object"     
 
         response_message = 'Amount?'
         response_message = update_stage(client,4,response_message)

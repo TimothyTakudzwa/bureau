@@ -120,8 +120,6 @@ def my_route():
 @app.route('/traders', methods=['GET', 'POST'])
 def traders():
     form = ResponseForm()
-    phone_number = '263774231343'
-    Client = Client()
     response_message = "Hello"
     print(request.method)
     if request.method == 'POST':

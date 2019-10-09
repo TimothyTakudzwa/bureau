@@ -1,12 +1,12 @@
- buying,b
-I want to sell,c
-I have us,d
-I have rtgs,b
-I need us,b
-converting us,d
-wanna sell,c
-I have us I need rtgs,d
-want to convert my us to rtgs,d
+ buying,buy_only
+I want to sell,sell_only
+I have us,sell_only
+I have rtgs,buy_only
+I need us,buy_only
+converting us,sell_only
+wanna sell,sell_only
+I have us I need rtgs,sell_only
+want to convert my us to rtgs,sell_only
 bond,zwl
 ecocash,zwl
 zwl,zwl

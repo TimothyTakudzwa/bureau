@@ -123,25 +123,21 @@ def proc_handler(client, message):
 def initial_handler(message, client):
     if client.position == 1:
         client.name = message
-        client.position = 2
-        client.save_to_db()
         response_message = 'Whats your physical address'
+        response_message = update_stage(client,2,response_message)
     elif client.position == 2:
         client.address = message
-        client.position = 3
-        client.save_to_db()
         response_message = 'May I know the bank you wish to transfer the funds'
+        response_message = update_stage(client,3,response_message)
     elif client.position == 3:
         client.destionation_bank = message
-        client.position = 4
-        client.save_to_db()
         response_message = 'Please provide the account number'
+        response_message = update_stage(client,4,response_message)
     elif client.position == 4:
         client.account_no = message
         client.stage = 'menu'
-        client.position = 0
-        client.save_to_db()
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
+        response_message = update_stage(client,0,response_message)
 
     elif client.position == 0  or message == 'menu':
         client.position = 1 
@@ -235,7 +231,7 @@ def menu_handler(message, client):
             req.currency_b = message
             req.save_to_db()
         else:
-            response_message = "No Request Object N"     
+            response_message = "No Request Object"     
 
         response_message = 'Amount?'
         response_message = update_stage(client,4,response_message)

@@ -15,7 +15,7 @@ from sqlalchemy import desc
 def response():
     global response_message
     form = ResponseForm()
-    phone_number = '263774231343'
+    phone_number = '263774531555'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -36,6 +36,9 @@ def update_stage(client,position,msg):
 def bot_action(message,client):
     print(client)
     if client.stage == 'initial':
+        print('I am in here')
+        print(client.position)
+        print(client.stage)
         response_message = initial_handler(message, client)
     elif client.stage == 'menu':
         response_message = menu_handler(message, client)
@@ -434,36 +437,48 @@ def initial_handler(message, client):
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
         response_message = update_stage(client,0,response_message)
 
+    return response_message
+
     # Please create a separate function to handle the menu and do not mix it with the initial handler, if you are not using this please remove it to avoid having unneccessary code 
     # Identify actions that you are consistent in all your functions and modularize, avoid repeating yourself.
     # Please handle case sensitivity on messae for buy and sell
  
 def menu_handler(message, client):
+    response_message = ""
     if client.position == 0  or message == 'menu':
         response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
         response_message = update_stage(client,1,response_message)
     elif client.position == 1: 
         # Please add the client_id on the request made and link to the client who is making the request
-        request = Requests()
-        request.client_id = client.id #First ammendment
-        request.save_to_db()
-        client.last_request_id = request.id
+        req = Requests()
+        req.client_id = client.id #First ammendment
+        req.save_to_db()
+        client.last_request_id = req.id
         client.save_to_db()
         if message.lower() == 'buy' or message == '1' :
-            request.action = 'BUY'
+            req.action = 'BUY'
             currencies = Currencies.query.all()
             currency_list = ''
-   
-            response_message = 'What currency would you like to buy? \n\n'
+            message_response = 'What currency would you like to buy? \n\n'
             currencies = Currencies.query.all()
             i = 1
             for currency in currencies:
-                response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
+                message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-            request.save_to_db()
+                
+            successful, message = analyze_input(message, currencies, message_response )
+            if successful:
+                req.currency_a = message
+            req.save_to_db()
+            response_message = 'What Currency Do You Want?'
+            response_message = update_stage(client,2,response_message)
+            currencies = Currencies.query.all()
+                
+   
+                    
        
         elif message.lower() == 'sell' or message == '2' : 
-            request.action = 'SELL'
+            req.action = 'SELL'
             currencies = Currencies.query.all()
             currency_list = ''
    
@@ -473,7 +488,7 @@ def menu_handler(message, client):
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-            request.save_to_db()
+            req.save_to_db()
       
         else:
                 response_message = analysis(message,client)
@@ -484,18 +499,21 @@ def menu_handler(message, client):
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
 
-        if req:
-            req.currency_a=messae
-            req.save_to_db
+        i = 1
+        response_message = "What Do You Currency Want?"
 
-            response_message = "What currency Do You Want"
-            response_message = update_stage(client,3,response_message)
-           
-        else:
-            response_message = "No Request Object" 
+        for currency in currencies:
+            response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
+            i += 1
+            successful, message = analyze_input(message,currencies,response_message)
+            if successful:
+                req.currency_a = message
+                req.save_to_db()
+                response_message = update_stage(client,3,response_message)
+
+        response_message = update_stage(client,3,response_message)
+
                   
-            
-   
     elif client.position == 3:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
@@ -508,20 +526,14 @@ def menu_handler(message, client):
             i += 1   
             successful, message = analyze_input(message, currencies, message_response )
             if successful:
-                req.currency_a = message
+                req.currency_b = message
                 req.save_to_db()
-                response_message = 'what currency would you want?'
-                response_message = update_stage(client,3,response_message)
-                currencies = Currencies.query.all()
-                i = 1
-                for currency in currencies:
-                    response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
-                    i += 1    
-                    
-                update_stage(client,4,response_message)
+                response_message = 'amount?'
+                response_message = update_stage(client,4,response_message)
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
+        response_message = ""
         if req:
             req.amount = message
             req.date = datetime.now()

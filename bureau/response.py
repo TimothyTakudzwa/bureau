@@ -488,8 +488,8 @@ def menu_handler(message, client):
             req.currency_a=messae
             req.save_to_db
 
-        response_message = "What currency Do You Want"
-        response_message = update_stage(client,3,response_message)
+            response_message = "What currency Do You Want"
+            response_message = update_stage(client,3,response_message)
            
         else:
             response_message = "No Request Object" 

@@ -15,7 +15,7 @@ from .transactions import *
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '263774555111'
+    phone_number = '263774545111'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -317,9 +317,14 @@ def initial_handler(message, client):
     elif client.position == 2:
         client.address = message
         response_message = 'Which bank do you want funds credited in?'
+        banks = Banks.query.all()
+        i = 1
+        for bank in banks:
+            response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
+            i += 1
         response_message = update_position(client,3,response_message)
     elif client.position == 3:
-        client.destination_bank = message
+        client.destination_bank = message #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
         response_message = 'Please provide the account number'
         response_message = update_position(client,4,response_message)
     elif client.position == 4:

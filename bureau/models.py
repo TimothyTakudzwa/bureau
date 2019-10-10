@@ -215,4 +215,3 @@ class Banks(db.Model):
     def get_by_id(self,id):
         return Banks.query.filter_by(id=id).first()
 
- 

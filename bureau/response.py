@@ -412,9 +412,6 @@ def initial_handler(message, client):
 
     return response_message
 
-    # Please create a separate function to handle the menu and do not mix it with the initial handler, if you are not using this please remove it to avoid having unneccessary code 
-    # Identify actions that you are consistent in all your functions and modularize, avoid repeating yourself.
-    # Please handle case sensitivity on messae for buy and sell
  
 def menu_handler(message, client):
     response_message = ""
@@ -422,16 +419,15 @@ def menu_handler(message, client):
         response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
         response_message = update_stage(client,1,response_message)
     elif client.position == 1: 
-        # Please add the client_id on the request made and link to the client who is making the request
         req = Requests()
-        req.client_id = client.id #First ammendment
+        req.client_id = client.id
         req.save_to_db()
         client.last_request_id = req.id
         client.save_to_db()
         if message.lower() == 'buy' or message == '1' :
             req.action = 'BUY'
             currencies = Currencies.query.all()
-            message_response = 'What currency would you like to buy? \n\n'
+            message_response = 'Which currency would you like to buy? \n\n'
             i = 1
             for currency in currencies:
                 message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
@@ -444,8 +440,7 @@ def menu_handler(message, client):
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
             currencies = Currencies.query.all()
-            currency_list = ''
-            response_message = 'What currency would you like to sell? \n\n'
+            response_message = 'Which currency would you like to sell? \n\n'
             i = 1
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
@@ -465,7 +460,7 @@ def menu_handler(message, client):
         req = Requests.get_by_id(client.last_request_id)
 
         i = 1
-        response_message = "What Do You Currency Want?"
+        response_message = "Which Currency do you Want?"
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1
@@ -529,40 +524,6 @@ def analyze_input(message, currencies, response_message):
             #the message is incorrect
             error_message = "The Option You Entered Is Invalid" 
             return False, error_message + response_message
-'''
-def make_changes(message, client):
-    check if there is a digit in the message    
-    get a list of all currencies 
-    classify whether it is buy or sell 
-    if it is buy 
-        if there is a digit 
-            extract the amount from the message send by the user 
-            create a list of currencies that are in the list
-            loop through every word and check if it is a currency
-            if it is a currency apend to the list of my_currencies 
-            get size of my_currencies list 
-            if size == 0 :
-                class = everything is there 
-            elif size == 1: 
-                class = from currency is there 
-            elif size == 2:
-                class = all is there 
-            else:
-                respond with incorrect message 
-        else:
-            create a list of currencies that are in the list
-            loop through every word and check if it is a currency
-            if it is a currency apend to the list of my_currencies 
-            get size of my_currencies list 
-            if size == 0 :
-                class = nothing is there 
-            elif size == 1: 
-                class = from currency is there without amount
-            elif size == 2:
-                class = all is there no amount 
-            else:
-                respond with incorrect message 
-'''
 
 def analysis(message,client):
     df = pd.read_csv("my_csv.csv")

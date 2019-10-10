@@ -10,6 +10,7 @@ from .forms import ResponseForm
 from .models import *
 from . import app,db
 from sqlalchemy import desc
+from .transactions import *
 
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
@@ -459,15 +460,15 @@ def menu_handler(message, client):
             req.action = 'BUY'
             currencies = Currencies.query.all()
             currency_list = ''
-            message_response = 'What currency would you like to buy? \n\n'
+            response_message = 'What currency would you like to buy? \n\n'
             i = 1
             for currency in currencies:
-                message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+                response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
 
-            successful, message = analyze_input(message, currencies, message_response )
+            successful, message = analyze_input(message, currencies, response_message )
 
-            response_message = update_stage(client,2,message_response)
+            response_message = update_stage(client,2,response_message)
                   
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
@@ -512,9 +513,9 @@ def menu_handler(message, client):
         currencies = Currencies.query.all()
         i = 1
         for currency in currencies:
-            message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+            response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1   
-        successful, message = analyze_input(message, currencies, message_response )
+        successful, message = analyze_input(message, currencies, response_message )
         if successful:
             req.currency_b = message
             req.save_to_db()
@@ -524,11 +525,27 @@ def menu_handler(message, client):
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
         response_message = ""
+        tran = ""
         if req:
             req.amount = message
             req.date = datetime.now()
             req.save_to_db()
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+            # Make Transaction With The Highest Available Rate
+            rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+            if rate:
+                date = datetime.now()
+                ref_no = "#45653356522"
+                total_amount = (req.amount * rate.rate)
+                tran = Transaction(client_id=client.id, bureau_id=rate.bureau_id, total_amount=total_amount, rate=rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=00000, completed=True, amount=req.amount)
+                bureau = Bureau.get_by_id(rate.bureau_id) 
+                tran.save_to_db()
+                if tran:
+                    response_message = 'Completed! :Transaction details\n {0}\n{1}\n{2}\n{3}\n{4}' .format(tran.id, bureau.name ,tran.total_amount, tran.transaction_type,tran.reference_number)
+                else:
+                    response_message = "Transaction Failed"
+            else:
+                response_message = f"No Rate Availabe {rate}"    
+
         else:
             response_message = "No Request Object" 
         
@@ -536,7 +553,8 @@ def menu_handler(message, client):
 
     return response_message
 
-def analyze_input(message, currencies, response_message):
+def analyze_input(message, list_data, response_message):
+    currencies = Currencies.query.all()
     currency_codes = [currency.currency_code.lower() for currency in currencies]
     # Check if message is a digit
 

@@ -3,6 +3,7 @@ from .models import *
 from .constants import * 
 from datetime import datetime, timedelta
 from sqlalchemy import desc
+import base64
 
 def encrypt(client_id,bureau_id,total_amount,date,rate):
 	data = f"{client_id,bureau_id,total_amount,date,rate}"

@@ -414,6 +414,13 @@ def menu_handler(message, client):
             req.date = datetime.now()
             req.save_to_db()
             # Make Transaction With The Highest Available Rate
+            
+            '''
+            if req.action == 'BUY'
+                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
+            elif req.action == 'SELL':
+                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+            '''
             rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
             if rate:
                 date = datetime.now()

@@ -15,7 +15,7 @@ from sqlalchemy import desc
 def response():
     global response_message
     form = ResponseForm()
-    phone_number = '263774231343'
+    phone_number = '263774531555'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -36,6 +36,9 @@ def update_stage(client,position,msg):
 def bot_action(message,client):
     print(client)
     if client.stage == 'initial':
+        print('I am in here')
+        print(client.position)
+        print(client.stage)
         response_message = initial_handler(message, client)
     elif client.stage == 'menu':
         response_message = menu_handler(message, client)
@@ -433,6 +436,8 @@ def initial_handler(message, client):
         client.stage = 'menu'
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
         response_message = update_stage(client,0,response_message)
+
+    return response_message
 
     # Please create a separate function to handle the menu and do not mix it with the initial handler, if you are not using this please remove it to avoid having unneccessary code 
     # Identify actions that you are consistent in all your functions and modularize, avoid repeating yourself.

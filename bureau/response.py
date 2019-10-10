@@ -15,7 +15,7 @@ from sqlalchemy import desc
 def response():
     global response_message
     form = ResponseForm()
-    phone_number = '263774531555'
+    phone_number = '263774555111'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -458,7 +458,6 @@ def menu_handler(message, client):
         if message.lower() == 'buy' or message == '1' :
             req.action = 'BUY'
             currencies = Currencies.query.all()
-            currency_list = ''
             message_response = 'What currency would you like to buy? \n\n'
             currencies = Currencies.query.all()
             i = 1
@@ -473,9 +472,10 @@ def menu_handler(message, client):
             response_message = 'What Currency Do You Want?'
             response_message = update_stage(client,2,response_message)
             currencies = Currencies.query.all()
-                
-   
-                    
+            i = 1
+            for currency in currencies:
+                message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+                i += 1         
        
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
@@ -491,7 +491,7 @@ def menu_handler(message, client):
             req.save_to_db()
       
         else:
-                response_message = analysis(message,client)
+            response_message = analysis(message,client)
               
         response_message = update_stage(client,2,response_message)   
 
@@ -500,7 +500,7 @@ def menu_handler(message, client):
         req = Requests.get_by_id(client.last_request_id)
 
         i = 1
-        response_message = "What Do You Currency Want?"
+        response_message = "Which Currency Do You Want?"
 
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
@@ -624,4 +624,5 @@ def analysis(message,client):
     
     else:
         client.stage = 'menu'
+
         

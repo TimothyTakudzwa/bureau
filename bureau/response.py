@@ -55,6 +55,8 @@ def proc_handler(client, message):
         if client.position == 1:
             req = Requests.get_by_id(client.last_request_id)
             req.action = 'sell'
+            req.save_to_db()
+            client.save_to_db() 
             amount = int(filter(str.isdigit, message))
             if amount is not None:
                 req.amount = amount
@@ -62,146 +64,134 @@ def proc_handler(client, message):
                 client.save_to_db() 
                 currencies = Currencies.query.all()
                 my_currencies = [currencies]
-                for currency in my_currencies:
-                    words = list(message.split())
-                    message_currencies = []
-                    for word in words:
-                        if currency == word:
-                            message_currencies.append()
-                            client.position == 1
-                            currency_size = len(message_currencies)
-                            if currency_size == 1:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.position == 2
-                                    response_message = 'what currency do you want'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 2:
-                                    req.currency_b = message
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                words = list(message.split())
+                message_currencie = [currency for currency in words if currency in my_currencies]
+                currency_size = len(message_currency)
+                client.position == 1
 
-                                return response_message
+                if currency_size == 1:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.position == 2
+                        response_message = 'which currency do you want'
+                        req.save_to_db()
+                        client.save_to_db()           
+                    elif client.position == 2:
+                        req.currency_b = message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
+                    return response_message
+                
+                elif currency_size == 2:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.currency_b=message_currencies[1]
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
+                    return response_message
 
-                            
-                            elif currency_size == 2:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.currency_b=message_currencies[1]
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                                
-                                return response_message
+                else:
+                    if client.position == 1:
+                        response_message = 'Which currency do you have?'
+                        req.position == 2
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 2:
+                        req.currency_a=message
+                        response_message = 'which currency do you want'
+                        req.position == 3
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 3:
+                        req.currency_b =message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message
 
-                        else:
-                            if client.position == 1:
-                                response_message = 'What currency do you have?'
-                                req.position == 2
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 2:
-                                req.currency_a=message
-                                response_message = 'what currency do you want'
-                                req.position == 3
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 3:
-                                req.currency_b =message
-                                req.position == 0
-                                req.save_to_db()
-                                client.save_to_db()
-                                response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-
-                            return response_message
-                                           
-                        
-                                              
             else:
                 currencies = Currencies.query.all()
                 my_currencies = [currencies]
-                for currency in my_currencies:
-                    words = list(message.split())
-                    message_currencies = []
-                    for word in words:
-                        if currency == word:
-                            message_currencies.append()
-                            client.position==1
-                            currency_size = len(message_currencies)
-                            if currency_size == 1:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.position == 2
-                                    response_message = 'what currency do you want'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 2:
-                                    req.currency_b = message
-                                    req.position == 3
-                                    response_message = 'what currency do you have'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 3:
-                                    req.amount = message
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-
-                                return response_message
+                words = list(message.split())
+                req.position == 1
+                message_currencies = [currency for currency in words if currency in my_currencies]
+                currency_size = len(message_currencies)
+                client.position == 1
+                
+                if currency_size == 1:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.position == 2
+                        response_message = 'which currency do you want'
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 2:
+                        req.currency_b = message
+                        req.position == 3
+                        response_message = 'what is the amount'
+                        req.save_to_db()
+                        client.save_to_db()                       
+                    elif client.position == 3:
+                        req.amount = message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message
                                     
-                            elif currency_size == 2:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.currency_b=message_currencies[1]
-                                    req.position == 2
-                                    response_message = 'what is the amount'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 2:
-                                    req.amount = message
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-
-                                return response_message        
-                        
-                        else:
-                            if client.position == 1:
-                                response_message = 'What currency do you have?'
-                                req.position == 2
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 2:
-                                req.currency_a=message
-                                response_message = 'what currency do you want'
-                                req.position == 3
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 3:
-                                req.currency_b=message
-                                response_message = 'what is the amount'
-                                req.position==4
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 4:
-                                req.amount =message
-                                req.position == 0
-                                req.save_to_db()
-                                client.save_to_db()
-                                response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-
-                            return response_message
+                elif currency_size == 2:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.currency_b=message_currencies[1]
+                        req.position == 2
+                        response_message = 'what is the amount'
+                        req.save_to_db()
+                        client.save_to_db()            
+                    elif client.position == 2:
+                        req.amount = message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message            
+                
+                else:
+                    if client.position == 1:
+                        response_message = 'Which currency do you have?'
+                        req.position == 2
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 2:
+                        req.currency_a=message
+                        response_message = 'which currency do you want'
+                        req.position == 3
+                        req.save_to_db()
+                        client.save_to_db()    
+                    elif client.position == 3:
+                        req.currency_b=message
+                        response_message = 'what is the amount'
+                        req.position==4
+                        req.save_to_db()
+                        client.save_to_db()        
+                    elif client.position == 4:
+                        req.amount =message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message
 
     if client.nlp_stage == "buy":
         if client.position == 1:
             req = Requests.get_by_id(client.last_request_id)
             req.action = 'buy'
+            req.save_to_db()
+            client.save_to_db() 
             amount = int(filter(str.isdigit, message))
             if amount is not None:
                 req.amount = amount
@@ -209,150 +199,133 @@ def proc_handler(client, message):
                 client.save_to_db() 
                 currencies = Currencies.query.all()
                 my_currencies = [currencies]
-                for currency in my_currencies:
-                    words = list(message.split())
-                    message_currencies = []
-                    for word in words:
-                        if currency == word:
-                            message_currencies.append()
-                            client.position == 1
-                            currency_size = len(message_currencies)
-                            if currency_size == 1:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.position == 2
-                                    response_message = 'what currency do you have'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 2:
-                                    req.currency_b = message
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                words = list(message.split())
+                message_currencie = [currency for currency in words if currency in my_currencies]
+                currency_size = len(message_currency)
+                client.position == 1
 
-                                return response_message
+                if currency_size == 1:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.position == 2
+                        response_message = 'which currency do you have'
+                        req.save_to_db()
+                        client.save_to_db()           
+                    elif client.position == 2:
+                        req.currency_b = message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
+                    return response_message
+                
+                elif currency_size == 2:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.currency_b=message_currencies[1]
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
+                    return response_message
 
-                            
-                            elif currency_size == 2:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.currency_b=message_currencies[1]
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                                
-                                return response_message
+                else:
+                    if client.position == 1:
+                        response_message = 'Which currency do you want?'
+                        req.position == 2
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 2:
+                        req.currency_a=message
+                        response_message = 'which currency do you have'
+                        req.position == 3
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 3:
+                        req.currency_b =message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message
 
-                        else:
-                            if client.position == 1:
-                                response_message = 'What currency do you have?'
-                                req.position == 2
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 2:
-                                req.currency_a=message
-                                response_message = 'what currency do you want'
-                                req.position == 3
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 3:
-                                req.currency_b =message
-                                req.position == 0
-                                req.save_to_db()
-                                client.save_to_db()
-                                response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-
-                            return response_message
-                                           
-                        
-                        
-                    
             else:
                 currencies = Currencies.query.all()
                 my_currencies = [currencies]
-                for currency in my_currencies:
-                    words = list(message.split())
-                    message_currencies = []
-                    for word in words:
-                        if currency == word:
-                            message_currencies.append()
-                            client.position==1
-                            currency_size = len(message_currencies)
-                            if currency_size == 1:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.position == 2
-                                    response_message = 'what currency do you have'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 2:
-                                    req.currency_b = message
-                                    req.position == 3
-                                    response_message = 'what is the amount'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 3:
-                                    req.amount = message
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-
-                                return response_message
+                words = list(message.split())
+                req.position == 1
+                message_currencies = [currency for currency in words if currency in my_currencies]
+                currency_size = len(message_currencies)
+                client.position == 1
+                
+                if currency_size == 1:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.position == 2
+                        response_message = 'which currency do you have'
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 2:
+                        req.currency_b = message
+                        req.position == 3
+                        response_message = 'what is the amount'
+                        req.save_to_db()
+                        client.save_to_db()                       
+                    elif client.position == 3:
+                        req.amount = message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message
                                     
-                            elif currency_size == 2:
-                                if client.position == 1:
-                                    req.currency_a=message_currencies[0]
-                                    req.currency_b=message_currencies[1]
-                                    req.position == 2
-                                    response_message = 'what is the amount'
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                elif client.position == 2:
-                                    req.amount = message
-                                    req.position == 0
-                                    req.save_to_db()
-                                    client.save_to_db()
-                                    response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                elif currency_size == 2:
+                    if client.position == 1:
+                        req.currency_a=message_currencies[0]
+                        req.currency_b=message_currencies[1]
+                        req.position == 2
+                        response_message = 'what is the amount'
+                        req.save_to_db()
+                        client.save_to_db()            
+                    elif client.position == 2:
+                        req.amount = message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message            
+                
+                else:
+                    if client.position == 1:
+                        response_message = 'Which currency do you want?'
+                        req.position == 2
+                        req.save_to_db()
+                        client.save_to_db()
+                    elif client.position == 2:
+                        req.currency_a=message
+                        response_message = 'which currency do you have'
+                        req.position == 3
+                        req.save_to_db()
+                        client.save_to_db()    
+                    elif client.position == 3:
+                        req.currency_b=message
+                        response_message = 'what is the amount'
+                        req.position==4
+                        req.save_to_db()
+                        client.save_to_db()        
+                    elif client.position == 4:
+                        req.amount =message
+                        req.position == 0
+                        req.save_to_db()
+                        client.save_to_db()
+                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+                    return response_message        
 
-                                return response_message        
-                        
-                        else:
-                            if client.position == 1:
-                                    response_message = 'What currency do you have?'
-                                    req.position == 2
-                                    req.save_to_db()
-                                    client.save_to_db()
-                            elif client.position == 2:
-                                req.currency_a=message
-                                response_message = 'what currency do you want'
-                                req.position == 3
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 3:
-                                req.currency_b=message
-                                response_message = 'what is the amount'
-                                req.position==4
-                                req.save_to_db()
-                                client.save_to_db()
-                            elif client.position == 4:
-                                req.amount =message
-                                req.position == 0
-                                req.save_to_db()
-                                client.save_to_db()
-                                response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-
-                            return response_message
-
-                    
-            
     elif client.nlp_stage == "buy_only":
         if client.position == 1:
             req= Requests.get_by_id(client.last_request_id)
             req.action = 'buy' 
-            response_message = 'What currency do you have?'
+            response_message = 'Which currency do you have?'
             req.position == 2
             req.save_to_db()
             client.save_to_db()
@@ -360,7 +333,7 @@ def proc_handler(client, message):
         elif client.position == 2:
             req = Requests.get_by_id(client.last_request_id)
             req.currency_a = message
-            response_message = 'what currency would you want?'
+            response_message = 'which currency would you want?'
             client.position = 3
             req.save_to_db()
             client.save_to_db() 
@@ -386,7 +359,7 @@ def proc_handler(client, message):
         if client.position == 1:
             req= Requests.get_by_id(client.last_request_id)
             req.action = 'sell' 
-            response_message = 'What currency do you want to sell?'
+            response_message = 'Which currency do you want to sell?'
             req.position == 2
             req.save_to_db()
             client.save_to_db()
@@ -394,7 +367,7 @@ def proc_handler(client, message):
         elif client.position == 2:
             req = Requests.get_by_id(client.last_request_id)
             req.currency_a = message
-            response_message = 'what currency would you want?'
+            response_message = 'which currency would you want?'
             client.position = 3
             req.save_to_db()
             client.save_to_db() 
@@ -459,35 +432,27 @@ def menu_handler(message, client):
             req.action = 'BUY'
             currencies = Currencies.query.all()
             message_response = 'What currency would you like to buy? \n\n'
-            currencies = Currencies.query.all()
             i = 1
             for currency in currencies:
                 message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-                
+
             successful, message = analyze_input(message, currencies, message_response )
-            if successful:
-                req.currency_a = message
-            req.save_to_db()
-            response_message = 'What Currency Do You Want?'
-            response_message = update_stage(client,2,response_message)
-            currencies = Currencies.query.all()
-            i = 1
-            for currency in currencies:
-                message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
-                i += 1         
-       
+
+            response_message = update_stage(client,2,message_response)
+                  
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
             currencies = Currencies.query.all()
             currency_list = ''
-   
             response_message = 'What currency would you like to sell? \n\n'
-            currencies = Currencies.query.all()
             i = 1
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
+
+            successful, message = analyze_input(message, currencies, response_message )
+
             req.save_to_db()
       
         else:
@@ -500,36 +465,33 @@ def menu_handler(message, client):
         req = Requests.get_by_id(client.last_request_id)
 
         i = 1
-        response_message = "Which Currency Do You Want?"
-
+        response_message = "What Do You Currency Want?"
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1
-            successful, message = analyze_input(message,currencies,response_message)
-            if successful:
-                req.currency_a = message
-                req.save_to_db()
-                response_message = update_stage(client,3,response_message)
+        successful, message = analyze_input(message,currencies,response_message)
+        if successful:
+            req.currency_a = message
+            req.save_to_db()
+            response_message = update_stage(client,3,response_message)
 
         response_message = update_stage(client,3,response_message)
-
-                  
+   
     elif client.position == 3:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
 
-        message_response = 'What currency would you like to sell?'
         currencies = Currencies.query.all()
         i = 1
         for currency in currencies:
             message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
             i += 1   
-            successful, message = analyze_input(message, currencies, message_response )
-            if successful:
-                req.currency_b = message
-                req.save_to_db()
-                response_message = 'amount?'
-                response_message = update_stage(client,4,response_message)
+        successful, message = analyze_input(message, currencies, message_response )
+        if successful:
+            req.currency_b = message
+            req.save_to_db()
+            response_message = 'Amount?'
+            response_message = update_stage(client,4,response_message)
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)

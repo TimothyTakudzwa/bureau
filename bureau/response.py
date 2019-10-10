@@ -509,18 +509,17 @@ def menu_handler(message, client):
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
 
-        message_response = 'What currency would you like to s#ll?'
         currencies = Currencies.query.all()
         i = 1
         for currency in currencies:
             message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
             i += 1   
-            successful, message = analyze_input(message, currencies, message_response )
-            if successful:
-                req.currency_b = message
-                req.save_to_db()
-                response_message = 'amount?'
-                response_message = update_stage(client,4,response_message)
+        successful, message = analyze_input(message, currencies, message_response )
+        if successful:
+            req.currency_b = message
+            req.save_to_db()
+            response_message = 'Amount?'
+            response_message = update_stage(client,4,response_message)
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)

@@ -460,17 +460,16 @@ def menu_handler(message, client):
             for currency in currencies:
                 message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-                successful, message = analyze_input(message, currencies, message_response )
-                if successful:
-                    req.currency_a = message
-                req.save_to_db()
-                response_message = 'What Currency Do You Want?'
-                response_message = update_stage(client,2,response_message)
-                currencies = Currencies.query.all()
-                i = 1
-                for currency in currencies:
-                    response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
-                    i += 1    
+                
+            successful, message = analyze_input(message, currencies, message_response )
+            if successful:
+                req.currency_a = message
+            req.save_to_db()
+            response_message = 'What Currency Do You Want?'
+            response_message = update_stage(client,2,response_message)
+            currencies = Currencies.query.all()
+                
+   
                     
        
         elif message.lower() == 'sell' or message == '2' : 
@@ -513,8 +512,6 @@ def menu_handler(message, client):
     elif client.position == 3:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
-        #req.currency_a = message
-        #req.save_to_db()
 
         message_response = 'What currency would you like to sell?'
         currencies = Currencies.query.all()

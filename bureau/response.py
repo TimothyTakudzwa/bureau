@@ -374,7 +374,7 @@ def menu_handler(message, client):
             req.save_to_db()
       
         else:
-            response_message = analysis(message,client)
+            response_message = analysis_model(message,client)
               
         response_message = update_position(client,2,response_message)   
 
@@ -471,7 +471,7 @@ def analyze_input(message, list_data, response_message):
             error_message = "The Option You Entered Is Invalid" 
             return False, error_message + response_message
 
-def analysis(message,client):
+def analysis_model(message, client):
     response_message = ""
     df = pd.read_csv("my_csv.csv")
     df.columns = ["Sentence","nlp_class"]
@@ -481,22 +481,17 @@ def analysis(message,client):
     vectorizer.fit(np.concatenate((df.Sentence, df.nlp_class)))
     # Vectorize sentences
     Sentence_vectors = vectorizer.transform(df.Sentence)
-    if message is not None:
-        input_message = vectorizer.transform([message])
-        # Compute similarities
-        similarities = cosine_similarity(input_message, Sentence_vectors)
-        # Find the closest sentence
-        closest = np.argmax(similarities, axis=1)
-        nlp_class = df.nlp_class.iloc[closest].values[0]
-        print(nlp_class)
-        client.nlp_stage = nlp_class
+    input_message = vectorizer.transform([message])
+    # Compute similarities
+    similarities = cosine_similarity(input_message, Sentence_vectors)
+    # Find the closest sentence
+    closest = np.argmax(similarities, axis=1)
+    client.nlp_stage = df.nlp_class.iloc[closest].values[0]
+    if client.nlp_stage:
         client.stage = 'proc_handler'
-        print(client.stage)
         client.position == 1
         client.save_to_db()
-        print(client.nlp_stage)
         response_message = proc_handler(message, client)
-    
     else:
         client.stage = 'menu'
         response_message = menu_handler(message,client)

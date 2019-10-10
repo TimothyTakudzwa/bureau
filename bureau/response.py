@@ -10,11 +10,12 @@ from .forms import ResponseForm
 from .models import *
 from . import app,db
 from sqlalchemy import desc
+from .transactions import *
 
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '263774555111'
+    phone_number = '263774545111'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -316,9 +317,14 @@ def initial_handler(message, client):
     elif client.position == 2:
         client.address = message
         response_message = 'Which bank do you want funds credited in?'
+        banks = Banks.query.all()
+        i = 1
+        for bank in banks:
+            response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
+            i += 1
         response_message = update_position(client,3,response_message)
     elif client.position == 3:
-        client.destination_bank = message
+        client.destination_bank = message #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
         response_message = 'Please provide the account number'
         response_message = update_position(client,4,response_message)
     elif client.position == 4:
@@ -407,11 +413,34 @@ def menu_handler(message, client):
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
         response_message = ""
+        tran = ""
         if req:
             req.amount = message
             req.date = datetime.now()
             req.save_to_db()
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+            # Make Transaction With The Highest Available Rate
+            
+            '''
+            if req.action == 'BUY'
+                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
+            elif req.action == 'SELL':
+                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+            '''
+            rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+            if rate:
+                date = datetime.now()
+                ref_no = "#45653356522"
+                total_amount = (req.amount * rate.rate)
+                tran = Transaction(client_id=client.id, bureau_id=rate.bureau_id, total_amount=total_amount, rate=rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=00000, completed=True, amount=req.amount)
+                bureau = Bureau.get_by_id(rate.bureau_id) 
+                tran.save_to_db()
+                if tran:
+                    response_message = 'Completed! :Transaction details\n {0}\n{1}\n{2}\n{3}\n{4}' .format(tran.id, bureau.name ,tran.total_amount, tran.transaction_type,tran.reference_number)
+                else:
+                    response_message = "Transaction Failed"
+            else:
+                response_message = f"No Rate Availabe {rate}"    
+
         else:
             response_message = "No Request Object" 
         
@@ -419,7 +448,8 @@ def menu_handler(message, client):
 
     return response_message
 
-def analyze_input(message, currencies, response_message):
+def analyze_input(message, list_data, response_message):
+    currencies = Currencies.query.all()
     currency_codes = [currency.currency_code.lower() for currency in currencies]
     # Check if message is a digit
 

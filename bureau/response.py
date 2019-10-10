@@ -13,7 +13,6 @@ from sqlalchemy import desc
 
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
-    global response_message
     form = ResponseForm()
     phone_number = '263774531555'
     response_message = "Hello"
@@ -42,11 +41,10 @@ def bot_action(message,client):
         response_message = initial_handler(message, client)
     elif client.stage == 'menu':
         response_message = menu_handler(message, client)
+
     elif client.stage == 'proc_hanler':
         response_message == proc_handler(message, client)
     # Please specify stage for menu on your if statement
-    #elif client.stage == 'menu': # ammendment 2
-       # response_message = menu_handler(message, client)
     return response_message
 
 def proc_handler(client, message):
@@ -65,8 +63,8 @@ def proc_handler(client, message):
                 currencies = Currencies.query.all()
                 my_currencies = [currencies]
                 words = list(message.split())
-                message_currencie = [currency for currency in words if currency in my_currencies]
-                currency_size = len(message_currency)
+                message_currencies = [currency for currency in words if currency in my_currencies]
+                currency_size = len(message_currencies)
                 client.position == 1
 
                 if currency_size == 1:
@@ -200,8 +198,8 @@ def proc_handler(client, message):
                 currencies = Currencies.query.all()
                 my_currencies = [currencies]
                 words = list(message.split())
-                message_currencie = [currency for currency in words if currency in my_currencies]
-                currency_size = len(message_currency)
+                message_currencies = [currency for currency in words if currency in my_currencies]
+                currency_size = len(message_currencies)
                 client.position == 1
 
                 if currency_size == 1:
@@ -457,7 +455,7 @@ def menu_handler(message, client):
             req.save_to_db()
       
         else:
-                response_message = analysis(message,client)
+            response_message = analysis(message,client)
               
         response_message = update_stage(client,2,response_message)   
 
@@ -581,10 +579,15 @@ def analysis(message,client):
         # Find the closest sentence
         closest = np.argmax(similarities, axis=1)
         nlp_class = df.nlp_class.iloc[closest].values[0]
+        print(nlp_class)
         client.nlp_stage = nlp_class
-        client.stage = 'nlp_proc'
+        client.stage = 'proc_handler'
         client.position == 1
+        response_message = bot_action(message,client)
     
     else:
         client.stage = 'menu'
+        response_message = bot_action(message,client)
+
+    return response_message
         

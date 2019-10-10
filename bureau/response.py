@@ -42,8 +42,8 @@ def bot_action(message,client):
     elif client.stage == 'menu':
         response_message = menu_handler(message, client)
 
-    elif client.stage == 'proc_hanler':
-        response_message == proc_handler(message, client)
+    elif client.stage == 'proc_handler':
+        response_message = proc_handler(message, client)
     # Please specify stage for menu on your if statement
     return response_message
 

@@ -205,4 +205,14 @@ class Currencies(db.Model):
     def get_by_id(self,id):
         return Currencies.query.filter_by(id=id).first()
 
+
+class Banks(db.Model):
+    __tablename__ = 'Banks'
+    id = db.Column(db.Integer, primary_key=True)
+    bank_name = db.Column(db.String(100))
+
+    @classmethod
+    def get_by_id(self,id):
+        return Banks.query.filter_by(id=id).first()
+
  

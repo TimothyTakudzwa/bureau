@@ -14,7 +14,7 @@ from sqlalchemy import desc
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '263774531444'
+    phone_number = '263774555111'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -27,7 +27,7 @@ def response():
             response_message = bot_action(message,client)
     return render_template('response.html', form = form, response=response_message)
 
-def update_stage(client,position,msg):
+def update_position(client,position,msg):
     client.position = position
     client.save_to_db()
     return msg
@@ -312,44 +312,39 @@ def initial_handler(message, client):
     if client.position == 1:
         client.name = message
         response_message = 'Whats your physical address?'
-        response_message = update_stage(client,2,response_message)
+        response_message = update_position(client,2,response_message)
     elif client.position == 2:
         client.address = message
         response_message = 'Which bank do you want funds credited in?'
-        response_message = update_stage(client,3,response_message)
+        response_message = update_position(client,3,response_message)
     elif client.position == 3:
         client.destination_bank = message
         response_message = 'Please provide the account number'
-        response_message = update_stage(client,4,response_message)
+        response_message = update_position(client,4,response_message)
     elif client.position == 4:
         client.account_no = message
         client.stage = 'menu'
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
-        response_message = update_stage(client,0,response_message)
+        response_message = update_position(client,0,response_message)
 
     return response_message
 
-    # Please create a separate function to handle the menu and do not mix it with the initial handler, if you are not using this please remove it to avoid having unneccessary code 
-    # Identify actions that you are consistent in all your functions and modularize, avoid repeating yourself.
-    # Please handle case sensitivity on messae for buy and sell
  
 def menu_handler(message, client):
     response_message = ""
     if client.position == 0  or message == 'menu':
         response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
-        response_message = update_stage(client,1,response_message)
+        response_message = update_position(client,1,response_message)
     elif client.position == 1: 
-        # Please add the client_id on the request made and link to the client who is making the request
         req = Requests()
-        req.client_id = client.id #First ammendment
+        req.client_id = client.id
         req.save_to_db()
         client.last_request_id = req.id
         client.save_to_db()
         if message.lower() == 'buy' or message == '1' :
             req.action = 'BUY'
             currencies = Currencies.query.all()
-            currency_list = ''
-            response_message = 'What currency would you like to buy? \n\n'
+            response_message = 'Which currency would you like to buy? \n\n'
             i = 1
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
@@ -357,13 +352,12 @@ def menu_handler(message, client):
 
             successful, message = analyze_input(message, currencies, response_message )
 
-            response_message = update_stage(client,2,response_message)
+            response_message = update_position(client,2,response_message)
                   
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
             currencies = Currencies.query.all()
-            currency_list = ''
-            response_message = 'What currency would you like to sell? \n\n'
+            response_message = 'Which currency would you like to sell? \n\n'
             i = 1
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
@@ -376,14 +370,14 @@ def menu_handler(message, client):
         else:
             response_message = analysis(message,client)
               
-        response_message = update_stage(client,2,response_message)   
+        response_message = update_position(client,2,response_message)   
 
     elif client.position == 2:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
 
         i = 1
-        response_message = "What Do You Currency Want?"
+        response_message = "Which Currency do you Want?"
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1
@@ -391,14 +385,13 @@ def menu_handler(message, client):
         if successful:
             req.currency_a = message
             req.save_to_db()
-            response_message = update_stage(client,3,response_message)
+            response_message = update_position(client,3,response_message)
 
-        response_message = update_stage(client,3,response_message)
+        response_message = update_position(client,3,response_message)
    
     elif client.position == 3:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
-
         currencies = Currencies.query.all()
         i = 1
         for currency in currencies:
@@ -409,7 +402,7 @@ def menu_handler(message, client):
             req.currency_b = message
             req.save_to_db()
             response_message = 'Amount?'
-            response_message = update_stage(client,4,response_message)
+            response_message = update_position(client,4,response_message)
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
@@ -422,7 +415,7 @@ def menu_handler(message, client):
         else:
             response_message = "No Request Object" 
         
-        response_message = update_stage(client,0,response_message)    
+        response_message = update_position(client,0,response_message)    
 
     return response_message
 
@@ -447,40 +440,6 @@ def analyze_input(message, currencies, response_message):
             #the message is incorrect
             error_message = "The Option You Entered Is Invalid" 
             return False, error_message + response_message
-'''
-def make_changes(message, client):
-    check if there is a digit in the message    
-    get a list of all currencies 
-    classify whether it is buy or sell 
-    if it is buy 
-        if there is a digit 
-            extract the amount from the message send by the user 
-            create a list of currencies that are in the list
-            loop through every word and check if it is a currency
-            if it is a currency apend to the list of my_currencies 
-            get size of my_currencies list 
-            if size == 0 :
-                class = everything is there 
-            elif size == 1: 
-                class = from currency is there 
-            elif size == 2:
-                class = all is there 
-            else:
-                respond with incorrect message 
-        else:
-            create a list of currencies that are in the list
-            loop through every word and check if it is a currency
-            if it is a currency apend to the list of my_currencies 
-            get size of my_currencies list 
-            if size == 0 :
-                class = nothing is there 
-            elif size == 1: 
-                class = from currency is there without amount
-            elif size == 2:
-                class = all is there no amount 
-            else:
-                respond with incorrect message 
-'''
 
 def analysis(message,client):
     response_message = ""
@@ -510,7 +469,7 @@ def analysis(message,client):
     
     else:
         client.stage = 'menu'
-        response_message = proc_handler(message,client)
+        response_message = menu_handler(message,client)
 
     return response_message
         

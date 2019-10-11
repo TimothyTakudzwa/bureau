@@ -331,7 +331,6 @@ def initial_handler(message, client):
         client.stage = 'menu'
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
         response_message = update_position(client,0,response_message)
-
     return response_message
 
  
@@ -356,9 +355,7 @@ def menu_handler(message, client):
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-
             successful, message = analyze_input(message, currencies, response_message )
-
             response_message = update_position(client,2,response_message)
                   
         elif message.lower() == 'sell' or message == '2' : 
@@ -369,20 +366,15 @@ def menu_handler(message, client):
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-
             successful, message = analyze_input(message, currencies, response_message )
-
-            req.save_to_db()
-      
+            req.save_to_db()      
         else:
-            response_message = analysis_model(message, client)
-              
+            response_message = analysis_model(message,client)              
         response_message = update_position(client,2,response_message)   
 
     elif client.position == 2:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
-
         i = 1
         response_message = "Which Currency do you Want?"
         for currency in currencies:
@@ -393,7 +385,6 @@ def menu_handler(message, client):
             req.currency_a = message
             req.save_to_db()
             response_message = update_position(client,3,response_message)
-
         response_message = update_position(client,3,response_message)
    
     elif client.position == 3:
@@ -459,26 +450,19 @@ def menu_handler(message, client):
             
     return response_message
 
-def analyze_input(message, list_data, response_message):
-    currencies = Currencies.query.all()
-    currency_codes = [currency.currency_code.lower() for currency in currencies]
-    # Check if message is a digit
-
-    if message.isdigit():
-        # Check If Value Entered Is Greater Than The len of Currencies
-        if int(message) > len(currency_codes):
+def analyze_input(message, list_data, response_message):    
+    message = message.upper()
+    if message.isdigit():      
+        if int(message) > len(list_data):
             error_message = "Your Selected Option Is Not On The List" 
             return False, error_message + response_message
         else:
-            code = currency_codes[int(message)-1]
+            code = list_data[int(message)-1]
             return True, code
     else:
-        if message in currency_codes:
-            #Check if message entered is the message list
-            #the message is correct
+        if message in list_data:           
             return True, message
         else:
-            #the message is incorrect
             error_message = "The Option You Entered Is Invalid" 
             return False, error_message + response_message
 

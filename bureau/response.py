@@ -34,18 +34,20 @@ def update_position(client,position):
     return True
 
 def bot_action(message,client):
-    print(client)
-    if client.stage == 'initial':
-        print('I am in here')
-        print(client.position)
-        print(client.stage)
-        response_message = initial_handler(message, client)
-    elif client.stage == 'menu':
-        response_message = menu_handler(message, client)
+    if len(message) > 7:
+        response_message = analysis_model(message,client)   
+    else:     
+        if client.stage == 'initial':
+            print('I am in here')
+            print(client.position)
+            print(client.stage)
+            response_message = initial_handler(message, client)
+        elif client.stage == 'menu':
+            response_message = menu_handler(message, client)
 
-    elif client.stage == 'proc_handler':
-        response_message = proc_handler(message, client)
-    # Please specify stage for menu on your if statement
+        elif client.stage == 'proc_handler':
+            response_message = proc_handler(message, client)
+        
     return response_message
 
 
@@ -60,18 +62,24 @@ def proc_handler(message, client):
 def proc_decode(message, client, action):
     req = Requests.get_by_id(client.last_request_id)
     req.action = action.upper()
-    req.save_to_db()
-    message_amount = [int(s) for s in message.split() if s.isdigit()]
+    req.save_to_db()    
+    message_amount = [int(s) for s in message.split() if s.isdigit()]    
     my_currencies = Currencies.query.all()
     words = list(message.split())
-    message_currencies = [currency for currency in words if currency in my_currencies]        
-    update_position(client,"1")
-    if message_amount is not None:        
+    message_currencies = []
+    for word in words:
+        for currency in my_currencies:
+            if word.lower() == currency.currency_code.lower():                 
+                message_currencies.append(currency.currency_code)
+            else:
+                pass       
+    update_position(client,"1")    
+    if len(message_amount) > 0:        
         req.amount = message_amount[0]
         req.save_to_db()       
-        response_message = currency_comparator(message, client, True, message_currencies, action, req)
+        response_message = currency_comparator(message, client, True, message_currencies, action, req)        
     else:   
-        response_message = currency_comparator(message, client, False, message_currencies, action, req)
+        response_message = currency_comparator(message, client, False, message_currencies, action, req)       
     return response_message
 
     
@@ -100,7 +108,7 @@ def currency_comparator(message, client, with_amount, message_currencies, action
             req.currency_a=message_currencies[0]
             req.currency_b=message_currencies[1]
             if with_amount:
-                response_message = update_position(client,0,response_message)
+                response_message = update_position(client,0)
             else:
                 client.position == 2
                 client.save_to_db()
@@ -108,20 +116,20 @@ def currency_comparator(message, client, with_amount, message_currencies, action
             response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
         elif client.position == 2:
             req.amount = message
-            response_message = update_position(client,0,response_message)
+            update_position(client,0)
             response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
     else:
         if client.position == 1:
             response_message = 'Which currency do you have?'
-            response_message = update_position(client,2,response_message)
+            update_position(client,2)
         elif client.position == 2:
             req.currency_a=message
             response_message = 'which currency do you want'
-            response_message = update_position(client,3,response_message)
+            update_position(client,3)
         elif client.position == 3:
             req.currency_b =message
             if with_amount:
-                response_message = update_position(client,0,response_message)
+                response_message = update_position(client,0)
             else:
                 client.position = 4 
                 client.save_to_db()
@@ -129,7 +137,7 @@ def currency_comparator(message, client, with_amount, message_currencies, action
             response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
         elif client.position == 4:
             req.amount =message
-            response_message = update_position(client,0,response_message)
+            update_position(client,0)
             response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
            
         req.save_to_db()
@@ -151,7 +159,7 @@ def initial_handler(message, client):
     if client.position == 1:
         client.name = message
         response_message = 'Whats your physical address?'
-        response_message = update_position(client,2,response_message)
+        response_message = update_position(client,2)
     elif client.position == 2:
         client.address = message
         response_message = 'Which bank do you want funds credited in?'
@@ -161,7 +169,7 @@ def initial_handler(message, client):
             response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
             i += 1
         successful, message = analyze_input(message, banks, response_message )
-        response_message = update_position(client,3,response_message)
+        response_message = update_position(client,3)
     elif client.position == 3:
         banks = Banks.query.all()
         bank_list = []
@@ -169,13 +177,15 @@ def initial_handler(message, client):
             bank_list.append((bank.bank_name))
         client.destination_bank = bank_list[int(message)-1] #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
         response_message = 'Please provide the account number'
-        response_message = update_position(client,4,response_message)
+        response_message = update_position(client,4)
     elif client.position == 4:
         client.account_no = message
         client.stage = 'menu'
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
-        response_message = update_position(client,0,response_message)
+        response_message = update_position(client,0)
     return response_message
+
+
 
  
 def menu_handler(message, client):
@@ -183,7 +193,7 @@ def menu_handler(message, client):
     response_message = ""
     if client.position == 0  or message == 'menu':
         response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
-        response_message = update_position(client,1,response_message)
+        response_message = update_position(client,1)
     elif client.position == 1: 
         req = Requests()
         req.client_id = client.id
@@ -200,7 +210,7 @@ def menu_handler(message, client):
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
             successful, message = analyze_input(message, currencies, response_message )
-            response_message = update_position(client,2,response_message)
+            response_message = update_position(client,2)
                   
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
@@ -212,9 +222,8 @@ def menu_handler(message, client):
                 i += 1
             successful, message = analyze_input(message, currencies, response_message )
             req.save_to_db()      
-        else:
-            response_message = analysis_model(message,client)              
-        response_message = update_position(client,2,response_message)   
+                  
+        response_message = update_position(client,2)   
 
     elif client.position == 2:
         currencies = Currencies.query.all() 
@@ -230,8 +239,8 @@ def menu_handler(message, client):
         if successful:
             req.currency_a = message
             req.save_to_db()
-            response_message = update_position(client,3,response_message)
-        response_message = update_position(client,3,response_message)
+            response_message = update_position(client,3)
+        response_message = update_position(client,3)
    
     elif client.position == 3:
         currencies = Currencies.query.all() 
@@ -248,7 +257,7 @@ def menu_handler(message, client):
             req.currency_b = message
             req.save_to_db()
             response_message = 'Amount?'
-            response_message = update_position(client,4,response_message)
+            response_message = update_position(client,4)
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
@@ -267,7 +276,7 @@ def menu_handler(message, client):
                 response_message = f"There Is No Rate Availabe Matching Your Input "    
         else:
             response_message = "No Request Object Found" 
-        response_message = update_position(client,5,response_message)
+        response_message = update_position(client,5)
     
     elif client.position == 5:
         req = Requests.get_by_id(client.last_request_id)
@@ -315,6 +324,7 @@ def analyze_input(message, list_data, response_message):
             return False, error_message + response_message
 
 def analysis_model(message, client):
+    print(message,client)
     response_message = ""
     df = pd.read_csv("my_csv.csv")
     df.columns = ["Sentence","nlp_class"]
@@ -323,23 +333,17 @@ def analysis_model(message, client):
     vectorizer = TfidfVectorizer()
     vectorizer.fit(np.concatenate((df.Sentence, df.nlp_class)))
     # Vectorize sentences
-    Sentence_vectors = vectorizer.transform(df.Sentence)
-    if message is not None:
-        input_message = vectorizer.transform([message])
-        # Compute similarities
-        similarities = cosine_similarity(input_message, Sentence_vectors)
-        # Find the closest sentence
-        closest = np.argmax(similarities, axis=1)
-        nlp_class = df.nlp_class.iloc[closest].values[0]
-        client.nlp_stage = nlp_class 
-        client.stage = 'proc_handler'
-        client.position == 1
-        client.save_to_db()
-        response_message = proc_handler(message, client)
-    else:
-        client.stage = 'menu'
-        response_message = menu_handler(message, client)
-    
-
+    Sentence_vectors = vectorizer.transform(df.Sentence)    
+    input_message = vectorizer.transform([message])
+    # Compute similarities
+    similarities = cosine_similarity(input_message, Sentence_vectors)
+    # Find the closest sentence
+    closest = np.argmax(similarities, axis=1)
+    nlp_class = df.nlp_class.iloc[closest].values[0]
+    client.nlp_stage = nlp_class 
+    client.stage = 'proc_handler'
+    client.position == 1
+    client.save_to_db()
+    response_message = proc_handler(message, client)  
     return response_message
         

@@ -411,7 +411,7 @@ def menu_handler(message, client):
             req.save_to_db()
             rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()  
             if rate is not None:
-                prop_rate = rate
+                prop_rate = round(rate,2)
                 total_amt = round((rate.rate * req.amount))
                 response_message = f"Hi, I Have Found A Rate Of Based On Your Input. The Amount Will be {total_amt}. Type `Yes` To Accept, `No` To Cancel"
 
@@ -431,7 +431,7 @@ def menu_handler(message, client):
             if message.lower() == 'yes':
                 if prop_rate:
                     date = datetime.now()
-                    ref_no = 'WBC' + date.strftime("%Y%M%D%H%M%S")
+                    ref_no = 'WBC-' + date.strftime("%Y%M%D%H%M%S")
                     total_amount = round((req.amount * prop_rate.rate),2)
                     tran_code = encrypt(client.id, prop_rate.bureau_id, total_amount, date, prop_rate.rate)
                     tran = Transaction(client_id=client.id, bureau_id=prop_rate.bureau_id, total_amount=total_amount, rate=prop_rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=tran_code, completed=True, amount=req.amount)

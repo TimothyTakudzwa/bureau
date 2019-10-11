@@ -20,8 +20,9 @@ class Transaction(db.Model):
     transaction_type = db.Column(db.String(20))
     date = db.Column(db.DateTime, default=datetime.now())
     reference_number = db.Column(db.String(30))
-    transaction_code = db.Column(db.String(100))    
+    transaction_code = db.Column(db.String(150))    
     completed = db.Column(db.Boolean, default=False)
+    is_expired = db.Column(db.Boolean, default=False)
 
     def save_to_db(self):
         db.session.add(self)
@@ -30,6 +31,12 @@ class Transaction(db.Model):
     @classmethod
     def get_total_amount(self):
         return self.total_amount
+
+    @classmethod
+    def check_expiration(self):
+        return self.is_expired
+
+        
 
     @classmethod
     def get_by_id(cls, id):

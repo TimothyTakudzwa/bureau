@@ -1,4 +1,4 @@
-
+import time
 # Load data preprocessing libraries
 import pandas as pd
 import numpy as np
@@ -160,9 +160,14 @@ def initial_handler(message, client):
         for bank in banks:
             response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
             i += 1
+        successful, message = analyze_input(message, banks, response_message )
         response_message = update_position(client,3,response_message)
     elif client.position == 3:
-        client.destination_bank = message #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
+        banks = Banks.query.all()
+        bank_list = []
+        for bank in banks:
+            bank_list.append((bank.bank_name))
+        client.destination_bank = bank_list[int(message)-1] #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
         response_message = 'Please provide the account number'
         response_message = update_position(client,4,response_message)
     elif client.position == 4:
@@ -213,13 +218,15 @@ def menu_handler(message, client):
 
     elif client.position == 2:
         currencies = Currencies.query.all() 
+        currency_list = []
         req = Requests.get_by_id(client.last_request_id)
         i = 1
         response_message = "Which Currency do you Want?"
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1
-        successful, message = analyze_input(message,currencies,response_message)
+            currency_list.append(currency.currency_code)
+        successful, message = analyze_input(message,currency_list,response_message)
         if successful:
             req.currency_a = message
             req.save_to_db()
@@ -229,12 +236,14 @@ def menu_handler(message, client):
     elif client.position == 3:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
+        currency_list = []
         currencies = Currencies.query.all()
         i = 1
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1   
-        successful, message = analyze_input(message, currencies, response_message )
+            currency_list.append(currency.currency_code)
+        successful, message = analyze_input(message, currency_list, response_message )
         if successful:
             req.currency_b = message
             req.save_to_db()
@@ -250,7 +259,7 @@ def menu_handler(message, client):
             req.save_to_db()
             rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()  
             if rate is not None:
-                prop_rate = rate
+                prop_rate = round(rate.rate,2)
                 total_amt = round((rate.rate * req.amount))
                 response_message = f"Hi, I Have Found A Rate Of Based On Your Input. The Amount Will be {total_amt}. Type `Yes` To Accept, `No` To Cancel"
 
@@ -270,9 +279,10 @@ def menu_handler(message, client):
             if message.lower() == 'yes':
                 if prop_rate:
                     date = datetime.now()
-                    ref_no = "#45653356522"
-                    total_amount = (req.amount * prop_rate.rate)
-                    tran = Transaction(client_id=client.id, bureau_id=prop_rate.bureau_id, total_amount=total_amount, rate=prop_rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=00000, completed=True, amount=req.amount)
+                    ref_no = 'WBC-' + str(time.time())
+                    total_amount = round((req.amount * prop_rate.rate),2)
+                    tran_code = encrypt(client.id, prop_rate.bureau_id, total_amount, date, prop_rate.rate)
+                    tran = Transaction(client_id=client.id, bureau_id=prop_rate.bureau_id, total_amount=total_amount, rate=prop_rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=tran_code, completed=True, amount=req.amount)
                     bureau = Bureau.get_by_id(prop_rate.bureau_id) 
                     tran.save_to_db()
                     if tran:

@@ -1,4 +1,4 @@
-
+import time
 # Load data preprocessing libraries
 import pandas as pd
 import numpy as np
@@ -379,13 +379,15 @@ def menu_handler(message, client):
 
     elif client.position == 2:
         currencies = Currencies.query.all() 
+        currency_list = []
         req = Requests.get_by_id(client.last_request_id)
         i = 1
         response_message = "Which Currency do you Want?"
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1
-        successful, message = analyze_input(message,currencies,response_message)
+            currency_list.append(currency.currency_code)
+        successful, message = analyze_input(message,currency_list,response_message)
         if successful:
             req.currency_a = message
             req.save_to_db()
@@ -395,12 +397,14 @@ def menu_handler(message, client):
     elif client.position == 3:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
+        currency_list = []
         currencies = Currencies.query.all()
         i = 1
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1   
-        successful, message = analyze_input(message, currencies, response_message )
+            currency_list.append(currency.currency_code)
+        successful, message = analyze_input(message, currency_list, response_message )
         if successful:
             req.currency_b = message
             req.save_to_db()
@@ -416,7 +420,7 @@ def menu_handler(message, client):
             req.save_to_db()
             rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()  
             if rate is not None:
-                prop_rate = round(rate,2)
+                prop_rate = round(rate.rate,2)
                 total_amt = round((rate.rate * req.amount))
                 response_message = f"Hi, I Have Found A Rate Of Based On Your Input. The Amount Will be {total_amt}. Type `Yes` To Accept, `No` To Cancel"
 

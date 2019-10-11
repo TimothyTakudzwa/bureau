@@ -337,6 +337,7 @@ def initial_handler(message, client):
 
  
 def menu_handler(message, client):
+    prop_rate = None
     response_message = ""
     if client.position == 0  or message == 'menu':
         response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
@@ -344,6 +345,7 @@ def menu_handler(message, client):
     elif client.position == 1: 
         req = Requests()
         req.client_id = client.id
+        req.date = datetime.now()
         req.save_to_db()
         client.last_request_id = req.id
         client.save_to_db()
@@ -416,36 +418,45 @@ def menu_handler(message, client):
         tran = ""
         if req:
             req.amount = message
-            req.date = datetime.now()
             req.save_to_db()
-            # Make Transaction With The Highest Available Rate
-            
-            '''
-            if req.action == 'BUY'
-                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
-            elif req.action == 'SELL':
-                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
-            '''
-            rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
-            if rate:
-                date = datetime.now()
-                ref_no = "#45653356522"
-                total_amount = (req.amount * rate.rate)
-                tran = Transaction(client_id=client.id, bureau_id=rate.bureau_id, total_amount=total_amount, rate=rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=00000, completed=True, amount=req.amount)
-                bureau = Bureau.get_by_id(rate.bureau_id) 
-                tran.save_to_db()
-                if tran:
-                    response_message = 'Completed! :Transaction details\n {0}\n{1}\n{2}\n{3}\n{4}' .format(tran.id, bureau.name ,tran.total_amount, tran.transaction_type,tran.reference_number)
-                else:
-                    response_message = "Transaction Failed"
+            rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()  
+            if rate is not None:
+                prop_rate = rate
+                total_amt = round((rate.rate * req.amount))
+                response_message = f"Hi, I Have Found A Rate Of Based On Your Input. The Amount Will be {total_amt}. Type `Yes` To Accept, `No` To Cancel"
+
             else:
-                response_message = f"No Rate Availabe {rate}"    
-
+                response_message = f"There Is No Rate Availabe Matching Your Input "    
         else:
-            response_message = "No Request Object" 
-        
-        response_message = update_position(client,0,response_message)    
+            response_message = "No Request Object Found" 
+        response_message = update_position(client,5,response_message)
+    
+    elif client.position == 5:
+        req = Requests.get_by_id(client.last_request_id)
+        response_message = ""
+        tran = ""
+        prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
 
+        if req:
+            if message.lower() == 'yes':
+                if prop_rate:
+                    date = datetime.now()
+                    ref_no = "#45653356522"
+                    total_amount = (req.amount * prop_rate.rate)
+                    tran = Transaction(client_id=client.id, bureau_id=prop_rate.bureau_id, total_amount=total_amount, rate=prop_rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=00000, completed=True, amount=req.amount)
+                    bureau = Bureau.get_by_id(prop_rate.bureau_id) 
+                    tran.save_to_db()
+                    if tran:
+                        response_message = 'Completed! :Transaction details\n {0}\n{1}\n{2}\n{3}\n{4}' .format(tran.id, bureau.name ,tran.total_amount, tran.transaction_type,tran.reference_number)
+                    else:
+                        response_message = "Transaction Failed"
+                else:
+                    response_message = f"No Rate Availabe {prop_rate}"
+            elif message.lower() == 'no':
+                response_message = f'Request: {req.id}, {req.action} Successfully Cancelled.'        
+        else:
+            response_message = "No Request Object Found"        
+            
     return response_message
 
 def analyze_input(message, list_data, response_message):

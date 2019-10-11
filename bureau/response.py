@@ -15,7 +15,7 @@ from .transactions import *
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '263774545111'
+    phone_number = '26377470000111'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -48,7 +48,7 @@ def bot_action(message,client):
     # Please specify stage for menu on your if statement
     return response_message
 
-def proc_handler(client, message):
+def proc_handler(message, client):
     #print(client)
     #if client.nlp_stage == 'all_data_available':
     if client.nlp_stage == 'sell':
@@ -57,13 +57,13 @@ def proc_handler(client, message):
             req.action = 'sell'
             req.save_to_db()
             client.save_to_db() 
-            amount = int(filter(str.isdigit, message))
-            if amount is not None:
+            message_amount = [int(s) for s in message.split() if s.isdigit()]
+            if message_amount is not None:
+                amount = message_amount[0]
                 req.amount = amount
                 req.save_to_db()
                 client.save_to_db() 
-                currencies = Currencies.query.all()
-                my_currencies = [currencies]
+                my_currencies = Currencies.query.all()
                 words = list(message.split())
                 message_currencies = [currency for currency in words if currency in my_currencies]
                 currency_size = len(message_currencies)
@@ -78,7 +78,7 @@ def proc_handler(client, message):
                         req.currency_b = message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
-                    return response_message
+                    #return response_message
                 
                 elif currency_size == 2:
                     if client.position == 1:
@@ -86,7 +86,7 @@ def proc_handler(client, message):
                         req.currency_b=message_currencies[1]
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
-                    return response_message
+                    #return response_message
 
                 else:
                     if client.position == 1:
@@ -100,11 +100,10 @@ def proc_handler(client, message):
                         req.currency_b =message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message
+                    #return response_message
 
             else:
-                currencies = Currencies.query.all()
-                my_currencies = [currencies]
+                my_currencies = Currencies.query.all()
                 words = list(message.split())
                 req.position == 1
                 message_currencies = [currency for currency in words if currency in my_currencies]
@@ -124,7 +123,7 @@ def proc_handler(client, message):
                         req.amount = message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message
+                    #return response_message
                                     
                 elif currency_size == 2:
                     if client.position == 1:
@@ -136,7 +135,7 @@ def proc_handler(client, message):
                         req.amount = message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message            
+                    #return response_message            
                 
                 else:
                     if client.position == 1:
@@ -154,7 +153,7 @@ def proc_handler(client, message):
                         req.amount =message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message
+                    #return response_message
 
     if client.nlp_stage == "buy":
         if client.position == 1:
@@ -162,13 +161,14 @@ def proc_handler(client, message):
             req.action = 'buy'
             req.save_to_db()
             client.save_to_db() 
-            amount = int(filter(str.isdigit, message))
-            if amount is not None:
+            message_amount = [int(s) for s in message.split() if s.isdigit()] 
+            if message_amount is not None:
+                amount = message_amount[0]
+                print(amount)
                 req.amount = amount
                 req.save_to_db()
                 client.save_to_db() 
-                currencies = Currencies.query.all()
-                my_currencies = [currencies]
+                my_currencies = Currencies.query.all()
                 words = list(message.split())
                 message_currencies = [currency for currency in words if currency in my_currencies]
                 currency_size = len(message_currencies)
@@ -183,7 +183,7 @@ def proc_handler(client, message):
                         req.currency_b = message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
-                    return response_message
+                    #return response_message
                 
                 elif currency_size == 2:
                     if client.position == 1:
@@ -191,7 +191,7 @@ def proc_handler(client, message):
                         req.currency_b=message_currencies[1]
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
-                    return response_message
+                    #return response_message
 
                 else:
                     if client.position == 1:
@@ -205,11 +205,10 @@ def proc_handler(client, message):
                         req.currency_b =message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message
+                    #return response_message
 
             else:
-                currencies = Currencies.query.all()
-                my_currencies = [currencies]
+                my_currencies = Currencies.query.all()
                 words = list(message.split())
                 req.position == 1
                 message_currencies = [currency for currency in words if currency in my_currencies]
@@ -229,7 +228,7 @@ def proc_handler(client, message):
                         req.amount = message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message
+                    #return response_message
                                     
                 elif currency_size == 2:
                     if client.position == 1:
@@ -241,7 +240,7 @@ def proc_handler(client, message):
                         req.amount = message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message            
+                    #return response_message            
                 
                 else:
                     if client.position == 1:
@@ -259,7 +258,7 @@ def proc_handler(client, message):
                         req.amount =message
                         response_message = update_position(client,0,response_message)
                         response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    return response_message        
+                    #return response_message        
 
     elif client.nlp_stage == "buy_only":
         if client.position == 1:
@@ -282,7 +281,7 @@ def proc_handler(client, message):
             req.amount = message
             response_message = update_position(client,0,response_message)
             response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-        return response_message
+        #return response_message
 
     elif client.nlp_stage == "sell_only":
         if client.position == 1:
@@ -305,7 +304,7 @@ def proc_handler(client, message):
             req.amount = message
             response_message = update_position(client,0,response_message)
             response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
-        return response_message
+        #return response_message
 
     return response_message
            
@@ -376,7 +375,7 @@ def menu_handler(message, client):
             req.save_to_db()
       
         else:
-            response_message = analysis_model(message,client)
+            response_message = analysis_model(message, client)
               
         response_message = update_position(client,2,response_message)   
 
@@ -492,20 +491,22 @@ def analysis_model(message, client):
     vectorizer.fit(np.concatenate((df.Sentence, df.nlp_class)))
     # Vectorize sentences
     Sentence_vectors = vectorizer.transform(df.Sentence)
-    input_message = vectorizer.transform([message])
-    # Compute similarities
-    similarities = cosine_similarity(input_message, Sentence_vectors)
-    # Find the closest sentence
-    closest = np.argmax(similarities, axis=1)
-    client.nlp_stage = df.nlp_class.iloc[closest].values[0]
-    if client.nlp_stage:
+    if message is not None:
+        input_message = vectorizer.transform([message])
+        # Compute similarities
+        similarities = cosine_similarity(input_message, Sentence_vectors)
+        # Find the closest sentence
+        closest = np.argmax(similarities, axis=1)
+        nlp_class = df.nlp_class.iloc[closest].values[0]
+        client.nlp_stage = nlp_class 
         client.stage = 'proc_handler'
         client.position == 1
         client.save_to_db()
         response_message = proc_handler(message, client)
     else:
         client.stage = 'menu'
-        response_message = menu_handler(message,client)
+        response_message = menu_handler(message, client)
+    
 
     return response_message
         

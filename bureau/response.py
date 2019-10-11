@@ -486,7 +486,9 @@ def analysis_model(message, client):
     similarities = cosine_similarity(input_message, Sentence_vectors)
     # Find the closest sentence
     closest = np.argmax(similarities, axis=1)
-    client.nlp_stage = df.nlp_class.iloc[closest].values[0]
+    nlp_class = df.nlp_class.iloc[closest].values[0]
+    client.nlp_stage = nlp_class
+    client.save_to_db() 
     if client.nlp_stage:
         client.stage = 'proc_handler'
         client.position == 1

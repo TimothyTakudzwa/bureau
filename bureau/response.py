@@ -317,7 +317,7 @@ def initial_handler(message, client):
     elif client.position == 2:
         client.address = message
         response_message = 'Which bank do you want funds credited in?'
-        banks = Banks.query.all()
+        banks = Banks.query.all() #get exported table contents on trello
         i = 1
         for bank in banks:
             response_message = response_message + str(i) + ". " + bank.bank_name + '\n'

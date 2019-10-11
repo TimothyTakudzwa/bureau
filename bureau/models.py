@@ -7,6 +7,8 @@ from . import app,db
 #from . import login_manager
 #from flask.ext.login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from .transactions import *
+import time
 
 
 class Transaction(db.Model):
@@ -34,9 +36,11 @@ class Transaction(db.Model):
 
     @classmethod
     def check_expiration(self):
-        return self.is_expired
+        return cls.self.is_expired
 
-        
+    def has_expired(self):
+        epoch = float(self.reference_number[5:])
+        return time.time() - epoch >= 7200
 
     @classmethod
     def get_by_id(cls, id):

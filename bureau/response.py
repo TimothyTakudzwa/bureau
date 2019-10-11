@@ -321,9 +321,14 @@ def initial_handler(message, client):
         for bank in banks:
             response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
             i += 1
+        successful, message = analyze_input(message, banks, response_message )
         response_message = update_position(client,3,response_message)
     elif client.position == 3:
-        client.destination_bank = message #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
+        banks = Banks.query.all()
+        bank_list = []
+        for bank in banks:
+            bank_list.append((bank.bank_name))
+        client.destination_bank = bank_list[int(message)-1] #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
         response_message = 'Please provide the account number'
         response_message = update_position(client,4,response_message)
     elif client.position == 4:

@@ -1,12 +1,10 @@
 buying,buy_only
-I want to sell,sell_only
-I have us,sell
-I have rtgs,buy
-I need us,buy
-converting us,sell_only
-wanna sell,sell_only
-want to buy,buy_only
-want to sell,sell_only
+I want to sell 50 USD,sell
+I have ,sell
+I need,buy
+wanna sell,sell
+want to buy,buy
+want to sell,sell
 selling,sell_only
 i want to sell us to zwl,sell
 i want to buy us,buy
@@ -15,10 +13,10 @@ selling us,sell
 buying us,buy
 i want to convert us,sell
 want to convert us to zwl,sell
-sell,sell_only
+sell,sell
 buy,buy_only
-wanna buy,buy_only
-wanna sell,sell_only
+wanna buy,buy
+wanna sell,sell
 
 
 

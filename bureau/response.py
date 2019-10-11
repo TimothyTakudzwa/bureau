@@ -28,10 +28,10 @@ def response():
             response_message = bot_action(message,client)
     return render_template('response.html', form = form, response=response_message)
 
-def update_position(client,position,msg):
+def update_position(client,position):
     client.position = position
     client.save_to_db()
-    return msg
+    return True
 
 def bot_action(message,client):
     print(client)
@@ -48,266 +48,105 @@ def bot_action(message,client):
     # Please specify stage for menu on your if statement
     return response_message
 
+
 def proc_handler(message, client):
-    #print(client)
-    #if client.nlp_stage == 'all_data_available':
-    if client.nlp_stage == 'sell':
+    if client.nlp_stage == 'sell':      
+        response_message = proc_decode(message,client,'sell')       
+    elif client.nlp_stage == "buy":
+        response_message = proc_decode(message,client,'buy')         
+    return response_message
+
+
+def proc_decode(message, client, action):
+    req = Requests.get_by_id(client.last_request_id)
+    req.action = action.upper()
+    req.save_to_db()
+    message_amount = [int(s) for s in message.split() if s.isdigit()]
+    my_currencies = Currencies.query.all()
+    words = list(message.split())
+    message_currencies = [currency for currency in words if currency in my_currencies]        
+    update_position(client,"1")
+    if message_amount is not None:        
+        req.amount = message_amount[0]
+        req.save_to_db()       
+        response_message = currency_comparator(message, client, True, message_currencies, action, req)
+    else:   
+        response_message = currency_comparator(message, client, False, message_currencies, action, req)
+    return response_message
+
+    
+def currency_comparator(message, client, with_amount, message_currencies, action, req):
+    currency_size = len(message_currencies)
+    if currency_size == 1:
         if client.position == 1:
-            req = Requests.get_by_id(client.last_request_id)
-            req.action = 'sell'
-            req.save_to_db()
-            client.save_to_db() 
-            message_amount = [int(s) for s in message.split() if s.isdigit()]
-            if message_amount is not None:
-                amount = message_amount[0]
-                req.amount = amount
-                req.save_to_db()
-                client.save_to_db() 
-                my_currencies = Currencies.query.all()
-                words = list(message.split())
-                message_currencies = [currency for currency in words if currency in my_currencies]
-                currency_size = len(message_currencies)
-                client.position == 1
-
-                if currency_size == 1:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        response_message = 'which currency do you want'
-                        response_message = update_position(client,2,response_message)           
-                    elif client.position == 2:
-                        req.currency_b = message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
-                    #return response_message
-                
-                elif currency_size == 2:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        req.currency_b=message_currencies[1]
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
-                    #return response_message
-
-                else:
-                    if client.position == 1:
-                        response_message = 'Which currency do you have?'
-                        response_message = update_position(client,2,response_message)
-                    elif client.position == 2:
-                        req.currency_a=message
-                        response_message = 'which currency do you want'
-                        response_message = update_position(client,3,response_message)
-                    elif client.position == 3:
-                        req.currency_b =message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message
-
-            else:
-                my_currencies = Currencies.query.all()
-                words = list(message.split())
-                req.position == 1
-                message_currencies = [currency for currency in words if currency in my_currencies]
-                currency_size = len(message_currencies)
-                client.position == 1
-                
-                if currency_size == 1:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        response_message = 'which currency do you want'
-                        response_message = update_position(client,2,response_message)
-                    elif client.position == 2:
-                        req.currency_b = message
-                        response_message = 'what is the amount'
-                        response_message = update_position(client,3,response_message)                       
-                    elif client.position == 3:
-                        req.amount = message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message
-                                    
-                elif currency_size == 2:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        req.currency_b=message_currencies[1]
-                        response_message = 'what is the amount'
-                        response_message = update_position(client,2,response_message)            
-                    elif client.position == 2:
-                        req.amount = message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message            
-                
-                else:
-                    if client.position == 1:
-                        response_message = 'Which currency do you have?'
-                        response_message = update_position(client,2,response_message)
-                    elif client.position == 2:
-                        req.currency_a=message
-                        response_message = 'which currency do you want'
-                        response_message = update_position(client,3,response_message)    
-                    elif client.position == 3:
-                        req.currency_b=message
-                        response_message = 'what is the amount'
-                        response_message = update_position(client,4,response_message)        
-                    elif client.position == 4:
-                        req.amount =message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message
-
-    if client.nlp_stage == "buy":
-        if client.position == 1:
-            req = Requests.get_by_id(client.last_request_id)
-            req.action = 'buy'
-            req.save_to_db()
-            client.save_to_db() 
-            message_amount = [int(s) for s in message.split() if s.isdigit()] 
-            if message_amount is not None:
-                amount = message_amount[0]
-                print(amount)
-                req.amount = amount
-                req.save_to_db()
-                client.save_to_db() 
-                my_currencies = Currencies.query.all()
-                words = list(message.split())
-                message_currencies = [currency for currency in words if currency in my_currencies]
-                currency_size = len(message_currencies)
-                client.position == 1
-
-                if currency_size == 1:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        response_message = 'which currency do you have'
-                        response_message = update_position(client,2,response_message)           
-                    elif client.position == 2:
-                        req.currency_b = message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
-                    #return response_message
-                
-                elif currency_size == 2:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        req.currency_b=message_currencies[1]
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
-                    #return response_message
-
-                else:
-                    if client.position == 1:
-                        response_message = 'Which currency do you want?'
-                        response_message = update_position(client,2,response_message)
-                    elif client.position == 2:
-                        req.currency_a=message
-                        response_message = 'which currency do you have'
-                        response_message = update_position(client,3,response_message)
-                    elif client.position == 3:
-                        req.currency_b =message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message
-
-            else:
-                my_currencies = Currencies.query.all()
-                words = list(message.split())
-                req.position == 1
-                message_currencies = [currency for currency in words if currency in my_currencies]
-                currency_size = len(message_currencies)
-                client.position == 1
-                
-                if currency_size == 1:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        response_message = 'which currency do you have'
-                        response_message = update_position(client,2,response_message)
-                    elif client.position == 2:
-                        req.currency_b = message
-                        response_message = 'what is the amount'
-                        response_message = update_position(client,3,response_message)                       
-                    elif client.position == 3:
-                        req.amount = message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message
-                                    
-                elif currency_size == 2:
-                    if client.position == 1:
-                        req.currency_a=message_currencies[0]
-                        req.currency_b=message_currencies[1]
-                        response_message = 'what is the amount'
-                        response_message = update_position(client,2,response_message)            
-                    elif client.position == 2:
-                        req.amount = message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message            
-                
-                else:
-                    if client.position == 1:
-                        response_message = 'Which currency do you want?'
-                        response_message = update_position(client,2,response_message)
-                    elif client.position == 2:
-                        req.currency_a=message
-                        response_message = 'which currency do you have'
-                        response_message = update_position(client,3,response_message)    
-                    elif client.position == 3:
-                        req.currency_b=message
-                        response_message = 'what is the amount'
-                        response_message = update_position(client,4,response_message)        
-                    elif client.position == 4:
-                        req.amount =message
-                        response_message = update_position(client,0,response_message)
-                        response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-                    #return response_message        
-
-    elif client.nlp_stage == "buy_only":
-        if client.position == 1:
-            req= Requests.get_by_id(client.last_request_id)
-            req.action = 'buy' 
-            response_message = 'Which currency do you have?'
-            response_message = update_position(client,2,response_message)
+            update_currency(message, req, action, True)
+            response_message = 'Which currency do you want' if action == 'buy' else "Which currency do you have"
+            update_position(client,2)           
         elif client.position == 2:
-            req = Requests.get_by_id(client.last_request_id)
-            req.currency_a = message
-            response_message = 'which currency would you want?'
-            response_message = update_position(client,3,response_message) 
-        elif client.position == 3:
-            req = Requests.get_by_id(client.last_request_id)
-            req.currency_b = message
-            response_message = 'the amount you have?'
-            response_message = update_position(client,4,response_message)       
-        elif client.position == 4:
-            req = Requests.get_by_id(client.last_request_id)
+            update_currency(message, req, action, False)
+            if with_amount:
+                update_position(client,0)                
+            else:
+                update_position(client,3)
+                response_message = "How much do you want to sell" if action == "sell" else "How much do you want to buy"
+                return "How much do you want to sell"
+            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
+        elif client.position == 3: 
+            req.amount = message
+            update_position(client,0)
+            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+    elif currency_size == 2:
+        if client.position == 1:
+            req.currency_a=message_currencies[0]
+            req.currency_b=message_currencies[1]
+            if with_amount:
+                response_message = update_position(client,0,response_message)
+            else:
+                client.position == 2
+                client.save_to_db()
+                return "How much do you want"
+            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
+        elif client.position == 2:
             req.amount = message
             response_message = update_position(client,0,response_message)
             response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
-        #return response_message
-
-    elif client.nlp_stage == "sell_only":
+    else:
         if client.position == 1:
-            req= Requests.get_by_id(client.last_request_id)
-            req.action = 'sell' 
-            response_message = 'Which currency do you want to sell?'
+            response_message = 'Which currency do you have?'
             response_message = update_position(client,2,response_message)
         elif client.position == 2:
-            req = Requests.get_by_id(client.last_request_id)
-            req.currency_a = message
-            response_message = 'which currency would you want?'
-            response_message = update_position(client,3,response_message) 
+            req.currency_a=message
+            response_message = 'which currency do you want'
+            response_message = update_position(client,3,response_message)
         elif client.position == 3:
-            req = Requests.get_by_id(client.last_request_id)
-            req.currency_b = message
-            response_message = 'the amount you have?'
-            response_message = update_position(client,4,response_message)       
+            req.currency_b =message
+            if with_amount:
+                response_message = update_position(client,0,response_message)
+            else:
+                client.position = 4 
+                client.save_to_db()
+                response_message = "How much do you want?"
+            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
         elif client.position == 4:
-            req = Requests.get_by_id(client.last_request_id)
-            req.amount = message
+            req.amount =message
             response_message = update_position(client,0,response_message)
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
-        #return response_message
-
-    return response_message
+            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
            
+        req.save_to_db()
+    return response_message
+
+def update_currency(message, request, action, vice_versa):
+    if vice_versa:
+        if action == "buy":
+            request.currency_b = message
+        else:
+            request.currency_a = message
+    else:
+        if action == "buy":
+            request.currency_a = message
+        else:
+            request.currency_b = message
+
 def initial_handler(message, client):
     if client.position == 1:
         client.name = message

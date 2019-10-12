@@ -35,7 +35,9 @@ def update_position(client,position):
 
 def bot_action(message,client):
     if len(message) > 7:
-        response_message = analysis_model(message,client)   
+        response_message = analysis_model(message,client)
+    elif client.stage == 'menu':
+            response_message = menu_handler(message, client)     
     else:     
         if client.stage == 'initial':
             print('I am in here')

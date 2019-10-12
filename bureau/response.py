@@ -35,7 +35,9 @@ def update_position(client,position):
 
 def bot_action(message,client):
     if len(message) > 7:
-        response_message = analysis_model(message,client)   
+        response_message = analysis_model(message,client)
+    elif client.stage == 'menu':
+            response_message = menu_handler(message, client)     
     else:     
         if client.stage == 'initial':
             print('I am in here')
@@ -192,7 +194,7 @@ def menu_handler(message, client):
     response_message = ""
     if client.position == 0  or message == 'menu':
         response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
-        response_message = update_position(client,1)
+        update_position(client,1)
     elif client.position == 1: 
         req = Requests()
         req.client_id = client.id
@@ -209,7 +211,7 @@ def menu_handler(message, client):
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
             successful, message = analyze_input(message, currencies, response_message )
-            response_message = update_position(client,2)
+            update_position(client,2)
                   
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
@@ -219,10 +221,11 @@ def menu_handler(message, client):
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
+            #currencies = [currency.code for currency in currencies]    
             successful, message = analyze_input(message, currencies, response_message )
             req.save_to_db()      
                   
-        response_message = update_position(client,2)   
+        update_position(client,2)  
 
     elif client.position == 2:
         currencies = Currencies.query.all() 
@@ -244,8 +247,8 @@ def menu_handler(message, client):
         if successful:
             req.currency_a = message
             req.save_to_db()
-            response_message = update_position(client,3)
-        response_message = update_position(client,3)
+            update_position(client,3)
+        update_position(client,3)
    
     elif client.position == 3:
         currencies = Currencies.query.all() 
@@ -262,7 +265,7 @@ def menu_handler(message, client):
             req.currency_b = message
             req.save_to_db()
             response_message = 'Amount?'
-            response_message = update_position(client,4)
+            update_position(client,4)
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
@@ -281,7 +284,7 @@ def menu_handler(message, client):
                 response_message = f"There Is No Rate Availabe Matching Your Input "    
         else:
             response_message = "No Request Object Found" 
-        response_message = update_position(client,5)
+        update_position(client,5)
     
     elif client.position == 5:
         req = Requests.get_by_id(client.last_request_id)

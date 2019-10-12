@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -34,14 +34,23 @@ class Transaction(db.Model):
     def get_total_amount(self):
         return self.total_amount
 
-    @classmethod
     def check_expiration(self):
-        return cls.self.is_expired
+        # Check If Expiration Period has elapsed
+        # The set attr to True if ref has expired
+        if self.has_expired():
+            self.is_expired = True
+            self.save_to_db()
+        return self.is_expired
 
     def has_expired(self):
-        epoch = float(self.reference_number[5:])
-        return time.time() - epoch >= 7200
+        # decode date from reference number
+        # check if two hour period has elapsed
+        epoch = ref_number_decoder(self.reference_number)
+        expired = epoch + timedelta(hours=2)
+        return expired < datetime.now()
+         
 
+        
     @classmethod
     def get_by_id(cls, id):
         return cls.query.filter_by(id=id).first()  

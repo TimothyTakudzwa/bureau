@@ -94,6 +94,6 @@ def bureau_comparator(bureau_id, currency_a, currency_b):
 	#currency_form =
 
 def ref_number_decoder(ref_no):
-    return datetime.fromtimestamp(float(ref_no[5:]))
+    return datetime.fromtimestamp(float(ref_no[4:]))
 
 

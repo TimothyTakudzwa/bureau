@@ -156,6 +156,7 @@ def update_currency(message, request, action, vice_versa):
             request.currency_b = message
 
 def initial_handler(message, client):
+    bank_list = []
     if client.position == 1:
         client.name = message
         response_message = 'Whats your physical address?'
@@ -168,14 +169,12 @@ def initial_handler(message, client):
         for bank in banks:
             response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
             i += 1
-        successful, message = analyze_input(message, banks, response_message )
+            bank_list.append((bank.bank_name))
+        successful, message = analyze_input(message, bank_list, response_message )
         response_message = update_position(client,3)
     elif client.position == 3:
         banks = Banks.query.all()
-        bank_list = []
-        for bank in banks:
-            bank_list.append((bank.bank_name))
-        client.destination_bank = bank_list[int(message)-1] #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
+        client.destination_bank = message
         response_message = 'Please provide the account number'
         response_message = update_position(client,4)
     elif client.position == 4:
@@ -228,14 +227,20 @@ def menu_handler(message, client):
     elif client.position == 2:
         currencies = Currencies.query.all() 
         currency_list = []
+        currency_codes = []
         req = Requests.get_by_id(client.last_request_id)
         i = 1
         response_message = "Which Currency do you Want?"
         for currency in currencies:
-            response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
+            currency_list.append((currency.currency_name))
+        currency_list.pop(int(message)-1)
+        for currency in currency_list:
+            response_message = response_message + str(i) + ". " + currency + '\n'
             i += 1
-            currency_list.append(currency.currency_code)
-        successful, message = analyze_input(message,currency_list,response_message)
+        for currency in currencies:
+            currency_codes.append(currency.currency_code)
+        currency_codes.pop(int(message)-1)
+        successful, message = analyze_input(message,currency_codes,response_message)
         if successful:
             req.currency_a = message
             req.save_to_db()

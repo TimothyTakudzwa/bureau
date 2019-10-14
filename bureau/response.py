@@ -243,7 +243,8 @@ def menu_handler(message, client):
             req.currency_a = message
             req.save_to_db()
             update_position(client,3)
-        update_position(client,3)
+        else:
+            return message 
    
     elif client.position == 3:
         currencies = Currencies.query.all() 
@@ -261,6 +262,9 @@ def menu_handler(message, client):
             req.save_to_db()
             response_message = 'Amount?'
             update_position(client,4)
+        else:
+            return message    
+
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
@@ -314,7 +318,7 @@ def analyze_input(message, list_data, response_message):
     message = message.upper()
     if message.isdigit():      
         if int(message) > len(list_data):
-            error_message = "Your Selected Option Is Not On The List" 
+            error_message = "Your Selected Option Is Not On The List " 
             return False, error_message + response_message
         else:
             code = list_data[int(message)-1]

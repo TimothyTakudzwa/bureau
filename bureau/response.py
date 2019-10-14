@@ -222,10 +222,10 @@ def menu_handler(message, client):
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-            #currencies = [currency.code for currency in currencies]    
+            currencies = [currency.code for currency in currencies]    
             successful, message = analyze_input(message, currencies, response_message )
-            req.save_to_db()      
-                  
+        
+        req.save_to_db()             
         update_position(client,2)  
 
     elif client.position == 2:
@@ -233,19 +233,36 @@ def menu_handler(message, client):
         currency_list = []
         req = Requests.get_by_id(client.last_request_id)
         i = 1
-        response_message = "Which Currency do you Want?"
+
+        response_message = 'Which currency would you like to want? \n\n'
+
         for currency in currencies:
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1
             currency_list.append(currency.currency_code)
-        successful, message = analyze_input(message,currency_list,response_message)
+
+        message_response = ''
+
+        if req.action == 'BUY':
+            message_response = 'Which currency would you like to buy? \n\n'
+        elif req.action == 'SELL' :
+            message_response = 'Which currency would you like to sell? \n\n' 
+
+        i = 1
+        for currency in currencies:
+            message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+            i += 1   
+            currency_list.append(currency.currency_code)      
+
+        successful, message = analyze_input(message,currency_list,message_response)
+
         if successful:
             req.currency_a = message
             req.save_to_db()
             update_position(client,3)
         else:
             return message 
-   
+
     elif client.position == 3:
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
@@ -256,7 +273,16 @@ def menu_handler(message, client):
             response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
             i += 1   
             currency_list.append(currency.currency_code)
-        successful, message = analyze_input(message, currency_list, response_message )
+
+        message_response = "Which Currency Do You Want?"   
+
+        i = 1
+        for currency in currencies:
+            message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+            i += 1   
+            currency_list.append(currency.currency_code)    
+                
+        successful, message = analyze_input(message, currency_list, message_response )
         if successful:
             req.currency_b = message
             req.save_to_db()

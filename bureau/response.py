@@ -46,6 +46,7 @@ def bot_action(message,client):
             response_message = initial_handler(message, client)
         elif client.stage == 'menu':
             response_message = menu_handler(message, client)
+            
 
         elif client.stage == 'proc_handler':
             response_message = proc_handler(message, client)
@@ -162,28 +163,31 @@ def initial_handler(message, client):
     if client.position == 1:
         client.name = message
         response_message = 'Whats your physical address?'
-        response_message = update_position(client,2)
+        update_position(client,2)
     elif client.position == 2:
         client.address = message
         response_message = 'Which bank do you want funds credited in?'
         banks = Banks.query.all() #get exported table contents on trello
         i = 1
         for bank in banks:
-            response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
+            response_message = response_message + str(i) + ". " + bank.bank_name + "\n"
             i += 1
             bank_list.append((bank.bank_name))
-        successful, message = analyze_input(message, bank_list, response_message )
-        response_message = update_position(client,3)
+        update_position(client,3)
     elif client.position == 3:
-        banks = Banks.query.all()
-        client.destination_bank = message
+        successful, message = analyze_input(message, bank_list, response_message )
+        if successful:
+            client.destination_bank = message
+            client.save_to_db()
+            update_position(client,4)
+        else:
+            return message
         response_message = 'Please provide the account number'
-        response_message = update_position(client,4)
     elif client.position == 4:
         client.account_no = message
         client.stage = 'menu'
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
-        response_message = update_position(client,0)
+        update_position(client,0)
     return response_message
 
 
@@ -242,7 +246,6 @@ def menu_handler(message, client):
             i += 1
         for currency in currencies:
             currency_codes.append(currency.currency_code)
-        currency_codes.pop(int(message)-1)
         successful, message = analyze_input(message,currency_codes,response_message)
         if successful:
             req.currency_a = message
@@ -254,11 +257,7 @@ def menu_handler(message, client):
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
         currency_list = []
-        currencies = Currencies.query.all()
-        i = 1
-        for currency in currencies:
-            response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
-            i += 1   
+        for currency in currencies: 
             currency_list.append(currency.currency_code)
         successful, message = analyze_input(message, currency_list, response_message )
         if successful:

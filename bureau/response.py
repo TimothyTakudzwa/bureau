@@ -15,7 +15,7 @@ from .transactions import *
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '26377470000111'
+    phone_number = '263774700001311'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -34,6 +34,7 @@ def update_position(client,position):
     return True
 
 def bot_action(message,client):
+    response_message = ""
     if len(message) > 7:
         response_message = analysis_model(message,client)
     elif client.stage == 'menu':
@@ -161,7 +162,7 @@ def initial_handler(message, client):
     if client.position == 1:
         client.name = message
         response_message = 'Whats your physical address?'
-        response_message = update_position(client,2)
+        update_position(client,2)
     elif client.position == 2:
         client.address = message
         response_message = 'Which bank do you want funds credited in?'
@@ -171,7 +172,7 @@ def initial_handler(message, client):
             response_message = response_message + str(i) + ". " + bank.bank_name + '\n'
             i += 1
         successful, message = analyze_input(message, banks, response_message )
-        response_message = update_position(client,3)
+        update_position(client,3)
     elif client.position == 3:
         banks = Banks.query.all()
         bank_list = []
@@ -179,12 +180,12 @@ def initial_handler(message, client):
             bank_list.append((bank.bank_name))
         client.destination_bank = bank_list[int(message)-1] #not yet fixed after additions to bank options, in the mean time type the bank name in the textbox
         response_message = 'Please provide the account number'
-        response_message = update_position(client,4)
+        update_position(client,4)
     elif client.position == 4:
         client.account_no = message
         client.stage = 'menu'
         response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
-        response_message = update_position(client,0)
+        update_position(client,0)
     return response_message
 
 
@@ -222,14 +223,16 @@ def menu_handler(message, client):
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-            currencies = [currency.code for currency in currencies]    
+            #currencies = [currency.code for currency in currencies]    
             successful, message = analyze_input(message, currencies, response_message )
+            update_position(client,2)
+        else:
+            return f"Your Input {message} Is Invalid, Select any of the options below\n 1) Buy\n 2) Sell" 
         
         req.save_to_db()             
-        update_position(client,2)  
 
     elif client.position == 2:
-        currencies = Currencies.query.all() 
+        currencies = Currencies.query.all()
         currency_list = []
         req = Requests.get_by_id(client.last_request_id)
         i = 1

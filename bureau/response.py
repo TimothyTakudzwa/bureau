@@ -194,10 +194,13 @@ def initial_handler(message, client):
             return message
         response_message = 'Please provide the account number'
     elif client.position == 4:
-        client.account_no = message
-        client.stage = 'menu'
-        response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
-        update_position(client,0)
+        if message.isdigit() and len(message) > 7:
+            client.account_no = message
+            client.stage = 'menu'
+            response_message = 'Thank you for registering with us. Type "menu" proceed to transact!'
+            update_position(client,0)
+        else:
+            response_message = 'Please provide a valid account number'
     return response_message
 
 

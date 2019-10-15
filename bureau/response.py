@@ -235,11 +235,13 @@ def menu_handler(message, client):
             for currency in currencies:
                 response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
                 i += 1
-            currencies = [currency.code for currency in currencies]    
+            #currencies = [currency.code for currency in currencies]    
             successful, message = analyze_input(message, currencies, response_message )
+            update_position(client,2)
+        else:
+            return f"Your Input {message} Is Invalid, Select any of the options below\n 1) Buy\n 2) Sell" 
         
         req.save_to_db()             
-        update_position(client,2)  
 
     elif client.position == 2:
         currencies = Currencies.query.all() 

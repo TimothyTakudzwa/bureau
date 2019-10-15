@@ -96,7 +96,7 @@ def currency_comparator(message, client, with_amount, message_currencies, action
         elif client.position == 2:
             update_currency(message_currencies[0], req, action, False)
             if with_amount:
-                update_position(client,0)                
+                update_position(client,0)               
             else:
                 update_position(client,3)
                 response_message = "How much do you want to sell" if action == "sell" else "How much do you want to buy"

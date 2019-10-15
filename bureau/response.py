@@ -254,12 +254,18 @@ def menu_handler(message, client):
         response_message = 'Which currency would you want? \n\n'
 
         for currency in currencies:
+            response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
+            i += 1   
+            currency_code.append(currency.currency_code)
+        
+        '''
+        for currency in currencies:
             currency_list_pop.append((currency.currency_name))
         currency_list_pop.pop(int(message)-1)
         for currency in currency_list_pop:
             response_message = response_message + str(i) + ". " + currency + '\n'
             i += 1
-
+        '''
         message_response = ''
 
         if req.action == 'BUY':

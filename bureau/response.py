@@ -173,7 +173,7 @@ def initial_handler(message, client):
         for bank in banks:
             response_message = response_message + str(i) + ". " + bank.bank_name + "\n"
             i += 1
-        successful, message = analyze_input(message, banks, response_message )
+            bank_list.append((bank.bank_name))
         update_position(client,3)
     elif client.position == 3:
         message_response = ''
@@ -194,7 +194,6 @@ def initial_handler(message, client):
         else:
             return message
         response_message = 'Please provide the account number'
-        update_position(client,4)
     elif client.position == 4:
         client.account_no = message
         client.stage = 'menu'
@@ -246,8 +245,9 @@ def menu_handler(message, client):
         req.save_to_db()             
 
     elif client.position == 2:
-        currencies = Currencies.query.all()
-        currency_list = []
+        currencies = Currencies.query.all() 
+        currency_list_pop = []
+        currency_code = []
         req = Requests.get_by_id(client.last_request_id)
         i = 1
 
@@ -296,7 +296,8 @@ def menu_handler(message, client):
             message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
             i += 1   
             currency_list.append(currency.currency_code)
-        currency_list.pop(int(message)-1)        
+        currency_list.pop(int(message)-1)    
+                
         successful, message = analyze_input(message, currency_list, message_response )
         if successful:
             req.currency_b = message

@@ -1,0 +1,15 @@
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('Agribank');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('BancABC');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('First Capital');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('CBZ');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('Ecobank');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('FBC');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('Nedbank');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('Metbank');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('NMB ');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('Stanbic');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('Standard Chatered');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('Steward Bank');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('ZB Bank');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('CABS');
+INSERT INTO bureau.public."Banks"(bank_name) VALUES ('POSB');

@@ -15,7 +15,7 @@ from .transactions import *
 @app.route('/response/', methods=['GET', 'POST'])
 def response():
     form = ResponseForm()
-    phone_number = '263774700001311'
+    phone_number = '2637747073232'
     response_message = "Hello"
     if request.method == 'POST':
         message = form.request.data
@@ -34,8 +34,7 @@ def update_position(client,position):
     return True
 
 def bot_action(message,client):
-    response_message = ""
-    if len(message) > 7:
+    if len(message) > 7 and client.stage != "initial":
         response_message = analysis_model(message,client)
     elif client.stage == 'menu':
             response_message = menu_handler(message, client)     
@@ -64,7 +63,7 @@ def proc_handler(message, client):
 
 
 def proc_decode(message, client, action):
-    req = Requests.get_by_id(client.last_request_id)
+    req = Requests()
     req.action = action.upper()
     req.save_to_db()    
     message_amount = [int(s) for s in message.split() if s.isdigit()]    
@@ -91,13 +90,13 @@ def currency_comparator(message, client, with_amount, message_currencies, action
     currency_size = len(message_currencies)
     if currency_size == 1:
         if client.position == 1:
-            update_currency(message, req, action, True)
-            response_message = 'Which currency do you want' if action == 'buy' else "Which currency do you have"
+            update_currency(message_currencies[0], req, action, True)
+            response_message = 'Which currency do you have' if action == 'buy' else "Which currency do you want"
             update_position(client,2)           
         elif client.position == 2:
-            update_currency(message, req, action, False)
+            update_currency(message_currencies[0], req, action, False)
             if with_amount:
-                update_position(client,0)                
+                update_position(client,0)               
             else:
                 update_position(client,3)
                 response_message = "How much do you want to sell" if action == "sell" else "How much do you want to buy"
@@ -254,18 +253,9 @@ def menu_handler(message, client):
         response_message = 'Which currency would you want? \n\n'
 
         for currency in currencies:
-            response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
-            i += 1   
-            currency_code.append(currency.currency_code)
+            currency_list_pop.append(currency.currency_name)
         
-        '''
-        for currency in currencies:
-            currency_list_pop.append((currency.currency_name))
-        currency_list_pop.pop(int(message)-1)
-        for currency in currency_list_pop:
-            response_message = response_message + str(i) + ". " + currency + '\n'
-            i += 1
-        '''
+
         message_response = ''
 
         if req.action == 'BUY':
@@ -282,6 +272,13 @@ def menu_handler(message, client):
         successful, message = analyze_input(message,currency_code,message_response)
 
         if successful:
+            i=1
+            selected_currency = Currencies.query.filter_by(currency_code = message).first()
+            if selected_currency is not None: 
+                currency_list_pop.remove(selected_currency.currency_name)
+            for currency in currency_list_pop:
+                response_message = response_message + str(i) + ". " + currency + '\n'
+                i += 1
             req.currency_a = message
             req.save_to_db()
             update_position(client,3)
@@ -292,18 +289,15 @@ def menu_handler(message, client):
         currencies = Currencies.query.all() 
         req = Requests.get_by_id(client.last_request_id)
         currency_list = []
-        for currency in currencies: 
-            currency_list.append(currency.currency_code)
-
-        message_response = "Which Currency Do You Want?"   
-
         i = 1
-        for currency in currencies:
-            message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
-            i += 1   
-            currency_list.append(currency.currency_code)
-        currency_list.pop(int(message)-1)    
-                
+        message_response = "Which Currency Do You Want?" 
+        for currency in currencies: 
+            if req.currency_a == currency.currency_code:
+                pass
+            else:
+                message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+                currency_list.append(currency.currency_code)        
+         
         successful, message = analyze_input(message, currency_list, message_response )
         if successful:
             req.currency_b = message

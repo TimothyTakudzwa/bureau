@@ -89,15 +89,20 @@ def proc_decode(message, client, action):
     
 def currency_comparator(message, client, with_amount, message_currencies, action, req):
     currency_size = len(message_currencies)
+    print(currency_size)
     if currency_size == 1:
         if client.position == 1:
             update_currency(message_currencies[0], req, action, True)
+            req.save_to_db()
+            print('in here hedu')
             response_message = 'Which currency do you have' if action == 'buy' else "Which currency do you want"
             update_position(client,2)           
         elif client.position == 2:
             update_currency(message_currencies[0], req, action, False)
             if with_amount:
-                update_position(client,0)               
+                update_position(client,0)
+                print('im here now marshy')
+                response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)               
             else:
                 update_position(client,3)
                 response_message = "How much do you want to sell" if action == "sell" else "How much do you want to buy"

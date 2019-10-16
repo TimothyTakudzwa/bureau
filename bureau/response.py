@@ -321,10 +321,14 @@ def menu_handler(message, client):
         req = Requests.get_by_id(client.last_request_id)
         response_message = ""
         tran = ""
+        rate = None
         if req:
             req.amount = message
             req.save_to_db()
-            rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()  
+            if req.action == 'BUY':
+                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
+            elif req.action == 'SELL':
+                rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()                
             if rate is not None:
                 prop_rate = round(rate.rate,2)
                 total_amt = round((rate.rate * req.amount))
@@ -340,7 +344,13 @@ def menu_handler(message, client):
         req = Requests.get_by_id(client.last_request_id)
         response_message = ""
         tran = ""
-        prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+        prop_rate = None
+
+        if req.action = 'BUY':
+            prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
+        else:
+            prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+
 
         if req:
             if message.lower() == 'yes':

@@ -346,10 +346,10 @@ def menu_handler(message, client):
         tran = ""
         prop_rate = None
 
-        if req.action = 'BUY':
+        if req.action == 'BUY':
             prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
         else:
-            prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+            prop_rate == Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
 
 
         if req:

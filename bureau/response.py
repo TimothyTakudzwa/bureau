@@ -348,8 +348,8 @@ def menu_handler(message, client):
 
         if req.action == 'BUY':
             prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
-        else:
-            prop_rate == Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+        elif req.action == 'SELL':
+            prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
 
 
         if req:

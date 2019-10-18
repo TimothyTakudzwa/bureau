@@ -17,3 +17,14 @@ Transaction Completed
 
 Reference Number: {0}
 '''
+
+please_confirm_message = '''
+Please Confirm The Below Details 
+
+From : {}
+To: {}
+Amount: {}
+
+Type "Yes" if the below information is correct 
+Type "Menu" to cancel
+'''

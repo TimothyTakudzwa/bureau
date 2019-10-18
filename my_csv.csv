@@ -1,20 +1,19 @@
-buying,buy_only
+buying,buy
 I want to sell 50 USD,sell
-I have ,sell
-I need,buy
+I want to sell 580 zwl,sell
 wanna sell,sell
+I want to buy 520 USD,buy
+I want to buy 70 zwl,buy
 want to buy,buy
 want to sell,sell
-selling,sell_only
 i want to sell us to zwl,sell
-i want to buy us,buy
-i want to sell 40 us,sell
-selling us,sell
-buying us,buy
-i want to convert us,sell
-want to convert us to zwl,sell
+i want to buy usd,buy
+i want to sell 40 usd,sell
+i want to buy zwl,buy
+i want to buy zar,buy
+selling usd,sell
+buying usd,buy
 sell,sell
-buy,buy_only
 wanna buy,buy
 wanna sell,sell
 

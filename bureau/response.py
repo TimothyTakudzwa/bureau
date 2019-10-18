@@ -36,7 +36,7 @@ def update_position(client,position):
 def bot_action(message,client):
     if len(message) > 7 and client.stage != "initial":
         response_message = analysis_model(message,client)
-    elif client.stage == 'menu':
+    elif client.stage == 'menu' or message == 'menu':
             response_message = menu_handler(message, client)     
     else:     
         if client.stage == 'initial':
@@ -55,6 +55,8 @@ def bot_action(message,client):
 
 
 def proc_handler(message, client):
+    if client.position == 0:
+        create_request(client)
     if client.nlp_stage == 'sell':      
         response_message = proc_decode(message,client,'sell')       
     elif client.nlp_stage == "buy":
@@ -62,89 +64,154 @@ def proc_handler(message, client):
     return response_message
 
 
+
 def proc_decode(message, client, action):
-    req = Requests()
-    req.action = action.upper()
-    req.save_to_db()    
-    message_amount = [int(s) for s in message.split() if s.isdigit()]    
-    my_currencies = Currencies.query.all()
-    words = list(message.split())
-    message_currencies = []
-    for word in words:
-        for currency in my_currencies:
-            if word.lower() == currency.currency_code.lower():                 
-                message_currencies.append(currency.currency_code)
-            else:
-                pass       
-    update_position(client,"1")    
-    if len(message_amount) > 0:        
-        req.amount = message_amount[0]
-        req.save_to_db()       
-        response_message = currency_comparator(message, client, True, message_currencies, action, req)        
-    else:   
-        response_message = currency_comparator(message, client, False, message_currencies, action, req)       
+    req = Requests.query.filter_by(id=client.last_request_id).first()
+    if client.position == 2:
+        response_message = nlp_stage_handler(message, client ,req)
+    elif client.position == 3:
+        response_message = nlp_stage_handler(message, client ,req)
+    else:
+        message_amount = [int(s) for s in message.split() if s.isdigit()]    
+        my_currencies = Currencies.query.all()
+        words = list(message.split())
+        message_currencies = []
+        for word in words:
+            for currency in my_currencies:
+                if word.lower() == currency.currency_code.lower():                 
+                    message_currencies.append(currency.currency_code)
+                else:
+                    pass       
+        update_position(client,"1")    
+        if len(message_amount) > 0:        
+            req.amount = message_amount[0]
+            req.save_to_db()       
+            response_message = currency_comparator(message, client, True, message_currencies, action, req)        
+        else:   
+            response_message = currency_comparator(message, client, False, message_currencies, action, req)       
+        return response_message
     return response_message
 
-    
-def currency_comparator(message, client, with_amount, message_currencies, action, req):
-    currency_size = len(message_currencies)
-    if currency_size == 1:
-        if client.position == 1:
-            update_currency(message_currencies[0], req, action, True)
-            response_message = 'Which currency do you have' if action == 'buy' else "Which currency do you want"
-            update_position(client,2)           
-        elif client.position == 2:
-            update_currency(message_currencies[0], req, action, False)
-            if with_amount:
-                update_position(client,0)               
-            else:
+def nlp_stage_handler(attribute, client,request): 
+    print(request)   
+    if client.position == 1: 
+        update_currency(attribute, request, client.nlp_stage, True)
+        response_message = 'Which currency do you have' if client.nlp_stage == 'buy' else "Which currency do you want"
+        currencies = Currencies.query.all()
+        currency_list_pop = []
+        for currency in currencies: 
+            currency_list_pop.append(currency.currency_name)
+        i = 1
+        selected_currency = Currencies.query.filter_by(currency_code = attribute).first()
+        if selected_currency is not None: 
+            currency_list_pop.remove(selected_currency.currency_name)
+        for currency in currency_list_pop:
+            response_message = response_message + str(i) + ". " + currency + '\n'
+            i += 1 
+        client.position = 2 
+        client.save_to_db()      
+    elif client.position == 2 : 
+        currencies = Currencies.query.all()
+        currency_list = []
+        currency_list_pop = []
+        response_message = 'Which currency do you have' if client.nlp_stage == 'buy' else "Which currency do you want"       
+        for currency in currencies:
+            currency_list.append(currency.currency_code)           
+            currency_list_pop.append(currency.currency_name)           
+        if request.currency_a is None:
+            currency_list.remove(request.currency_b) 
+            selected_currency = Currencies.query.filter_by(currency_code = request.currency_b).first()
+        else:
+            currency_list.remove(request.currency_a)        
+            selected_currency = Currencies.query.filter_by(currency_code = request.currency_a).first()
+        if selected_currency is not None: 
+            currency_list_pop.remove(selected_currency.currency_name)
+        i =1
+        for currency in currency_list_pop:
+            response_message = response_message + str(i) + ". " + currency + '\n'
+            i += 1
+        successful, message = analyze_input(attribute,currency_list,response_message)
+        if successful:
+            selected_currency = Currencies.query.filter_by(currency_code = message).first()
+            update_currency(message, request, client.nlp_stage, False) 
+            if request.amount is None:  
+                response_message = "How much do you want to sell" if client.nlp_stage == "sell" else "How much do you want to buy"         
                 update_position(client,3)
-                response_message = "How much do you want to sell" if action == "sell" else "How much do you want to buy"
-                return "How much do you want to sell"
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)       
-        elif client.position == 3: 
-            req.amount = message
-            update_position(client,0)
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+            else:
+                response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount) 
+                update_position(client,6)
+                please_confirm_message
+        else:
+            return message 
+    elif client.position == 3 : 
+        request.amount = message
+        request.save_to_db()
+        update_position(client,6)
+        response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
+    
+    return response_message
+       
+    
+def currency_comparator(message, client, with_amount, message_currencies, action, request):
+    currency_size = len(message_currencies)
+    print("Got here ")
+    if currency_size == 1:
+        print(client.position)
+        if client.position == 1:                 
+            response_message = nlp_stage_handler(message_currencies[0], client ,request)          
+        elif client.position == 2:
+            response_message = nlp_stage_handler(message, client ,request)
+        elif client.position == 3:
+            response_message = nlp_stage_handler(message, client ,request)
+        else:
+            response_message = "Ndopatasvikira pano"    
+        return response_message
     elif currency_size == 2:
         if client.position == 1:
-            req.currency_a=message_currencies[0]
-            req.currency_b=message_currencies[1]
+            request.currency_a=message_currencies[0]
+            request.currency_b=message_currencies[1]
             if with_amount:
                 response_message = update_position(client,0)
             else:
                 client.position == 2
                 client.save_to_db()
                 return "How much do you want"
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)           
+            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)           
         elif client.position == 2:
-            req.amount = message
+            request.amount = message
             update_position(client,0)
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
     else:
         if client.position == 1:
             response_message = 'Which currency do you have?'
             update_position(client,2)
         elif client.position == 2:
-            req.currency_a=message
+            request.currency_a=message
             response_message = 'which currency do you want'
             update_position(client,3)
         elif client.position == 3:
-            req.currency_b =message
+            request.currency_b =message
             if with_amount:
                 response_message = update_position(client,0)
             else:
                 client.position = 4 
                 client.save_to_db()
                 response_message = "How much do you want?"
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
         elif client.position == 4:
             req.amount =message
             update_position(client,0)
-            response_message = 'Transaction details\n {0}\n{1}\n{2}\n{3}' .format(req.action, req.currency_a, req.currency_b, req.amount)
+            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
            
-        req.save_to_db()
+        request.save_to_db()       
     return response_message
+
+def create_request(client):
+    req = Requests()    
+    req.action = client.nlp_stage.upper()
+    req.save_to_db()    
+    client.last_request_id = req.id
+    client.save_to_db()
 
 def update_currency(message, request, action, vice_versa):
     if vice_versa:
@@ -157,7 +224,8 @@ def update_currency(message, request, action, vice_versa):
             request.currency_a = message
         else:
             request.currency_b = message
-
+    request.save_to_db()
+    return ''
 def initial_handler(message, client):
     bank_list = []
     if client.position == 1:

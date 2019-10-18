@@ -42,8 +42,7 @@ def trading_chatbot():
     category = str(category)
         
         
-    return render_template("trading.html", category=category ,input_sentence = input_sentence) 
-    
+    return render_template("trading.html", category=category ,input_sentence = input_sentence)     
 
 
 

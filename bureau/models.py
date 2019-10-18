@@ -35,25 +35,19 @@ class Transaction(db.Model):
         return self.total_amount
 
     def check_expiration(self):
-        # Check If Expiration Period has elapsed
-        # The set attr to True if ref has expired
-        if self.has_expired():
+        expiration = self.date + timedelta(hours=2)
+        if expiration < datetime.now():
             self.is_expired = True
             self.save_to_db()
         return self.is_expired
-
-    def has_expired(self):
-        # decode date from reference number
-        # check if two hour period has elapsed
-        epoch = ref_number_decoder(self.reference_number)
-        expired = epoch + timedelta(hours=2)
-        return expired < datetime.now()
-         
-
-        
+    
     @classmethod
     def get_by_id(cls, id):
         return cls.query.filter_by(id=id).first()  
+
+    @classmethod
+    def get_by_reference_number(cls, reference_number):
+        return cls.query.filter_by(reference_number=reference_number).first()
 
 '''
 Model For Client 

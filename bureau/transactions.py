@@ -5,8 +5,9 @@ from datetime import datetime, timedelta
 from sqlalchemy import desc
 import base64
 
-def encrypt(client_id,bureau_id,total_amount,date,rate):
-	data = f"{client_id,bureau_id,total_amount,date,rate}"
+def encrypt(client_id,bureau_id,total_amount,rate):
+	data = f"{client_id,bureau_id,total_amount,rate}"
+	print(data)
 	encodedBytes = base64.b64encode(data.encode("utf-8")).decode()
 	return encodedBytes
 

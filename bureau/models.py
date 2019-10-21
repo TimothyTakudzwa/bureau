@@ -181,6 +181,7 @@ class Requests(db.Model):
     date = db.Column(db.DateTime)
     action = db.Column(db.String(100))
     rating = db.Column(db.Integer)
+    rate_id = db.Column(db.Integer)
 
     
     @classmethod

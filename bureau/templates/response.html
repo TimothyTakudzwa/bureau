@@ -18,10 +18,11 @@
            {{ form.submit }}
            <br>
            <br>
-           <br>
-           <br>
-           <br>
-           {{response}}
+         
+           
+         {% autoescape false %}
+            {{response}}
+         {% endautoescape %}
         </div>  
               
          </fieldset>  

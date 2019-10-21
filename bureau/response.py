@@ -47,13 +47,9 @@ def bot_action(message,client):
             response_message = initial_handler(message, client)
         elif client.stage == 'menu':
             response_message = menu_handler(message, client)
-            
-
         elif client.stage == 'proc_handler':
-            response_message = proc_handler(message, client)
-        
+            response_message = proc_handler(message, client)        
     return response_message
-
 
 def proc_handler(message, client):
     if client.position == 0:
@@ -64,10 +60,16 @@ def proc_handler(message, client):
         response_message = proc_decode(message,client,'buy')         
     return response_message
 
-
-
 def proc_decode(message, client, action):
     req = Requests.query.filter_by(id=client.last_request_id).first()
+    if req is None:
+        req = Requests()
+        req.client_id = client.id
+        req.date = datetime.now()
+        req.save_to_db()
+        client.position=1
+        client.last_request_id = req.id
+        client.save_to_db()
     if client.position == 2:
         response_message = nlp_stage_handler(message, client ,req)
     elif client.position == 3:
@@ -88,7 +90,8 @@ def proc_decode(message, client, action):
             req.amount = message_amount[0]
             req.save_to_db()       
             response_message = currency_comparator(message, client, True, message_currencies, action, req)        
-        else:   
+        else:
+            req.amount = None  
             response_message = currency_comparator(message, client, False, message_currencies, action, req)       
         return response_message
     return response_message
@@ -97,7 +100,7 @@ def nlp_stage_handler(attribute, client,request):
     print(request)   
     if client.position == 1: 
         update_currency(attribute, request, client.nlp_stage, True)
-        response_message = 'Which currency do you have' if client.nlp_stage == 'buy' else "Which currency do you want"
+        response_message = 'Which currency do you have<br/><br/>' if client.nlp_stage == 'buy' else "Which currency do you want<br/><br/>"
         currencies = Currencies.query.all()
         currency_list_pop = []
         for currency in currencies: 
@@ -107,7 +110,7 @@ def nlp_stage_handler(attribute, client,request):
         if selected_currency is not None: 
             currency_list_pop.remove(selected_currency.currency_name)
         for currency in currency_list_pop:
-            response_message = response_message + str(i) + ". " + currency + '\n'
+            response_message = response_message + str(i) + ". " + currency + '<br/>'
             i += 1 
         client.position = 2 
         client.save_to_db()      
@@ -115,7 +118,7 @@ def nlp_stage_handler(attribute, client,request):
         currencies = Currencies.query.all()
         currency_list = []
         currency_list_pop = []
-        response_message = 'Which currency do you have' if client.nlp_stage == 'buy' else "Which currency do you want"       
+        response_message = 'Which currency do you have<br/><br/>' if client.nlp_stage == 'buy' else "Which currency do you want<br/><br/>"       
         for currency in currencies:
             currency_list.append(currency.currency_code)           
             currency_list_pop.append(currency.currency_name)           
@@ -129,7 +132,7 @@ def nlp_stage_handler(attribute, client,request):
             currency_list_pop.remove(selected_currency.currency_name)
         i =1
         for currency in currency_list_pop:
-            response_message = response_message + str(i) + ". " + currency + '\n'
+            response_message = response_message + str(i) + ". " + currency + '<br/>'
             i += 1
         successful, message = analyze_input(attribute,currency_list,response_message)
         if successful:
@@ -139,19 +142,21 @@ def nlp_stage_handler(attribute, client,request):
                 response_message = "How much do you want to sell" if client.nlp_stage == "sell" else "How much do you want to buy"         
                 update_position(client,3)
             else:
-                response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount) 
-                update_position(client,6)
-                please_confirm_message
+                response_message = please_confirm_message.format( request.currency_b, request.currency_a, request.amount) 
+                client.stage = 'menu'
+                client.position = 4
+                client.save_to_db()
+                
         else:
             return message 
     elif client.position == 3 : 
-        request.amount = message
+        request.amount = attribute
         request.save_to_db()
-        update_position(client,6)
-        response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
-    
-    return response_message
-       
+        client.stage = 'menu'
+        client.position = 4
+        client.save_to_db()
+        response_message = please_confirm_message.format( request.currency_b, request.currency_a, request.amount)    
+    return response_message       
     
 def currency_comparator(message, client, with_amount, message_currencies, action, request):
     currency_size = len(message_currencies)
@@ -174,35 +179,42 @@ def currency_comparator(message, client, with_amount, message_currencies, action
             if with_amount:
                 response_message = update_position(client,0)
             else:
-                client.position == 2
+                client.stage = 'menu'
+                client.position = 4
                 client.save_to_db()
                 return "How much do you want"
-            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)           
+            response_message = please_confirm_message.format( request.currency_b, request.currency_a, request.amount)           
         elif client.position == 2:
             request.amount = message
-            update_position(client,0)
-            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
+            client.stage = 'menu'
+            client.position = 4
+            client.save_to_db()
+            response_message = please_confirm_message.format( request.currency_b, request.currency_a, request.amount)
     else:
         if client.position == 1:
-            response_message = 'Which currency do you have?'
+            response_message = 'Which currency do you have?<br/><br/>'
             update_position(client,2)
         elif client.position == 2:
             request.currency_a=message
-            response_message = 'which currency do you want'
+            response_message = 'which currency do you want<br/><br/>'
             update_position(client,3)
         elif client.position == 3:
             request.currency_b =message
             if with_amount:
-                response_message = update_position(client,0)
+                client.stage = 'menu'
+                client.position = 4
+                client.save_to_db()
             else:
                 client.position = 4 
                 client.save_to_db()
                 response_message = "How much do you want?"
-            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
+            response_message = please_confirm_message.format( request.currency_b, request.currency_a, request.amount)
         elif client.position == 4:
             req.amount =message
-            update_position(client,0)
-            response_message = please_confirm_message.format( request.currency_a, request.currency_b, request.amount)
+            client.stage = 'menu'
+            client.position = 4
+            client.save_to_db()
+            response_message = please_confirm_message.format( request.currency_b, request.currency_a, request.amount)
            
         request.save_to_db()       
     return response_message
@@ -239,7 +251,7 @@ def initial_handler(message, client):
         banks = Banks.query.all() #get exported table contents on trello
         i = 1
         for bank in banks:
-            response_message = response_message + str(i) + ". " + bank.bank_name + "\n"
+            response_message = response_message + str(i) + ". " + bank.bank_name + "<br/>"
             i += 1
             bank_list.append((bank.bank_name))
         update_position(client,3)
@@ -250,7 +262,7 @@ def initial_handler(message, client):
         banks = Banks.query.all()
         i = 1
         for bank in banks:
-            message_response = message_response + str(i) + ". " + bank.bank_name + "\n"
+            message_response = message_response + str(i) + ". " + bank.bank_name + "<br/>"
             i += 1
             bank_list.append((bank.bank_name))
         successful, message = analyze_input(message, bank_list, message_response )
@@ -271,15 +283,16 @@ def initial_handler(message, client):
         else:
             response_message = 'Please provide a valid account number'
     return response_message
-
-
-
  
 def menu_handler(message, client):
     prop_rate = None
     response_message = ""
-    if client.position == 0  or message == 'menu':
-        response_message = 'Select any of the options below\n 1) Buy\n 2) Sell'
+    greetings = ['menu', 'hie', 'ndeipi', 'hi']
+    if client.position == 0  or message in greetings:
+        client.last_request_id = None
+        client.stage = 'menu'
+        client.save_to_db()
+        response_message = 'Select any of the options below<br/> 1) Buy<br/> 2) Sell'
         update_position(client,1)
     elif client.position == 1: 
         req = Requests()
@@ -291,10 +304,10 @@ def menu_handler(message, client):
         if message.lower() == 'buy' or message == '1' :
             req.action = 'BUY'
             currencies = Currencies.query.all()
-            response_message = 'Which currency would you like to buy? \n\n'
+            response_message = 'Which currency would you like to buy? <br/><br/>'
             i = 1
             for currency in currencies:
-                response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
+                response_message = response_message + str(i) + ". " + currency.currency_name + '<br/>'
                 i += 1
             successful, message = analyze_input(message, currencies, response_message )
             update_position(client,2)
@@ -302,16 +315,16 @@ def menu_handler(message, client):
         elif message.lower() == 'sell' or message == '2' : 
             req.action = 'SELL'
             currencies = Currencies.query.all()
-            response_message = 'Which currency would you like to sell? \n\n'
+            response_message = 'Which currency would you like to sell? <br/><br/>'
             i = 1
             for currency in currencies:
-                response_message = response_message + str(i) + ". " + currency.currency_name + '\n'
+                response_message = response_message + str(i) + ". " + currency.currency_name + '<br/>'
                 i += 1
             #currencies = [currency.code for currency in currencies]    
             successful, message = analyze_input(message, currencies, response_message )
             update_position(client,2)
         else:
-            return f"Your Input {message} Is Invalid, Select any of the options below\n 1) Buy\n 2) Sell" 
+            return f"Your Input {message} Is Invalid, Select any of the options below<br/> 1) Buy<br/> 2) Sell" 
         
         req.save_to_db()             
 
@@ -320,36 +333,27 @@ def menu_handler(message, client):
         currency_list_pop = []
         currency_code = []
         req = Requests.get_by_id(client.last_request_id)
-        i = 1
-
-        response_message = 'Which currency would you want? \n\n'
-
         for currency in currencies:
-            currency_list_pop.append(currency.currency_name)
-        
-
-        message_response = ''
-
+            currency_list_pop.append(currency.currency_name) 
         if req.action == 'BUY':
-            message_response = 'Which currency would you like to buy? \n\n'
-        elif req.action == 'SELL' :
-            message_response = 'Which currency would you like to sell? \n\n' 
-
+            response_message = 'Which currency do you have? <br/><br/>'
+            message_response = 'Which currency would you like to buy? <br/><br/>'
+        else:
+            response_message = 'Which currency do you want? <br/><br/>'
+            message_response = 'Which currency would you like to sell? <br/><br/>'
         i = 1
         for currency in currencies:
-            message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+            message_response = message_response + str(i) + ". " + currency.currency_name + '<br/>'
             i += 1   
-            currency_code.append(currency.currency_code)      
-
+            currency_code.append(currency.currency_code)
         successful, message = analyze_input(message,currency_code,message_response)
-
         if successful:
             i=1
             selected_currency = Currencies.query.filter_by(currency_code = message).first()
             if selected_currency is not None: 
                 currency_list_pop.remove(selected_currency.currency_name)
             for currency in currency_list_pop:
-                response_message = response_message + str(i) + ". " + currency + '\n'
+                response_message = response_message + str(i) + ". " + currency + '<br/>'
                 i += 1
             req.currency_a = message
             req.save_to_db()
@@ -367,7 +371,7 @@ def menu_handler(message, client):
             if req.currency_a == currency.currency_code:
                 pass
             else:
-                message_response = message_response + str(i) + ". " + currency.currency_name + '\n'
+                message_response = message_response + str(i) + ". " + currency.currency_name + '<br/>'
                 currency_list.append(currency.currency_code)        
          
         successful, message = analyze_input(message, currency_list, message_response )
@@ -375,28 +379,34 @@ def menu_handler(message, client):
             req.currency_b = message
             req.save_to_db()
             response_message = 'Amount?'
-            update_position(client,4)
+            update_position(client,40)
         else:
             return message    
 
+    elif client.position == 40:
+        request = Requests.get_by_id(client.last_request_id)
+        request.amount = message
+        request.save_to_db()
+        response_message = please_confirm_message.format(request.currency_a, request.currency_b, request.amount)        
+        update_position(client,4)
+        return response_message
 
     elif client.position == 4:
         req = Requests.get_by_id(client.last_request_id)
         response_message = ""
         tran = ""
         rate = None
-        if req:
-            req.amount = message
-            req.save_to_db()
+        if req:           
             if req.action == 'BUY':
                 rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
             elif req.action == 'SELL':
                 rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()                
-            if rate is not None:
+            if rate is not None:                
                 prop_rate = round(rate.rate,2)
                 total_amt = round((rate.rate * req.amount))
-                response_message = f"Hi, I Have Found A Rate Of Based On Your Input. The Amount Will be {total_amt}. Type `Yes` To Accept, `No` To Cancel"
-
+                req.rate_id = rate.id
+                req.save_to_db()
+                response_message = rate_found.format(prop_rate, req.amount, total_amt)
             else:
                 response_message = f"There Is No Rate Availabe Matching Your Input "    
         else:
@@ -405,36 +415,22 @@ def menu_handler(message, client):
     
     elif client.position == 5:
         req = Requests.get_by_id(client.last_request_id)
-        response_message = ""
-        tran = ""
-        prop_rate = None
-
         if req.action == 'BUY':
             prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by('rate').first()
-        elif req.action == 'SELL':
-            prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
-
-
-        if req:
-            if message.lower() == 'yes':
-                if prop_rate:
-                    date = datetime.now()
-                    ref_no = 'WBC-' + str(time.time())
-                    total_amount = round((req.amount * prop_rate.rate),2)
-                    tran_code = encrypt(client.id, prop_rate.bureau_id, total_amount, date, prop_rate.rate)
-                    tran = Transaction(client_id=client.id, bureau_id=prop_rate.bureau_id, total_amount=total_amount, rate=prop_rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=tran_code, completed=True, amount=req.amount)
-                    bureau = Bureau.get_by_id(prop_rate.bureau_id) 
-                    tran.save_to_db()
-                    if tran:
-                        response_message = 'Completed! :Transaction details\n {0}\n{1}\n{2}\n{3}\n{4}' .format(tran.id, bureau.name ,tran.total_amount, tran.transaction_type,tran.reference_number)
-                    else:
-                        response_message = "Transaction Failed"
-                else:
-                    response_message = f"No Rate Availabe {prop_rate}"
-            elif message.lower() == 'no':
-                response_message = f'Request: {req.id}, {req.action} Successfully Cancelled.'        
         else:
-            response_message = "No Request Object Found"        
+            prop_rate = Rates.query.filter_by(currency_a=req.currency_a.upper()).filter_by(currency_b=req.currency_b.upper()).order_by(desc('rate')).first()
+        if message.lower() == 'yes':            
+            date = datetime.now()
+            ref_no = "WDBC-" + datetime.now().strftime("%y%m%H%M%S")
+            total_amount = round((req.amount * prop_rate.rate),2)
+            tran_code = encrypt(client.id, prop_rate.bureau_id, total_amount, prop_rate.rate)
+            tran = Transaction(client_id=client.id, bureau_id=prop_rate.bureau_id, total_amount=total_amount, rate=prop_rate.rate, transaction_type=req.action, date=datetime.now(), reference_number=ref_no, transaction_code=tran_code, completed=True, amount=req.amount)
+            bureau = Bureau.get_by_id(prop_rate.bureau_id) 
+            tran.save_to_db()           
+            response_message = transaction_confirmation_message.format(bureau.name, ref_no, tran_code, bureau.name)                      
+        elif message.lower() == 'no':
+            response_message = f'Request: {req.id}, {req.action} Successfully Cancelled.'        
+             
             
     return response_message
 
@@ -442,7 +438,7 @@ def analyze_input(message, list_data, response_message):
     message = message.upper()
     if message.isdigit():      
         if int(message) > len(list_data):
-            error_message = "Your Selected Option Is Not On The List " 
+            error_message = "Your Selected Option Is Not On The List<br/><br/> " 
             return False, error_message + response_message
         else:
             code = list_data[int(message)-1]
@@ -451,7 +447,7 @@ def analyze_input(message, list_data, response_message):
         if message in list_data:           
             return True, message
         else:
-            error_message = "The Option You Entered Is Invalid" 
+            error_message = "The Option You Entered Is Invalid<br/><br/>" 
             return False, error_message + response_message
 
 def analysis_model(message, client):
